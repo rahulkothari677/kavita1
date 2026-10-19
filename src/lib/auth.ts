@@ -1,14 +1,16 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import { getPrivate, setPrivate } from "./settings";
 
 const COOKIE = "ka_admin";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 async function secretKey() {
-  let s = process.env.AUTH_SECRET;
+  // Stable across all server instances: explicit secret, else derived from the database token.
+  const dbToken = process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN;
+  let s = process.env.AUTH_SECRET || (dbToken ? createHash("sha256").update(`kavitas-admin:${dbToken}`).digest("hex") : undefined);
   if (!s) {
     s = (await getPrivate("authSecret")) ?? undefined;
     if (!s) {
