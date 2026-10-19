@@ -30,7 +30,7 @@ export function WishlistClient() {
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[12px] tracking-[0.3em] text-gold uppercase">Saved for later</p>
+          <p className="text-[12px] tracking-[0.3em] text-accent uppercase">Saved for later</p>
           <h1 className="mt-2 font-display text-5xl">Your wishlist</h1>
         </div>
         {items && items.length > 0 && (
@@ -52,7 +52,7 @@ export function WishlistClient() {
       {items === null ? (
         <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="aspect-[4/5] animate-pulse rounded-2xl bg-cream" />
+            <div key={i} className="aspect-[4/5] animate-pulse rounded-2xl bg-tint" />
           ))}
         </div>
       ) : items.length === 0 ? (

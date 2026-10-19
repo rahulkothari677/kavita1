@@ -53,9 +53,9 @@ function OrdersInner() {
       />
       <div className="no-scrollbar -mx-4 mb-4 flex gap-1.5 overflow-x-auto px-4 md:mx-0 md:px-0">
         {["ALL", ...ORDER_STATUSES].map((s) => (
-          <button key={s} onClick={() => setStatus(s)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm ${status === s ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+          <button key={s} onClick={() => setStatus(s)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm ${status === s ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
             {TAB_LABEL[s]}
-            {counts[s] ? <span className={`rounded-full px-1.5 text-[11px] ${status === s ? "bg-cream/20" : "bg-ink/5"}`}>{counts[s]}</span> : null}
+            {counts[s] ? <span className={`rounded-full px-1.5 text-[11px] ${status === s ? "bg-on-ink/20" : "bg-ink/5"}`}>{counts[s]}</span> : null}
           </button>
         ))}
       </div>

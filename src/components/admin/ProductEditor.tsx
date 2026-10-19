@@ -304,23 +304,23 @@ export function ProductEditor({ productId, aiEnabled }: { productId?: string; ai
 
       {isNewEmpty ? (
         <div className="mx-auto max-w-2xl">
-          <div className="relative overflow-hidden rounded-[2rem] bg-ink p-8 text-center text-cream md:p-12">
-            <div className="pointer-events-none absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle, #f3ead8 1.5px, transparent 2px)", backgroundSize: "24px 24px" }} />
-            <Sparkles className="relative mx-auto size-10 text-gold-2" />
+          <div className="relative overflow-hidden rounded-[2rem] bg-ink p-8 text-center text-on-ink md:p-12">
+            <div className="pointer-events-none absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle, var(--color-on-ink) 1.5px, transparent 2px)", backgroundSize: "24px 24px" }} />
+            <Sparkles className="relative mx-auto size-10 text-accent-soft" />
             <h2 className="relative mt-4 font-display text-4xl">Snap & Sell</h2>
-            <p className="relative mx-auto mt-3 max-w-md text-cream/75">
+            <p className="relative mx-auto mt-3 max-w-md text-on-ink/75">
               {aiEnabled
                 ? "Take or choose photos of your piece. AI will write the name, description, tags, size estimate and suggest a price — you just review and publish."
                 : "Take or choose photos of your piece to start. (Add an AI key in Settings to auto-write listings.)"}
             </p>
             <div className="relative mx-auto mt-6 max-w-md">
-              <input value={hint} onChange={(e) => setHint(e.target.value)} placeholder="Optional hint: e.g. 12 inch lippan, made with real mirrors" className="w-full rounded-full border border-cream/20 bg-cream/10 px-5 py-3 text-sm text-cream placeholder:text-cream/50 outline-none" />
+              <input value={hint} onChange={(e) => setHint(e.target.value)} placeholder="Optional hint: e.g. 12 inch lippan, made with real mirrors" className="w-full rounded-full border border-on-ink/20 bg-on-ink/10 px-5 py-3 text-sm text-on-ink placeholder:text-on-ink/50 outline-none" />
             </div>
             <div className="relative mt-6 flex flex-wrap justify-center gap-3">
-              <button onClick={() => startCamera.current?.click()} className="btn btn-gold px-6 py-3.5">
+              <button onClick={() => startCamera.current?.click()} className="btn btn-accent px-6 py-3.5">
                 <Camera className="size-5" /> Take photo
               </button>
-              <button onClick={() => startGallery.current?.click()} className="btn border border-cream/30 px-6 py-3.5 text-cream hover:bg-cream/10">
+              <button onClick={() => startGallery.current?.click()} className="btn border border-on-ink/30 px-6 py-3.5 text-on-ink hover:bg-on-ink/10">
                 <ImagePlus className="size-5" /> Choose photos
               </button>
             </div>
@@ -335,8 +335,8 @@ export function ProductEditor({ productId, aiEnabled }: { productId?: string; ai
         <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
           <div className="space-y-6">
             {aiBusy === "listing" && (
-              <div className="flex items-center gap-3 rounded-2xl border border-gold/30 bg-gradient-to-r from-gold-2/20 to-white p-4">
-                <Loader2 className="size-5 animate-spin text-gold" />
+              <div className="flex items-center gap-3 rounded-2xl border border-accent/30 bg-gradient-to-r from-accent-soft/20 to-white p-4">
+                <Loader2 className="size-5 animate-spin text-accent" />
                 <div>
                   <p className="font-medium">AI is studying your photos…</p>
                   <p className="text-sm text-muted">Writing the name, story, tags and a fair price. ~10 seconds.</p>
@@ -477,7 +477,7 @@ export function ProductEditor({ productId, aiEnabled }: { productId?: string; ai
                 ))}
               </select>
               {draftExtras?.newCategory && (
-                <button type="button" onClick={() => createSuggestedCategory(draftExtras.newCategory!)} className="mt-3 w-full rounded-xl bg-gold-2/15 px-3 py-2 text-left text-sm">
+                <button type="button" onClick={() => createSuggestedCategory(draftExtras.newCategory!)} className="mt-3 w-full rounded-xl bg-accent-soft/15 px-3 py-2 text-left text-sm">
                   ✨ AI suggests a new category: <b>{draftExtras.newCategory}</b> — tap to create
                 </button>
               )}
@@ -490,7 +490,7 @@ export function ProductEditor({ productId, aiEnabled }: { productId?: string; ai
               title="Price & stock"
               action={
                 aiEnabled && (
-                  <button type="button" onClick={suggestPrice} disabled={!!aiBusy || !form.name} className="flex items-center gap-1 text-xs text-gold disabled:opacity-50">
+                  <button type="button" onClick={suggestPrice} disabled={!!aiBusy || !form.name} className="flex items-center gap-1 text-xs text-accent disabled:opacity-50">
                     {aiBusy === "price" ? <Loader2 className="size-3 animate-spin" /> : <Wand2 className="size-3" />} Suggest price
                   </button>
                 )
@@ -507,7 +507,7 @@ export function ProductEditor({ productId, aiEnabled }: { productId?: string; ai
                     <input {...bind("compareAtPrice")} inputMode="numeric" className="input" placeholder="optional" />
                   </div>
                 </div>
-                {draftExtras?.priceRange && <p className="rounded-xl bg-cream/70 p-3 text-xs leading-relaxed">💡 AI suggestion: {draftExtras.priceRange}</p>}
+                {draftExtras?.priceRange && <p className="rounded-xl bg-tint/70 p-3 text-xs leading-relaxed">💡 AI suggestion: {draftExtras.priceRange}</p>}
                 <Row label="Made to order" hint="Can always be ordered; made after order">
                   <Switch checked={form.madeToOrder} onChange={(v) => set("madeToOrder", v)} />
                 </Row>
@@ -553,7 +553,7 @@ export function ProductEditor({ productId, aiEnabled }: { productId?: string; ai
             )}
 
             {productId && (
-              <button onClick={remove} className="flex items-center gap-2 text-sm text-rose">
+              <button onClick={remove} className="flex items-center gap-2 text-sm text-danger">
                 <Trash2 className="size-4" /> Delete product
               </button>
             )}

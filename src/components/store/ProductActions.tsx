@@ -107,7 +107,7 @@ export function ProductActions({ p }: { p: P }) {
           Ask a question
         </a>
         <button onClick={() => toggleWishlist(p.id)} className="btn btn-outline px-4" aria-label="Wishlist">
-          <Heart className={`size-4 ${wishlist.includes(p.id) ? "fill-rose text-rose" : ""}`} />
+          <Heart className={`size-4 ${wishlist.includes(p.id) ? "fill-danger text-danger" : ""}`} />
         </button>
         <button onClick={share} className="btn btn-outline px-4" aria-label="Share">
           <Share2 className="size-4" />

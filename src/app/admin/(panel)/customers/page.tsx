@@ -53,7 +53,7 @@ export default function CustomersPage() {
             ["vip", "₹5k+ VIP"],
             ["lapsed", "Not ordered in 90d"],
           ].map(([k, l]) => (
-            <button key={k} onClick={() => setSeg(k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${seg === k ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+            <button key={k} onClick={() => setSeg(k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${seg === k ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
               {l}
             </button>
           ))}
@@ -70,10 +70,10 @@ export default function CustomersPage() {
           <ul className="divide-y divide-ink/[0.06]">
             {list.map((c) => (
               <li key={c.phone} className="flex items-center gap-3 px-4 py-3">
-                <div className="grid size-10 place-items-center rounded-full bg-cream font-display text-lg">{c.name[0]}</div>
+                <div className="grid size-10 place-items-center rounded-full bg-tint font-display text-lg">{c.name[0]}</div>
                 <div className="min-w-0 flex-1">
                   <p className="font-medium">
-                    {c.name} {c.orders > 1 && <span className="ml-1 rounded-full bg-gold-2/20 px-2 py-0.5 text-[10px] text-gold">REPEAT</span>}
+                    {c.name} {c.orders > 1 && <span className="ml-1 rounded-full bg-accent-soft/20 px-2 py-0.5 text-[10px] text-accent">REPEAT</span>}
                   </p>
                   <p className="text-xs text-muted">
                     {c.phone}

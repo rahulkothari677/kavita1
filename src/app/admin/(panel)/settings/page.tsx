@@ -43,7 +43,7 @@ export default function SettingsPage() {
             <label className="label">UPI ID (sent to customers for payment)</label>
             <input {...text("upiId")} placeholder="kavita@okaxis" />
           </div>
-          <div className="flex items-center justify-between rounded-xl bg-cream/50 p-3 md:col-span-2">
+          <div className="flex items-center justify-between rounded-xl bg-tint/50 p-3 md:col-span-2">
             <div>
               <p className="text-sm font-medium">Accepting orders</p>
               <p className="text-xs text-muted">Turn off when on holiday — a message shows on the website.</p>
@@ -93,7 +93,7 @@ export default function SettingsPage() {
         </div>
       </Panel>
 
-      <Panel title={<span className="flex items-center gap-2"><Sparkles className="size-4 text-gold" /> AI shopping assistant</span>}>
+      <Panel title={<span className="flex items-center gap-2"><Sparkles className="size-4 text-accent" /> AI shopping assistant</span>}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium">Show AI assistant on website</p>

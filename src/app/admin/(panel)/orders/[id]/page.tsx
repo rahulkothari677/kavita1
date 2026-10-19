@@ -91,7 +91,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
                 key={s}
                 disabled={saving || order.status === s}
                 onClick={() => update({ status: s as OrderStatus }, `Marked as ${STATUS_LABEL[s as OrderStatus]}`)}
-                className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${order.status === s ? "border-ink bg-ink text-cream" : done ? "border-wa/40 bg-wa/10 text-wa" : "border-ink/10 bg-white hover:border-ink/40"}`}
+                className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${order.status === s ? "border-ink bg-ink text-on-ink" : done ? "border-wa/40 bg-wa/10 text-wa" : "border-ink/10 bg-white hover:border-ink/40"}`}
               >
                 {done && order.status !== s && <Check className="size-3.5" />}
                 {STATUS_LABEL[s as OrderStatus]}
@@ -101,7 +101,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
           <button
             disabled={saving || order.status === "CANCELLED"}
             onClick={() => confirmAction("Cancel this order? Stock will be restored if it was confirmed.") && update({ status: "CANCELLED" }, "Order cancelled")}
-            className="shrink-0 rounded-full border border-rose/30 px-4 py-2 text-sm text-rose hover:bg-rose/5 disabled:opacity-40"
+            className="shrink-0 rounded-full border border-danger/30 px-4 py-2 text-sm text-danger hover:bg-danger/5 disabled:opacity-40"
           >
             Cancel order
           </button>
@@ -115,7 +115,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
             <ul className="-my-2 divide-y divide-ink/[0.06]">
               {order.items.map((i, n) => (
                 <li key={n} className="flex items-center gap-3 py-3">
-                  {i.image ? <img src={imgUrl(i.image, 120)} alt="" className="size-14 rounded-xl object-cover" /> : <div className="grid size-14 place-items-center rounded-xl bg-cream">🎁</div>}
+                  {i.image ? <img src={imgUrl(i.image, 120)} alt="" className="size-14 rounded-xl object-cover" /> : <div className="grid size-14 place-items-center rounded-xl bg-tint">🎁</div>}
                   <div className="min-w-0 flex-1">
                     {i.productId ? (
                       <Link href={`/admin/products/${i.productId}`} className="font-medium hover:underline">
@@ -127,7 +127,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
                     <p className="text-xs text-muted">
                       {formatINR(i.price)} × {i.quantity}
                     </p>
-                    {i.note && <p className="mt-1 rounded-lg bg-gold-2/15 px-2 py-1 text-xs">✏️ {i.note}</p>}
+                    {i.note && <p className="mt-1 rounded-lg bg-accent-soft/15 px-2 py-1 text-xs">✏️ {i.note}</p>}
                   </div>
                   <p className="font-medium">{formatINR(i.price * i.quantity)}</p>
                 </li>
@@ -153,7 +153,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
                 <dd>{formatINR(order.total)}</dd>
               </div>
             </dl>
-            {order.notes && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-cream/60 p-3 text-sm">📝 {order.notes}</p>}
+            {order.notes && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-tint/60 p-3 text-sm">📝 {order.notes}</p>}
           </Panel>
 
           <Panel title="Message customer on WhatsApp">
@@ -164,9 +164,9 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
                 </a>
               ))}
             </div>
-            <div className="mt-4 rounded-xl bg-cream/50 p-4">
+            <div className="mt-4 rounded-xl bg-tint/50 p-4">
               <p className="flex items-center gap-2 text-sm font-medium">
-                <Sparkles className="size-4 text-gold" /> AI personal message
+                <Sparkles className="size-4 text-accent" /> AI personal message
               </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {["Warm thank-you note", "Gentle payment reminder", "Delay apology — needs 2 more days", "Ask for a photo & review"].map((intent) => (
@@ -226,7 +226,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
           <Panel title="Payment">
             <div className="flex flex-wrap gap-2">
               {PAYMENT_STATUSES.map((p) => (
-                <button key={p} onClick={() => update({ paymentStatus: p }, "Payment updated")} className={`rounded-full border px-3.5 py-1.5 text-sm ${order.paymentStatus === p ? "border-ink bg-ink text-cream" : "border-ink/10"}`}>
+                <button key={p} onClick={() => update({ paymentStatus: p }, "Payment updated")} className={`rounded-full border px-3.5 py-1.5 text-sm ${order.paymentStatus === p ? "border-ink bg-ink text-on-ink" : "border-ink/10"}`}>
                   {p === "UNPAID" ? "Unpaid" : p === "PARTIAL" ? "Part-paid" : p === "PAID" ? "Paid" : "Refunded"}
                 </button>
               ))}
@@ -283,7 +283,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
                 .reverse()
                 .map((h, i) => (
                   <li key={i} className="flex gap-2">
-                    <span className="mt-1.5 size-2 shrink-0 rounded-full bg-gold" />
+                    <span className="mt-1.5 size-2 shrink-0 rounded-full bg-accent" />
                     <span>
                       <b>{STATUS_LABEL[h.status as OrderStatus] ?? h.status}</b> <span className="text-muted">· {formatDate(h.at)}</span>
                       {h.note && <span className="block text-xs text-muted">{h.note}</span>}
@@ -300,7 +300,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
               toast("Order deleted");
               router.replace("/admin/orders");
             }}
-            className="flex items-center gap-2 text-sm text-rose"
+            className="flex items-center gap-2 text-sm text-danger"
           >
             <Trash2 className="size-4" /> Delete order
           </button>

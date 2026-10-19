@@ -68,7 +68,7 @@ export function CustomOrderClient() {
           <label className="label">What would you like?</label>
           <div className="flex flex-wrap gap-2">
             {TYPES.map((t) => (
-              <button type="button" key={t} onClick={() => setF((x) => ({ ...x, type: t }))} className={`rounded-full border px-3.5 py-1.5 text-sm ${f.type === t ? "border-ink bg-ink text-cream" : "border-ink/15"}`}>
+              <button type="button" key={t} onClick={() => setF((x) => ({ ...x, type: t }))} className={`rounded-full border px-3.5 py-1.5 text-sm ${f.type === t ? "border-ink bg-ink text-on-ink" : "border-ink/15"}`}>
                 {t}
               </button>
             ))}
@@ -112,15 +112,15 @@ export function CustomOrderClient() {
             <input required value={f.phone} onChange={set("phone")} className="input" inputMode="tel" />
           </div>
         </div>
-        {err && <p className="text-sm text-rose">{err}</p>}
+        {err && <p className="text-sm text-danger">{err}</p>}
         <button disabled={busy} className="btn btn-wa w-full py-4 text-base">
           <WhatsAppIcon className="size-5" /> {busy ? "Sending…" : "Send request on WhatsApp"}
         </button>
       </div>
 
       <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="rounded-[1.75rem] border border-gold/30 bg-gradient-to-br from-cream to-cream-2 p-6 md:p-8">
-          <p className="flex items-center gap-2 text-[12px] tracking-[0.3em] text-gold uppercase">
+        <div className="rounded-[1.75rem] border border-accent/30 bg-gradient-to-br from-tint to-tint-strong p-6 md:p-8">
+          <p className="flex items-center gap-2 text-[12px] tracking-[0.3em] text-accent uppercase">
             <Sparkles className="size-4" /> AI design helper
           </p>
           <h3 className="mt-2 font-display text-3xl">Shape your idea</h3>
@@ -132,14 +132,14 @@ export function CustomOrderClient() {
           ) : (
             <p className="mt-5 rounded-xl bg-white/60 p-3 text-sm text-muted">Just describe your idea — we&apos;ll help shape it on WhatsApp.</p>
           )}
-          {aiErr && <p className="mt-3 text-sm text-rose">{aiErr}</p>}
+          {aiErr && <p className="mt-3 text-sm text-danger">{aiErr}</p>}
           {concept && (
             <div className="mt-6 animate-fade-up rounded-2xl bg-white p-5 shadow-sm">
               <p className="font-display text-2xl font-semibold">{concept.title}</p>
               <p className="mt-2 text-sm leading-relaxed text-ink/80">{concept.concept}</p>
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {concept.palette.map((c) => (
-                  <span key={c} className="rounded-full bg-cream px-2.5 py-1 text-xs">{c}</span>
+                  <span key={c} className="rounded-full bg-tint px-2.5 py-1 text-xs">{c}</span>
                 ))}
               </div>
               <p className="mt-3 text-sm"><b>Suggested size:</b> {concept.size}</p>

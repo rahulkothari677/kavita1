@@ -118,7 +118,7 @@ export function CheckoutClient() {
       <p className="mt-2 flex items-center gap-2 text-sm text-muted">
         <WhatsAppIcon className="size-4 text-wa" /> No account, no online payment — we confirm your order personally on WhatsApp.
       </p>
-      {!settings.acceptingOrders && <p className="mt-4 rounded-2xl bg-gold-2/20 p-4 text-sm">{settings.vacationMessage}</p>}
+      {!settings.acceptingOrders && <p className="mt-4 rounded-2xl bg-accent-soft/20 p-4 text-sm">{settings.vacationMessage}</p>}
 
       <form onSubmit={submit} className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
         <div className="space-y-8">
@@ -175,10 +175,10 @@ export function CheckoutClient() {
           {settings.giftWrapFee >= 0 && (
             <fieldset className="card p-6 md:p-8">
               <label className="flex cursor-pointer items-start gap-4">
-                <input type="checkbox" checked={giftWrap} onChange={(e) => setGiftWrap(e.target.checked)} className="mt-1.5 size-5 accent-[#16244a]" />
+                <input type="checkbox" checked={giftWrap} onChange={(e) => setGiftWrap(e.target.checked)} className="mt-1.5 size-5 accent-ink" />
                 <span>
                   <span className="flex items-center gap-2 font-display text-2xl font-semibold">
-                    <Gift className="size-5 text-gold" /> Make it a gift
+                    <Gift className="size-5 text-accent" /> Make it a gift
                   </span>
                   <span className="mt-1 block text-sm text-muted">
                     Hand-tied gift wrap and a handwritten card {settings.giftWrapFee > 0 ? `· ${formatINR(settings.giftWrapFee)}` : "· free"}
@@ -217,7 +217,7 @@ export function CheckoutClient() {
                       <button type="button" onClick={() => updateQty(l.productId, l.quantity + 1)} className="rounded-full border border-ink/15 p-1" aria-label="Increase">
                         <Plus className="size-3" />
                       </button>
-                      <button type="button" onClick={() => removeFromCart(l.productId)} className="ml-1 text-muted hover:text-rose" aria-label="Remove">
+                      <button type="button" onClick={() => removeFromCart(l.productId)} className="ml-1 text-muted hover:text-danger" aria-label="Remove">
                         <Trash2 className="size-3.5" />
                       </button>
                     </div>
@@ -245,7 +245,7 @@ export function CheckoutClient() {
                   </button>
                 </div>
               )}
-              {couponErr && <p className="mt-1.5 text-xs text-rose">{couponErr}</p>}
+              {couponErr && <p className="mt-1.5 text-xs text-danger">{couponErr}</p>}
             </div>
 
             <dl className="mt-5 space-y-2 text-[15px]">
@@ -259,7 +259,7 @@ export function CheckoutClient() {
               </div>
             </dl>
 
-            {error && <p className="mt-4 rounded-xl bg-rose/10 px-3 py-2 text-sm text-rose">{error}</p>}
+            {error && <p className="mt-4 rounded-xl bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
             <button disabled={busy} className="btn btn-wa mt-6 w-full py-4 text-base">
               <WhatsAppIcon className="size-5" /> {busy ? "Placing order…" : "Place order on WhatsApp"}
             </button>

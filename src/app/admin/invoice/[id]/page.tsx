@@ -77,7 +77,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           <div className="flex justify-between"><span className="text-muted">Shipping</span><span>{o.shipping ? formatINR(o.shipping) : "Free"}</span></div>
           <div className="flex justify-between border-t border-ink/15 pt-2 text-lg font-semibold"><span>Total</span><span>{formatINR(o.total)}</span></div>
         </div>
-        <p className="mt-12 text-center font-script text-3xl text-gold">Thank you for supporting handmade</p>
+        <p className="mt-12 text-center font-script text-3xl text-accent">Thank you for supporting handmade</p>
         <p className="mt-2 text-center text-xs text-muted">Every piece is handmade — small variations make it unique.</p>
       </div>
     </div>

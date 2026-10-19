@@ -31,10 +31,10 @@ export default function AiStudio() {
         <Feature href="/admin" icon={TrendingUp} title="Business coach" text="Weekly insights" />
       </div>
       <div className="flex gap-1.5">
-        <button onClick={() => setTab("caption")} className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${tab === "caption" ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+        <button onClick={() => setTab("caption")} className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${tab === "caption" ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
           <Instagram className="size-4" /> Post & caption writer
         </button>
-        <button onClick={() => setTab("reply")} className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${tab === "reply" ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+        <button onClick={() => setTab("reply")} className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${tab === "reply" ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
           <MessageCircle className="size-4" /> Customer reply helper
         </button>
       </div>
@@ -46,7 +46,7 @@ export default function AiStudio() {
 function Feature({ href, icon: Icon, title, text }: { href: string; icon: React.ElementType; title: string; text: string }) {
   return (
     <Link href={href} className="rounded-2xl border border-ink/[0.07] bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md">
-      <span className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-gold-2/40 to-cream">
+      <span className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-accent-soft/40 to-tint">
         <Icon className="size-5 text-ink" />
       </span>
       <p className="mt-3 font-medium">{title}</p>
@@ -108,8 +108,8 @@ function CaptionTool() {
         ) : (
           <div className="space-y-4">
             <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{out.caption}</p>
-            <p className="text-sm text-ink-2">{out.hashtags.map((h) => `#${h.replace(/^#/, "")}`).join(" ")}</p>
-            <div className="rounded-xl bg-ink p-4 text-center font-display text-xl text-cream">{out.storyText}</div>
+            <p className="text-sm text-ink-soft">{out.hashtags.map((h) => `#${h.replace(/^#/, "")}`).join(" ")}</p>
+            <div className="rounded-xl bg-ink p-4 text-center font-display text-xl text-on-ink">{out.storyText}</div>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => {
@@ -167,14 +167,14 @@ function ReplyTool() {
           <div className="space-y-3">
             {out.replies.map((r, i) => (
               <div key={i} className="rounded-xl border border-ink/10 p-4">
-                <p className="text-xs font-medium tracking-wide text-gold uppercase">{r.label}</p>
+                <p className="text-xs font-medium tracking-wide text-accent uppercase">{r.label}</p>
                 <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed">{r.text}</p>
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(r.text);
                     toast("Copied");
                   }}
-                  className="mt-2 flex items-center gap-1 text-xs text-ink-2"
+                  className="mt-2 flex items-center gap-1 text-xs text-ink-soft"
                 >
                   <Copy className="size-3.5" /> Copy
                 </button>
@@ -193,7 +193,7 @@ function Chips({ label, options, value, onChange }: { label: string; options: st
       <p className="label">{label}</p>
       <div className="flex flex-wrap gap-1.5">
         {options.map((o) => (
-          <button key={o} onClick={() => onChange(o)} className={`rounded-full border px-3 py-1 text-sm capitalize ${value === o ? "border-ink bg-ink text-cream" : "border-ink/12 bg-white"}`}>
+          <button key={o} onClick={() => onChange(o)} className={`rounded-full border px-3 py-1 text-sm capitalize ${value === o ? "border-ink bg-ink text-on-ink" : "border-ink/12 bg-white"}`}>
             {o}
           </button>
         ))}

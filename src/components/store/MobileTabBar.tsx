@@ -12,7 +12,7 @@ export function MobileTabBar() {
   const item = "relative flex flex-1 flex-col items-center gap-0.5 pt-2 pb-1.5 text-[10.5px] tracking-wide";
   const active = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-[58] flex border-t border-ink/10 bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-[58] flex border-t border-ink/10 bg-canvas/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
       <Link href="/" className={`${item} ${active("/") ? "text-ink" : "text-muted"}`}>
         <Home className="size-5" strokeWidth={1.7} /> Home
       </Link>
@@ -21,7 +21,7 @@ export function MobileTabBar() {
       </Link>
       {settings.aiAssistantEnabled ? (
         <button onClick={() => setAssistantOpen(true)} className={`${item} text-ink`}>
-          <span className="-mt-5 grid size-12 place-items-center rounded-full bg-ink text-gold-2 shadow-lg ring-4 ring-paper">
+          <span className="-mt-5 grid size-12 place-items-center rounded-full bg-ink text-accent-soft shadow-lg ring-4 ring-canvas">
             <Sparkles className="size-5" />
           </span>
           Ask {settings.aiAssistantName}
@@ -33,11 +33,11 @@ export function MobileTabBar() {
       )}
       <Link href="/wishlist" className={`${item} ${active("/wishlist") ? "text-ink" : "text-muted"}`}>
         <Heart className="size-5" strokeWidth={1.7} /> Saved
-        {wishlist.length > 0 && <span className="absolute right-[26%] top-1 size-2 rounded-full bg-rose" />}
+        {wishlist.length > 0 && <span className="absolute right-[26%] top-1 size-2 rounded-full bg-danger" />}
       </Link>
       <button onClick={() => setCartOpen(true)} className={`${item} text-muted`}>
         <ShoppingBag className="size-5" strokeWidth={1.7} /> Bag
-        {cartCount > 0 && <span className="absolute right-[24%] top-1 grid size-4 place-items-center rounded-full bg-ink text-[9px] text-cream">{cartCount}</span>}
+        {cartCount > 0 && <span className="absolute right-[24%] top-1 grid size-4 place-items-center rounded-full bg-ink text-[9px] text-on-ink">{cartCount}</span>}
       </button>
     </nav>
   );

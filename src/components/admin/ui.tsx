@@ -20,7 +20,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[200] flex flex-col items-center gap-2 px-4 lg:bottom-6">
         {list.map((t) => (
-          <div key={t.id} className={`flex animate-fade-up items-center gap-2 rounded-full px-5 py-2.5 text-sm text-white shadow-xl ${t.kind === "ok" ? "bg-ink" : "bg-rose"}`}>
+          <div key={t.id} className={`flex animate-fade-up items-center gap-2 rounded-full px-5 py-2.5 text-sm text-white shadow-xl ${t.kind === "ok" ? "bg-ink" : "bg-danger"}`}>
             {t.kind === "ok" ? <CheckCircle2 className="size-4" /> : <AlertTriangle className="size-4" />}
             {t.msg}
           </div>
@@ -84,7 +84,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 
 export function Panel({ title, action, children, className = "" }: { title?: React.ReactNode; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <section className={`rounded-2xl border border-ink/[0.07] bg-white shadow-[0_1px_2px_rgba(22,36,74,0.04)] ${className}`}>
+    <section className={`rounded-2xl border border-ink/[0.07] bg-white shadow-[0_1px_2px_color-mix(in_srgb,var(--color-ink)_4%,transparent)] ${className}`}>
       {title && (
         <div className="flex items-center justify-between gap-3 border-b border-ink/[0.06] px-5 py-3.5">
           <h2 className="text-[15px] font-semibold">{title}</h2>
@@ -180,7 +180,7 @@ export function PayPill({ status }: { status: string }) {
 export function Empty({ icon, title, text, action }: { icon?: React.ReactNode; title: string; text?: string; action?: React.ReactNode }) {
   return (
     <div className="flex flex-col items-center gap-2 px-6 py-16 text-center">
-      {icon && <div className="mb-2 grid size-14 place-items-center rounded-2xl bg-cream text-ink/60">{icon}</div>}
+      {icon && <div className="mb-2 grid size-14 place-items-center rounded-2xl bg-tint text-ink/60">{icon}</div>}
       <p className="font-display text-2xl">{title}</p>
       {text && <p className="max-w-sm text-sm text-muted">{text}</p>}
       {action && <div className="mt-3">{action}</div>}
@@ -198,7 +198,7 @@ export function TagInput({ value, onChange, placeholder }: { value: string[]; on
   return (
     <div className="input flex flex-wrap items-center gap-1.5 py-2">
       {value.map((t) => (
-        <span key={t} className="inline-flex items-center gap-1 rounded-full bg-cream px-2.5 py-0.5 text-sm">
+        <span key={t} className="inline-flex items-center gap-1 rounded-full bg-tint px-2.5 py-0.5 text-sm">
           {t}
           <button type="button" onClick={() => onChange(value.filter((x) => x !== t))} aria-label={`Remove ${t}`}>
             <X className="size-3" />

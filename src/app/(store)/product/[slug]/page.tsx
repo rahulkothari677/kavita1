@@ -75,11 +75,11 @@ export default async function ProductPage({ params }: { params: Params }) {
         <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] lg:gap-16">
           <Gallery images={p.images} name={p.name} />
           <div className="md:pt-4">
-            {p.badge && <span className="mb-3 inline-block rounded-full bg-cream px-3 py-1 text-xs tracking-wide">{p.badge}</span>}
+            {p.badge && <span className="mb-3 inline-block rounded-full bg-tint px-3 py-1 text-xs tracking-wide">{p.badge}</span>}
             <h1 className="font-display text-4xl leading-tight font-medium md:text-5xl">{p.name}</h1>
             {p.reviewCount ? (
               <a href="#reviews" className="mt-2 inline-flex items-center gap-2 text-sm text-muted">
-                <span className="text-gold">{"★".repeat(Math.round(p.rating ?? 5))}</span> {p.rating?.toFixed(1)} · {p.reviewCount} review
+                <span className="text-accent">{"★".repeat(Math.round(p.rating ?? 5))}</span> {p.rating?.toFixed(1)} · {p.reviewCount} review
                 {p.reviewCount > 1 ? "s" : ""}
               </a>
             ) : null}
@@ -88,7 +88,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               {off > 0 && (
                 <>
                   <span className="text-lg text-muted line-through">{formatINR(p.compareAtPrice!)}</span>
-                  <span className="rounded-full bg-rose/10 px-2.5 py-0.5 text-sm font-medium text-rose">Save {off}%</span>
+                  <span className="rounded-full bg-danger/10 px-2.5 py-0.5 text-sm font-medium text-danger">Save {off}%</span>
                 </>
               )}
             </div>
@@ -99,7 +99,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               {soldOut ? (
                 <span className="rounded-full bg-ink/5 px-3 py-1.5">Sold out — can be remade on request</span>
               ) : p.madeToOrder ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1.5 text-gold">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1.5 text-accent">
                   <Clock className="size-4" /> Made to order · ready in {p.leadTimeDays ?? 7}–{(p.leadTimeDays ?? 7) + 3} days
                 </span>
               ) : (
@@ -121,16 +121,16 @@ export default async function ProductPage({ params }: { params: Params }) {
             </div>
 
             <div className="mt-8 grid grid-cols-3 gap-3 text-center text-xs text-muted">
-              <div className="rounded-2xl bg-cream/70 p-3">
-                <HandHeart className="mx-auto mb-1.5 size-5 text-gold" strokeWidth={1.5} />
+              <div className="rounded-2xl bg-tint/70 p-3">
+                <HandHeart className="mx-auto mb-1.5 size-5 text-accent" strokeWidth={1.5} />
                 Handmade
               </div>
-              <div className="rounded-2xl bg-cream/70 p-3">
-                <Truck className="mx-auto mb-1.5 size-5 text-gold" strokeWidth={1.5} />
+              <div className="rounded-2xl bg-tint/70 p-3">
+                <Truck className="mx-auto mb-1.5 size-5 text-accent" strokeWidth={1.5} />
                 {settings.freeShippingAbove > 0 ? `Free ship over ${formatINR(settings.freeShippingAbove)}` : "Pan-India shipping"}
               </div>
-              <div className="rounded-2xl bg-cream/70 p-3">
-                <PackageCheck className="mx-auto mb-1.5 size-5 text-gold" strokeWidth={1.5} />
+              <div className="rounded-2xl bg-tint/70 p-3">
+                <PackageCheck className="mx-auto mb-1.5 size-5 text-accent" strokeWidth={1.5} />
                 Safe packaging
               </div>
             </div>
@@ -187,7 +187,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h2 className="font-display text-3xl md:text-4xl">Reviews</h2>
             {p.reviewCount ? (
               <p className="mt-1 text-muted">
-                <span className="text-gold">★</span> {p.rating?.toFixed(1)} from {p.reviewCount} happy home{p.reviewCount > 1 ? "s" : ""}
+                <span className="text-accent">★</span> {p.rating?.toFixed(1)} from {p.reviewCount} happy home{p.reviewCount > 1 ? "s" : ""}
               </p>
             ) : (
               <p className="mt-1 text-muted">Be the first to share your thoughts.</p>
@@ -198,7 +198,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {reviews.map((r) => (
               <div key={r.id} className="card p-6">
-                <p className="text-gold">{"★".repeat(r.rating)}<span className="text-ink/15">{"★".repeat(5 - r.rating)}</span></p>
+                <p className="text-accent">{"★".repeat(r.rating)}<span className="text-ink/15">{"★".repeat(5 - r.rating)}</span></p>
                 <p className="mt-2 leading-relaxed">{r.comment}</p>
                 <p className="mt-3 text-sm text-muted">
                   — {r.name}

@@ -42,7 +42,7 @@ export function LoginForm({ setup }: { setup: boolean }) {
           <input type={show ? "text" : "password"} required value={confirm} onChange={(e) => setConfirm(e.target.value)} className="input" autoComplete="new-password" />
         </div>
       )}
-      {err && <p className="rounded-xl bg-rose/10 px-3 py-2 text-sm text-rose">{err}</p>}
+      {err && <p className="rounded-xl bg-danger/10 px-3 py-2 text-sm text-danger">{err}</p>}
       <button disabled={busy} className="btn btn-primary w-full py-3">
         {busy && <Loader2 className="size-4 animate-spin" />} {setup ? "Create password & enter" : "Log in"}
       </button>

@@ -11,7 +11,7 @@ export function ReviewForm({ productId, orderNumber }: { productId?: string; ord
   const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
   const [open, setOpen] = useState(Boolean(orderNumber));
 
-  if (state === "done") return <p className="rounded-2xl bg-cream p-5 text-center">Thank you so much! 💛 Your review will appear once approved.</p>;
+  if (state === "done") return <p className="rounded-2xl bg-tint p-5 text-center">Thank you so much! 💛 Your review will appear once approved.</p>;
   if (!open)
     return (
       <button onClick={() => setOpen(true)} className="btn btn-outline">
@@ -35,7 +35,7 @@ export function ReviewForm({ productId, orderNumber }: { productId?: string; ord
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
           <button type="button" key={n} onClick={() => setRating(n)} aria-label={`${n} stars`}>
-            <Star className={`size-6 ${n <= rating ? "fill-gold text-gold" : "text-ink/20"}`} />
+            <Star className={`size-6 ${n <= rating ? "fill-accent text-accent" : "text-ink/20"}`} />
           </button>
         ))}
       </div>
@@ -44,7 +44,7 @@ export function ReviewForm({ productId, orderNumber }: { productId?: string; ord
         <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City (optional)" className="input" />
       </div>
       <textarea required value={comment} onChange={(e) => setComment(e.target.value)} rows={3} placeholder="How do you like your piece?" className="input" />
-      {state === "error" && <p className="text-sm text-rose">Could not submit. Please try again.</p>}
+      {state === "error" && <p className="text-sm text-danger">Could not submit. Please try again.</p>}
       <button className="btn btn-primary" disabled={state === "busy"}>
         {state === "busy" ? "Sending…" : "Submit review"}
       </button>

@@ -11,16 +11,16 @@ export function NewsletterForm() {
     await fetch("/api/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ contact: v }) });
     setDone(true);
   };
-  if (done) return <p className="rounded-xl bg-cream/10 px-4 py-3 text-sm">Thank you! You&apos;re on the list 🌸</p>;
+  if (done) return <p className="rounded-xl bg-on-ink/10 px-4 py-3 text-sm">Thank you! You&apos;re on the list 🌸</p>;
   return (
     <form onSubmit={submit} className="flex gap-2">
       <input
         value={v}
         onChange={(e) => setV(e.target.value)}
         placeholder="Email or WhatsApp number"
-        className="min-w-0 flex-1 rounded-full border border-cream/25 bg-transparent px-4 py-2.5 text-sm text-cream placeholder:text-cream/50 outline-none focus:border-gold-2"
+        className="min-w-0 flex-1 rounded-full border border-on-ink/25 bg-transparent px-4 py-2.5 text-sm text-on-ink placeholder:text-on-ink/50 outline-none focus:border-accent-soft"
       />
-      <button className="btn btn-gold btn-sm">Join</button>
+      <button className="btn btn-accent btn-sm">Join</button>
     </form>
   );
 }

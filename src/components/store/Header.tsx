@@ -39,7 +39,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
   return (
     <>
       {announcement && (
-        <div className="relative overflow-hidden bg-ink text-cream">
+        <div className="relative overflow-hidden bg-ink text-on-ink">
           <div className="marquee flex w-max gap-16 py-2 text-[12.5px] tracking-wide">
             {Array.from({ length: 6 }).map((_, i) => (
               <span key={i}>{announcement}</span>
@@ -48,7 +48,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
         </div>
       )}
       <header
-        className={`sticky top-0 z-50 transition-all ${scrolled ? "bg-paper/90 shadow-[0_8px_30px_-12px_rgba(22,36,74,0.25)] backdrop-blur-md" : "bg-paper"}`}
+        className={`sticky top-0 z-50 transition-all ${scrolled ? "bg-canvas/90 shadow-[0_8px_30px_-12px_color-mix(in_srgb,var(--color-ink)_25%,transparent)] backdrop-blur-md" : "bg-canvas"}`}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 md:h-20 md:px-6">
           <button className="-ml-1 p-2 md:hidden" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
@@ -72,7 +72,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
                   <div className="grid w-[640px] grid-cols-3 gap-6 rounded-2xl border border-ink/10 bg-white p-6 shadow-2xl">
                     {categories.map((c) => (
                       <div key={c.id}>
-                        <Link href={`/shop?category=${c.slug}`} className="font-display text-lg font-semibold hover:text-gold">
+                        <Link href={`/shop?category=${c.slug}`} className="font-display text-lg font-semibold hover:text-accent">
                           {c.name}
                         </Link>
                         <ul className="mt-1.5 space-y-1">
@@ -86,7 +86,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
                         </ul>
                       </div>
                     ))}
-                    <Link href="/shop" className="col-span-3 mt-1 border-t border-ink/10 pt-4 text-sm font-medium text-ink-2">
+                    <Link href="/shop" className="col-span-3 mt-1 border-t border-ink/10 pt-4 text-sm font-medium text-ink-soft">
                       View all handmade pieces →
                     </Link>
                   </div>
@@ -97,7 +97,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
               <Link
                 key={n.href}
                 href={n.href}
-                className={`rounded-full px-4 py-2 text-[15px] hover:bg-ink/5 ${pathname === n.href ? "text-gold" : ""}`}
+                className={`rounded-full px-4 py-2 text-[15px] hover:bg-ink/5 ${pathname === n.href ? "text-accent" : ""}`}
               >
                 {n.label}
               </Link>
@@ -111,13 +111,13 @@ export function Header({ categories, announcement }: { categories: Category[]; a
             <Link href="/wishlist" className="relative hidden rounded-full p-2.5 hover:bg-ink/5 sm:block" aria-label="Wishlist">
               <Heart className="size-5" />
               {wishlist.length > 0 && (
-                <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-rose text-[10px] text-white">{wishlist.length}</span>
+                <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-danger text-[10px] text-white">{wishlist.length}</span>
               )}
             </Link>
             <button className="relative rounded-full p-2.5 hover:bg-ink/5" aria-label="Open bag" onClick={() => setCartOpen(true)}>
               <ShoppingBag className="size-5" />
               {cartCount > 0 && (
-                <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-ink text-[10px] text-cream">{cartCount}</span>
+                <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-ink text-[10px] text-on-ink">{cartCount}</span>
               )}
             </button>
           </div>
@@ -128,7 +128,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
       {menuOpen && (
         <div className="fixed inset-0 z-[70] md:hidden">
           <div className="absolute inset-0 bg-ink/40" onClick={() => setMenuOpen(false)} />
-          <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-sm animate-fade-up flex-col overflow-y-auto bg-paper p-5">
+          <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-sm animate-fade-up flex-col overflow-y-auto bg-canvas p-5">
             <div className="mb-6 flex items-center justify-between">
               <span className="font-display text-2xl font-semibold">Menu</span>
               <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
@@ -146,7 +146,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
                 {c.children && c.children.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {c.children.map((s) => (
-                      <Link key={s.id} href={`/shop?category=${s.slug}`} className="rounded-full bg-cream px-3 py-1 text-sm">
+                      <Link key={s.id} href={`/shop?category=${s.slug}`} className="rounded-full bg-tint px-3 py-1 text-sm">
                         {s.name}
                       </Link>
                     ))}
@@ -168,7 +168,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
             <Link href="/faq" className="border-b border-ink/10 py-3 text-lg">
               FAQs
             </Link>
-            <Link href="/gift-finder" className="btn btn-gold mt-6">
+            <Link href="/gift-finder" className="btn btn-accent mt-6">
               <Sparkles className="size-4" /> Find the perfect gift
             </Link>
           </div>

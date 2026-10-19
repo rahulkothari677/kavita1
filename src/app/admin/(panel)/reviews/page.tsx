@@ -34,7 +34,7 @@ export default function ReviewsPage() {
       />
       <div className="mb-4 flex gap-1.5">
         {(["pending", "approved"] as const).map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`rounded-full px-3.5 py-1.5 text-sm capitalize ${tab === t ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+          <button key={t} onClick={() => setTab(t)} className={`rounded-full px-3.5 py-1.5 text-sm capitalize ${tab === t ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
             {t} ({all.filter((r) => (t === "pending" ? !r.isApproved : r.isApproved)).length})
           </button>
         ))}
@@ -51,7 +51,7 @@ export default function ReviewsPage() {
             <div key={r.id} className="rounded-2xl border border-ink/[0.07] bg-white p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gold">{"★".repeat(r.rating)}<span className="text-ink/15">{"★".repeat(5 - r.rating)}</span></p>
+                  <p className="text-accent">{"★".repeat(r.rating)}<span className="text-ink/15">{"★".repeat(5 - r.rating)}</span></p>
                   <p className="mt-1 font-medium">
                     {r.name}
                     {r.city && <span className="font-normal text-muted">, {r.city}</span>}
@@ -63,7 +63,7 @@ export default function ReviewsPage() {
                 </div>
                 {r.isApproved && (
                   <button onClick={() => patch(r.id, { isFeatured: !r.isFeatured })} title="Feature on homepage" aria-label="Feature">
-                    <Star className={`size-5 ${r.isFeatured ? "fill-gold text-gold" : "text-ink/20"}`} />
+                    <Star className={`size-5 ${r.isFeatured ? "fill-accent text-accent" : "text-ink/20"}`} />
                   </button>
                 )}
               </div>
@@ -84,7 +84,7 @@ export default function ReviewsPage() {
                     await api(`/api/admin/reviews/${r.id}`, { method: "DELETE" });
                     reload();
                   }}
-                  className="ml-auto text-muted hover:text-rose"
+                  className="ml-auto text-muted hover:text-danger"
                   aria-label="Delete"
                 >
                   <Trash2 className="size-4" />
@@ -100,7 +100,7 @@ export default function ReviewsPage() {
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setF({ ...f, rating: n })} aria-label={`${n} stars`}>
-                <Star className={`size-6 ${n <= f.rating ? "fill-gold text-gold" : "text-ink/20"}`} />
+                <Star className={`size-6 ${n <= f.rating ? "fill-accent text-accent" : "text-ink/20"}`} />
               </button>
             ))}
           </div>

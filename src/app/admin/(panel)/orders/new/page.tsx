@@ -73,7 +73,7 @@ export default function NewOrderPage() {
                 <ul className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-ink/10 bg-white shadow-xl">
                   {matches.map((p) => (
                     <li key={p.id}>
-                      <button onClick={() => add(p)} className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm hover:bg-cream/50">
+                      <button onClick={() => add(p)} className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm hover:bg-tint/50">
                         <img src={imgUrl(p.images[0], 80)} alt="" className="size-9 rounded-lg object-cover" />
                         <span className="flex-1">{p.name}</span>
                         <span>{formatINR(p.price)}</span>
@@ -102,7 +102,7 @@ export default function NewOrderPage() {
               <ul className="mt-4 divide-y divide-ink/[0.06]">
                 {items.map((i, n) => (
                   <li key={n} className="flex items-center gap-3 py-2.5">
-                    {i.image ? <img src={imgUrl(i.image, 80)} alt="" className="size-10 rounded-lg object-cover" /> : <div className="size-10 rounded-lg bg-cream" />}
+                    {i.image ? <img src={imgUrl(i.image, 80)} alt="" className="size-10 rounded-lg object-cover" /> : <div className="size-10 rounded-lg bg-tint" />}
                     <span className="flex-1 text-sm">{i.name}</span>
                     <input
                       value={i.price}
@@ -119,7 +119,7 @@ export default function NewOrderPage() {
                       className="input w-16 py-1.5 text-sm"
                       aria-label="Quantity"
                     />
-                    <button onClick={() => setItems((l) => l.filter((_, k) => k !== n))} className="text-muted hover:text-rose" aria-label="Remove">
+                    <button onClick={() => setItems((l) => l.filter((_, k) => k !== n))} className="text-muted hover:text-danger" aria-label="Remove">
                       <Trash2 className="size-4" />
                     </button>
                   </li>

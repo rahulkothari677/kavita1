@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #16244a;
-  --color-ink-2: #22356b;
-  --color-ink-3: #0d1733;
-  --color-cream: #f3ead8;
-  --color-cream-2: #e9dcc3;
-  --color-paper: #fbf7ef;
-  --color-sand: #d9c7a5;
-  --color-gold: #b48a4e;
-  --color-gold-2: #d4b06a;
-  --color-mirror: #d6dee8;
-  --color-muted: #6b6a74;
-  --color-wa: #1fa855;
-  --color-rose: #b5485d;
+  /* Semantic colour tokens — the whole theme is controlled from here */
+  --color-canvas: #fbf7ef; /* page background */
+  --color-tint: #f3ead8; /* subtle tinted surface: chips, placeholders */
+  --color-tint-strong: #e9dcc3;
+  --color-ink: #16244a; /* primary text + dark surfaces + primary buttons */
+  --color-ink-soft: #22356b; /* hover of ink */
+  --color-ink-deep: #0d1733; /* deepest dark */
+  --color-on-ink: #f3ead8; /* text/lines on ink surfaces */
+  --color-accent: #b48a4e; /* brand accent */
+  --color-accent-soft: #d4b06a; /* accent on dark surfaces */
+  --color-muted: #6b6a74; /* secondary text */
+  --color-danger: #b5485d;
+  --color-wa: #1fa855; /* WhatsApp actions only */
+  --color-admin: #f6f3ec; /* admin app background */
 
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-sans: var(--font-jost), "Jost", system-ui, sans-serif;
@@ -60,7 +61,7 @@ html {
 }
 
 body {
-  background: var(--color-paper);
+  background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -68,14 +69,14 @@ body {
 
 ::selection {
   background: var(--color-ink);
-  color: var(--color-cream);
+  color: var(--color-on-ink);
 }
 
 /* Subtle paper grain for the storefront */
 .paper-grain {
   background-image:
-    radial-gradient(rgba(22, 36, 74, 0.035) 1px, transparent 1px),
-    radial-gradient(rgba(180, 138, 78, 0.04) 1px, transparent 1px);
+    radial-gradient(color-mix(in srgb, var(--color-ink) 3.5%, transparent) 1px, transparent 1px),
+    radial-gradient(color-mix(in srgb, var(--color-accent) 4%, transparent) 1px, transparent 1px);
   background-size:
     22px 22px,
     31px 31px;
@@ -114,7 +115,7 @@ body {
 .input {
   width: 100%;
   border-radius: 0.75rem;
-  border: 1px solid rgba(22, 36, 74, 0.15);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 15%, transparent);
   background: white;
   padding: 0.65rem 0.9rem;
   font-size: 0.95rem;
@@ -124,8 +125,8 @@ body {
     box-shadow 0.15s;
 }
 .input:focus {
-  border-color: var(--color-ink-2);
-  box-shadow: 0 0 0 3px rgba(34, 53, 107, 0.12);
+  border-color: var(--color-ink-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ink-soft) 12%, transparent);
 }
 .label {
   display: block;
@@ -155,19 +156,19 @@ body {
 }
 .btn-primary {
   background: var(--color-ink);
-  color: var(--color-cream);
+  color: var(--color-on-ink);
 }
 .btn-primary:hover {
-  background: var(--color-ink-2);
+  background: var(--color-ink-soft);
 }
 .btn-outline {
-  border: 1px solid rgba(22, 36, 74, 0.25);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
   color: var(--color-ink);
   background: transparent;
 }
 .btn-outline:hover {
   border-color: var(--color-ink);
-  background: rgba(22, 36, 74, 0.04);
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
 }
 .btn-wa {
   background: var(--color-wa);
@@ -176,9 +177,9 @@ body {
 .btn-wa:hover {
   filter: brightness(1.06);
 }
-.btn-gold {
-  background: linear-gradient(135deg, var(--color-gold-2), var(--color-gold));
-  color: var(--color-ink-3);
+.btn-accent {
+  background: linear-gradient(135deg, var(--color-accent-soft), var(--color-accent));
+  color: var(--color-ink-deep);
 }
 .btn-sm {
   padding: 0.45rem 0.9rem;
@@ -188,7 +189,7 @@ body {
 .card {
   background: white;
   border-radius: 1.1rem;
-  border: 1px solid rgba(22, 36, 74, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
 }
 
 .mirror-shine {

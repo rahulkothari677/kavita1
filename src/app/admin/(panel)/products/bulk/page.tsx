@@ -157,7 +157,7 @@ export default function BulkUploadPage() {
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             {items.map((it, idx) => (
-              <Panel key={it.key} className={it.status === "error" ? "ring-1 ring-rose/40" : ""}>
+              <Panel key={it.key} className={it.status === "error" ? "ring-1 ring-danger/40" : ""}>
                 <div className="flex gap-4">
                   <div className="grid w-28 shrink-0 grid-cols-2 gap-1">
                     {it.previews.map((src, n) => (
@@ -167,7 +167,7 @@ export default function BulkUploadPage() {
                   <div className="min-w-0 flex-1 space-y-2">
                     <div className="flex items-center gap-2 text-xs">
                       {it.status === "working" && (
-                        <span className="flex items-center gap-1 text-gold">
+                        <span className="flex items-center gap-1 text-accent">
                           <Loader2 className="size-3.5 animate-spin" /> {aiOn ? "AI writing…" : "Uploading…"}
                         </span>
                       )}
@@ -177,17 +177,17 @@ export default function BulkUploadPage() {
                         </span>
                       )}
                       {it.status === "error" && (
-                        <span className="flex items-center gap-1 text-rose">
+                        <span className="flex items-center gap-1 text-danger">
                           <AlertTriangle className="size-3.5" /> {it.error}
                         </span>
                       )}
                       <div className="ml-auto flex gap-1">
                         {idx > 0 && it.status === "idle" && (
-                          <button onClick={() => mergeUp(idx)} className="flex items-center gap-1 rounded-full bg-cream px-2 py-1" title="These photos are of the same piece as the previous one">
+                          <button onClick={() => mergeUp(idx)} className="flex items-center gap-1 rounded-full bg-tint px-2 py-1" title="These photos are of the same piece as the previous one">
                             <Link2 className="size-3" /> Join with previous
                           </button>
                         )}
-                        <button onClick={() => setItems((c) => c.filter((x) => x.key !== it.key))} className="rounded-full p-1 text-muted hover:text-rose" aria-label="Remove">
+                        <button onClick={() => setItems((c) => c.filter((x) => x.key !== it.key))} className="rounded-full p-1 text-muted hover:text-danger" aria-label="Remove">
                           <Trash2 className="size-3.5" />
                         </button>
                       </div>

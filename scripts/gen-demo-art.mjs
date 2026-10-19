@@ -3,14 +3,14 @@
 import { mkdirSync, writeFileSync } from "fs";
 
 const designs = [
-  { name: "mirror-mandala", bg: "#1b2a4e", base: "#f3ead8", accent: "#c9a96e", shape: "circle", rings: [8, 16, 24] },
+  { name: "mirror-mandala", bg: "#1b2a4e", base: "#1d2d55", accent: "#e8d3a3", shape: "circle", rings: [8, 16, 24] },
   { name: "peacock-lippan", bg: "#0f4c5c", base: "#f6efe2", accent: "#2a9d8f", shape: "circle", rings: [10, 20] },
   { name: "terracotta-torans", bg: "#f3ead8", base: "#b5562b", accent: "#f3ead8", shape: "arch", rings: [12, 18] },
   { name: "lotus-wall-plate", bg: "#efe6d4", base: "#7a1f3d", accent: "#f0d9a8", shape: "circle", rings: [6, 12, 18] },
-  { name: "jharokha-frame", bg: "#14213d", base: "#e9dcc3", accent: "#8a6d3b", shape: "square", rings: [12, 20] },
+  { name: "jharokha-frame", bg: "#14213d", base: "#2f5d50", accent: "#f1e4c4", shape: "square", rings: [12, 20] },
   { name: "sunburst-mirror", bg: "#f7f0e3", base: "#d99a2b", accent: "#1b2a4e", shape: "circle", rings: [12, 24, 36] },
   { name: "name-plate", bg: "#e8e0cf", base: "#1b2a4e", accent: "#f3ead8", shape: "plate", rings: [14] },
-  { name: "diya-tray", bg: "#2d1b3d", base: "#f3ead8", accent: "#c9a96e", shape: "circle", rings: [8, 14] },
+  { name: "diya-tray", bg: "#2d1b3d", base: "#5b2a5e", accent: "#f0c96a", shape: "circle", rings: [8, 14] },
 ];
 
 function mirror(x, y, r, rot, accent) {

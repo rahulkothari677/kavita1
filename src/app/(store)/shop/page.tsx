@@ -52,7 +52,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SP }) {
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b border-ink/10 bg-cream/70">
+      <section className="relative overflow-hidden border-b border-ink/10 bg-tint/70">
         <Lotus className="absolute -right-8 top-4 h-48 text-ink/[0.04]" />
         <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
           <nav className="mb-3 text-xs text-muted">
@@ -144,7 +144,7 @@ function Chip({ href, active, children, small }: { href: string; active?: boolea
       href={href}
       scroll={false}
       className={`shrink-0 rounded-full border transition ${small ? "px-3.5 py-1.5 text-[13px]" : "px-4 py-2 text-sm"} ${
-        active ? "border-ink bg-ink text-cream" : "border-ink/15 bg-white hover:border-ink/40"
+        active ? "border-ink bg-ink text-on-ink" : "border-ink/15 bg-white hover:border-ink/40"
       }`}
     >
       {children}

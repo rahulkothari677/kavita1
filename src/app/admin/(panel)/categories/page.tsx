@@ -95,11 +95,11 @@ export default function CategoriesPage() {
           {tree.map((c, i) => (
             <div key={c.id} className="overflow-hidden rounded-2xl border border-ink/[0.07] bg-white">
               <CatRow c={c} onEdit={() => openEdit(c)} onDelete={() => remove(c)} onToggle={(v) => toggle(c, v)} onUp={() => move(tree, i, -1)} onDown={() => move(tree, i, 1)} />
-              <div className="border-t border-ink/[0.05] bg-[#fbfaf6]">
+              <div className="border-t border-ink/[0.05] bg-tint/30">
                 {c.children?.map((s, j) => (
                   <CatRow key={s.id} c={s} sub onEdit={() => openEdit(s)} onDelete={() => remove(s)} onToggle={(v) => toggle(s, v)} onUp={() => move(c.children!, j, -1)} onDown={() => move(c.children!, j, 1)} />
                 ))}
-                <button onClick={() => openNew(c.id)} className="flex w-full items-center gap-2 px-5 py-3 pl-14 text-sm text-ink-2 hover:bg-cream/40">
+                <button onClick={() => openNew(c.id)} className="flex w-full items-center gap-2 px-5 py-3 pl-14 text-sm text-ink-soft hover:bg-tint/40">
                   <Plus className="size-4" /> Add sub-category to {c.name}
                 </button>
               </div>
@@ -112,7 +112,7 @@ export default function CategoriesPage() {
         {edit && (
           <div className="space-y-4">
             <div className="flex gap-4">
-              <label className="relative grid size-24 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink/15 bg-cream/40">
+              <label className="relative grid size-24 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink/15 bg-tint/40">
                 {uploading ? <Loader2 className="size-5 animate-spin" /> : edit.image ? <img src={imgUrl(edit.image, 200)} alt="" className="size-full object-cover" /> : <ImagePlus className="size-6 text-ink/40" />}
                 <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files)} />
               </label>
@@ -184,7 +184,7 @@ function CatRow({ c, sub, onEdit, onDelete, onToggle, onUp, onDown }: { c: Categ
         <button onClick={onEdit} className="grid size-8 place-items-center rounded-full hover:bg-ink/5" aria-label="Edit">
           <Pencil className="size-4" />
         </button>
-        <button onClick={onDelete} className="grid size-8 place-items-center rounded-full text-rose/80 hover:bg-rose/10" aria-label="Delete">
+        <button onClick={onDelete} className="grid size-8 place-items-center rounded-full text-danger/80 hover:bg-danger/10" aria-label="Delete">
           <Trash2 className="size-4" />
         </button>
       </div>

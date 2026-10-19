@@ -32,8 +32,8 @@ export function QuickView() {
   return (
     <div className="fixed inset-0 z-[88] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-ink/50 backdrop-blur-[3px]" onClick={close} />
-      <div className="relative grid w-full max-w-4xl animate-fade-up overflow-hidden rounded-[1.75rem] bg-paper shadow-2xl md:grid-cols-2">
-        <button onClick={close} className="absolute right-4 top-4 z-10 grid size-10 place-items-center rounded-full bg-paper/90 shadow" aria-label="Close">
+      <div className="relative grid w-full max-w-4xl animate-fade-up overflow-hidden rounded-[1.75rem] bg-canvas shadow-2xl md:grid-cols-2">
+        <button onClick={close} className="absolute right-4 top-4 z-10 grid size-10 place-items-center rounded-full bg-canvas/90 shadow" aria-label="Close">
           <X className="size-5" />
         </button>
         {!p ? (
@@ -42,7 +42,7 @@ export function QuickView() {
           </div>
         ) : (
           <>
-            <div className="relative bg-cream">
+            <div className="relative bg-tint">
               <img src={imgUrl(p.images[img], 900)} alt={p.name} className="aspect-square w-full object-cover" />
               {p.images.length > 1 && (
                 <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5">

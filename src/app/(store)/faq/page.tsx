@@ -15,7 +15,7 @@ export default async function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 md:py-20">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <p className="text-center text-[12px] tracking-[0.3em] text-gold uppercase">Help</p>
+      <p className="text-center text-[12px] tracking-[0.3em] text-accent uppercase">Help</p>
       <h1 className="mt-2 text-center font-display text-5xl md:text-6xl">Questions, answered</h1>
       <div className="mt-12 divide-y divide-ink/10 border-y border-ink/10">
         {s.faqs.map((f, i) => (
@@ -28,7 +28,7 @@ export default async function FaqPage() {
           </details>
         ))}
       </div>
-      <div className="mt-12 rounded-3xl bg-cream p-8 text-center">
+      <div className="mt-12 rounded-3xl bg-tint p-8 text-center">
         <p className="font-display text-3xl">Still curious?</p>
         <p className="mt-2 text-muted">Kavita replies personally — usually within a few hours.</p>
         <a href={waLink(s.whatsappNumber, "Hi! I have a question 🌸")} target="_blank" rel="noreferrer" className="btn btn-wa mt-5">

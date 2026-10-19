@@ -3,15 +3,15 @@ import type { InValue } from "@libsql/client";
 type SeedCat = { id: string; name: string; slug: string; parentId: string | null; description: string; image: string | null };
 
 export const SEED_CATEGORIES: SeedCat[] = [
-  { id: "cat_wall", name: "Wall Decor", slug: "wall-decor", parentId: null, description: "Lippan art, mandalas and hand-painted pieces that turn walls into stories.", image: "/demo/mirror-mandala.svg" },
-  { id: "cat_lippan", name: "Lippan Art", slug: "lippan-art", parentId: "cat_wall", description: "Traditional Kutch mud-and-mirror work, hand-sculpted one mirror at a time.", image: "/demo/peacock-lippan.svg" },
-  { id: "cat_plates", name: "Wall Plates & Mandalas", slug: "wall-plates-mandalas", parentId: "cat_wall", description: "Decorative plates and mandalas in every colour.", image: "/demo/lotus-wall-plate.svg" },
-  { id: "cat_home", name: "Home Accents", slug: "home-accents", parentId: null, description: "Little handmade pieces – trays, frames, mirrors and more – for everyday joy.", image: "/demo/jharokha-frame.svg" },
-  { id: "cat_frames", name: "Mirrors & Frames", slug: "mirrors-frames", parentId: "cat_home", description: "Statement frames and mirror-work pieces.", image: "/demo/jharokha-frame.svg" },
-  { id: "cat_trays", name: "Trays & Coasters", slug: "trays-coasters", parentId: "cat_home", description: "Useful and beautiful – for serving, pooja and gifting.", image: "/demo/diya-tray.svg" },
-  { id: "cat_festive", name: "Festive & Pooja", slug: "festive-pooja", parentId: null, description: "Torans, diya trays and festive decor for every celebration.", image: "/demo/terracotta-torans.svg" },
-  { id: "cat_custom", name: "Custom & Personalised", slug: "custom-personalised", parentId: null, description: "Name plates, gifts and made-to-order pieces designed just for you.", image: "/demo/name-plate.svg" },
-  { id: "cat_nameplates", name: "Name Plates", slug: "name-plates", parentId: "cat_custom", description: "Hand-lettered name plates for your home.", image: "/demo/name-plate.svg" },
+  { id: "cat_wall", name: "Wall Decor", slug: "wall-decor", parentId: null, description: "Lippan art, mandalas and hand-painted pieces that turn walls into stories.", image: "/demo/photos/mirror-mandala.webp" },
+  { id: "cat_lippan", name: "Lippan Art", slug: "lippan-art", parentId: "cat_wall", description: "Traditional Kutch mud-and-mirror work, hand-sculpted one mirror at a time.", image: "/demo/photos/peacock-lippan.webp" },
+  { id: "cat_plates", name: "Wall Plates & Mandalas", slug: "wall-plates-mandalas", parentId: "cat_wall", description: "Decorative plates and mandalas in every colour.", image: "/demo/photos/lotus-wall-plate.webp" },
+  { id: "cat_home", name: "Home Accents", slug: "home-accents", parentId: null, description: "Little handmade pieces – trays, frames, mirrors and more – for everyday joy.", image: "/demo/photos/jharokha-frame.webp" },
+  { id: "cat_frames", name: "Mirrors & Frames", slug: "mirrors-frames", parentId: "cat_home", description: "Statement frames and mirror-work pieces.", image: "/demo/photos/jharokha-frame.webp" },
+  { id: "cat_trays", name: "Trays & Coasters", slug: "trays-coasters", parentId: "cat_home", description: "Useful and beautiful – for serving, pooja and gifting.", image: "/demo/photos/diya-tray.webp" },
+  { id: "cat_festive", name: "Festive & Pooja", slug: "festive-pooja", parentId: null, description: "Torans, diya trays and festive decor for every celebration.", image: "/demo/photos/terracotta-torans.webp" },
+  { id: "cat_custom", name: "Custom & Personalised", slug: "custom-personalised", parentId: null, description: "Name plates, gifts and made-to-order pieces designed just for you.", image: "/demo/photos/name-plate.webp" },
+  { id: "cat_nameplates", name: "Name Plates", slug: "name-plates", parentId: "cat_custom", description: "Hand-lettered name plates for your home.", image: "/demo/photos/name-plate.webp" },
 ];
 
 type Demo = {
@@ -153,7 +153,7 @@ export function seedDemoProducts(now: string): { sql: string; args: InValue[] }[
         d.cat,
         d.price,
         d.compare ?? null,
-        JSON.stringify([`/demo/${d.img}.svg`]),
+        JSON.stringify([`/demo/photos/${d.img}.webp`, `/demo/photos/${d.img}-detail.webp`]),
         d.short,
         description,
         d.size,

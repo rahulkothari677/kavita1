@@ -78,7 +78,7 @@ export default function Dashboard() {
         </div>
         <div className="flex rounded-full bg-white p-1 text-sm shadow-sm">
           {[7, 30, 90].map((d) => (
-            <button key={d} onClick={() => setDays(d)} className={`rounded-full px-3.5 py-1.5 ${days === d ? "bg-ink text-cream" : "text-muted"}`}>
+            <button key={d} onClick={() => setDays(d)} className={`rounded-full px-3.5 py-1.5 ${days === d ? "bg-ink text-on-ink" : "text-muted"}`}>
               {d}d
             </button>
           ))}
@@ -86,8 +86,8 @@ export default function Dashboard() {
       </div>
 
       {s.demoProducts > 0 && (
-        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gold/30 bg-gold-2/15 p-4 text-sm">
-          <Sparkles className="size-5 text-gold" />
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-accent/30 bg-accent-soft/15 p-4 text-sm">
+          <Sparkles className="size-5 text-accent" />
           <p className="flex-1">
             Your shop has <b>{s.demoProducts} demo products</b> so it doesn&apos;t look empty. Add your own pieces, then remove the demos.
           </p>
@@ -121,8 +121,8 @@ export default function Dashboard() {
           <div className="flex h-48 items-end gap-[3px]">
             {s.daily.map((d) => (
               <div key={d.date} className="group relative flex h-full flex-1 items-end">
-                <div className="w-full rounded-t-md bg-ink/80 transition group-hover:bg-gold" style={{ height: `${Math.max(2, (d.revenue / max) * 100)}%`, opacity: d.revenue ? 1 : 0.15 }} />
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2.5 py-1.5 text-xs text-cream group-hover:block">
+                <div className="w-full rounded-t-md bg-ink/80 transition group-hover:bg-accent" style={{ height: `${Math.max(2, (d.revenue / max) * 100)}%`, opacity: d.revenue ? 1 : 0.15 }} />
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2.5 py-1.5 text-xs text-on-ink group-hover:block">
                   {new Date(d.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })} · {formatINR(d.revenue)} · {d.orders} orders
                 </div>
               </div>
@@ -137,7 +137,7 @@ export default function Dashboard() {
         <Panel
           title={
             <span className="flex items-center gap-2">
-              <Sparkles className="size-4 text-gold" /> AI business coach
+              <Sparkles className="size-4 text-accent" /> AI business coach
             </span>
           }
         >
@@ -160,7 +160,7 @@ export default function Dashboard() {
               )}
               <div className="space-y-2">
                 {insights.actions.map((a, i) => (
-                  <div key={i} className="rounded-xl bg-cream/60 p-3">
+                  <div key={i} className="rounded-xl bg-tint/60 p-3">
                     <p className="font-medium">
                       {i + 1}. {a.title}
                     </p>
@@ -173,7 +173,7 @@ export default function Dashboard() {
                   <AlertTriangle className="mt-0.5 size-4 shrink-0" /> {w}
                 </p>
               ))}
-              <p className="rounded-xl border border-gold/30 p-3">🪔 {insights.festivalTip}</p>
+              <p className="rounded-xl border border-accent/30 p-3">🪔 {insights.festivalTip}</p>
               <button onClick={runInsights} disabled={aiBusy} className="text-xs text-muted underline">
                 Refresh
               </button>
@@ -183,7 +183,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Panel title="Orders waiting for you" action={<Link href="/admin/orders" className="text-sm text-ink-2">View all</Link>}>
+        <Panel title="Orders waiting for you" action={<Link href="/admin/orders" className="text-sm text-ink-soft">View all</Link>}>
           {s.pendingOrders.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted">All caught up! 🎉</p>
           ) : (
@@ -191,7 +191,7 @@ export default function Dashboard() {
               {s.pendingOrders.map((o) => (
                 <li key={o.id}>
                   <Link href={`/admin/orders/${o.id}`} className="flex items-center gap-3 py-3">
-                    <div className="grid size-10 place-items-center rounded-full bg-cream font-display text-lg">{o.customerName[0]}</div>
+                    <div className="grid size-10 place-items-center rounded-full bg-tint font-display text-lg">{o.customerName[0]}</div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium">{o.customerName}</p>
                       <p className="text-xs text-muted">
@@ -216,7 +216,7 @@ export default function Dashboard() {
             <ul className="space-y-3">
               {s.topProducts.map((p, i) => (
                 <li key={p.id} className="flex items-center gap-3 text-sm">
-                  <span className="w-5 font-display text-lg text-gold">{i + 1}</span>
+                  <span className="w-5 font-display text-lg text-accent">{i + 1}</span>
                   <Link href={`/admin/products/${p.id}`} className="flex-1 truncate hover:underline">
                     {p.name}
                   </Link>
@@ -266,7 +266,7 @@ export default function Dashboard() {
                   <Link href={`/admin/products/${p.id}`} className="flex-1 truncate hover:underline">
                     {p.name}
                   </Link>
-                  <span className={p.stock === 0 ? "font-medium text-rose" : "text-amber-700"}>{p.stock === 0 ? "Sold out" : `${p.stock} left`}</span>
+                  <span className={p.stock === 0 ? "font-medium text-danger" : "text-amber-700"}>{p.stock === 0 ? "Sold out" : `${p.stock} left`}</span>
                 </li>
               ))}
             </ul>
@@ -292,7 +292,7 @@ function Kpi({ icon: Icon, label, value, delta, sub }: { icon: React.ElementType
       </div>
       <p className="mt-2 font-display text-[28px] leading-none font-semibold md:text-[32px]">{value}</p>
       {delta !== undefined ? (
-        <p className={`mt-2 flex items-center gap-0.5 text-xs ${delta >= 0 ? "text-emerald-600" : "text-rose"}`}>
+        <p className={`mt-2 flex items-center gap-0.5 text-xs ${delta >= 0 ? "text-emerald-600" : "text-danger"}`}>
           {delta >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />} {Math.abs(delta)}% vs previous
         </p>
       ) : (
@@ -321,7 +321,7 @@ function ActionCard({ href, n, label, tone }: { href: string; n: number; label: 
 function QuickLink({ href, icon: Icon, title, text }: { href: string; icon: React.ElementType; title: string; text: string }) {
   return (
     <Link href={href} className="flex items-center gap-3 rounded-2xl border border-ink/[0.07] bg-white p-4 transition hover:shadow-md">
-      <span className="grid size-10 place-items-center rounded-xl bg-cream">
+      <span className="grid size-10 place-items-center rounded-xl bg-tint">
         <Icon className="size-5" />
       </span>
       <span>

@@ -21,9 +21,9 @@ export function FloatingActions() {
         {showAi && !assistantOpen && (
           <button
             onClick={() => setAssistantOpen(true)}
-            className="group hidden items-center gap-2 rounded-full bg-ink py-3 pl-3.5 pr-4 text-cream md:flex shadow-[0_12px_30px_-8px_rgba(22,36,74,0.6)] transition hover:-translate-y-0.5"
+            className="group hidden items-center gap-2 rounded-full bg-ink py-3 pl-3.5 pr-4 text-on-ink md:flex shadow-[0_12px_30px_-8px_color-mix(in_srgb,var(--color-ink)_60%,transparent)] transition hover:-translate-y-0.5"
           >
-            <span className="grid size-7 place-items-center rounded-full bg-gold-2/90 text-ink">
+            <span className="grid size-7 place-items-center rounded-full bg-accent-soft/90 text-ink">
               <Sparkles className="size-4" />
             </span>
             <span className="text-sm font-medium">Ask {settings.aiAssistantName}</span>
@@ -81,23 +81,23 @@ function AssistantPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[90] flex items-end justify-end md:inset-auto md:bottom-7 md:right-7">
       <div className="absolute inset-0 bg-ink/30 md:hidden" onClick={onClose} />
-      <div className="relative flex h-[85vh] w-full animate-fade-up flex-col overflow-hidden rounded-t-3xl bg-paper shadow-2xl md:h-[620px] md:w-[400px] md:rounded-3xl">
-        <div className="flex items-center gap-3 bg-ink px-5 py-4 text-cream">
-          <span className="grid size-10 place-items-center rounded-full bg-gold-2 text-ink">
+      <div className="relative flex h-[85vh] w-full animate-fade-up flex-col overflow-hidden rounded-t-3xl bg-canvas shadow-2xl md:h-[620px] md:w-[400px] md:rounded-3xl">
+        <div className="flex items-center gap-3 bg-ink px-5 py-4 text-on-ink">
+          <span className="grid size-10 place-items-center rounded-full bg-accent-soft text-ink">
             <Sparkles className="size-5" />
           </span>
           <div className="flex-1">
             <p className="font-display text-xl font-semibold leading-none">{settings.aiAssistantName}</p>
-            <p className="mt-1 text-xs text-cream/70">AI gift & decor helper</p>
+            <p className="mt-1 text-xs text-on-ink/70">AI gift & decor helper</p>
           </div>
-          <button onClick={onClose} aria-label="Close assistant" className="rounded-full p-2 hover:bg-cream/10">
+          <button onClick={onClose} aria-label="Close assistant" className="rounded-full p-2 hover:bg-on-ink/10">
             <X className="size-5" />
           </button>
         </div>
         <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
           {msgs.map((m, i) => (
             <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
-              <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === "user" ? "bg-ink text-cream" : "bg-white shadow-sm"}`}>
+              <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${m.role === "user" ? "bg-ink text-on-ink" : "bg-white shadow-sm"}`}>
                 {m.content}
               </div>
               {m.products && m.products.length > 0 && (
@@ -146,7 +146,7 @@ function AssistantPanel({ onClose }: { onClose: () => void }) {
           className="flex gap-2 border-t border-ink/10 bg-white p-3"
         >
           <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask anything…" className="input rounded-full" />
-          <button className="grid size-11 shrink-0 place-items-center rounded-full bg-ink text-cream disabled:opacity-50" disabled={busy || !input.trim()} aria-label="Send">
+          <button className="grid size-11 shrink-0 place-items-center rounded-full bg-ink text-on-ink disabled:opacity-50" disabled={busy || !input.trim()} aria-label="Send">
             <Send className="size-4" />
           </button>
         </form>

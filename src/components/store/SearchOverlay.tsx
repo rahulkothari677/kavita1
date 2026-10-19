@@ -73,7 +73,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
   const catHits = q.trim().length >= 2 ? flat.filter((c) => c.name.toLowerCase().includes(q.trim().toLowerCase())).slice(0, 4) : [];
 
   return (
-    <div className="fixed inset-0 z-[85] bg-paper/98 backdrop-blur-xl">
+    <div className="fixed inset-0 z-[85] bg-canvas/98 backdrop-blur-xl">
       <div className="mx-auto max-w-3xl px-4 pt-5 md:pt-14">
         <form
           onSubmit={(e) => {
@@ -115,7 +115,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
                 <p className="mb-3 text-xs tracking-[0.25em] text-muted uppercase">Popular</p>
                 <div className="flex flex-wrap gap-2">
                   {POPULAR.map((r) => (
-                    <button key={r} onClick={() => (r.startsWith("Under") ? (onClose(), router.push("/shop?price=0-999")) : go(r))} className="rounded-full bg-cream px-3.5 py-1.5 text-sm hover:bg-cream-2">
+                    <button key={r} onClick={() => (r.startsWith("Under") ? (onClose(), router.push("/shop?price=0-999")) : go(r))} className="rounded-full bg-tint px-3.5 py-1.5 text-sm hover:bg-tint-strong">
                       {r}
                     </button>
                   ))}
@@ -138,12 +138,12 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
                     onClose();
                     setAssistantOpen(true);
                   }}
-                  className="flex w-full items-center gap-3 rounded-2xl bg-ink p-4 text-left text-cream"
+                  className="flex w-full items-center gap-3 rounded-2xl bg-ink p-4 text-left text-on-ink"
                 >
-                  <Sparkles className="size-5 text-gold-2" />
+                  <Sparkles className="size-5 text-accent-soft" />
                   <span className="flex-1">
                     <span className="block font-medium">Not sure what you&apos;re looking for?</span>
-                    <span className="text-sm text-cream/70">Describe it to {settings.aiAssistantName}, our AI helper</span>
+                    <span className="text-sm text-on-ink/70">Describe it to {settings.aiAssistantName}, our AI helper</span>
                   </span>
                   <ArrowRight className="size-4" />
                 </button>
@@ -154,7 +154,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
               {catHits.length > 0 && (
                 <div className="mb-6 flex flex-wrap gap-2">
                   {catHits.map((c) => (
-                    <Link key={c.id} href={`/shop?category=${c.slug}`} onClick={onClose} className="rounded-full bg-cream px-3.5 py-1.5 text-sm">
+                    <Link key={c.id} href={`/shop?category=${c.slug}`} onClick={onClose} className="rounded-full bg-tint px-3.5 py-1.5 text-sm">
                       in <b>{c.name}</b>
                     </Link>
                   ))}
@@ -163,7 +163,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
               {loading && hits.length === 0 ? (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="aspect-square animate-pulse rounded-2xl bg-cream" />
+                    <div key={i} className="aspect-square animate-pulse rounded-2xl bg-tint" />
                   ))}
                 </div>
               ) : hits.length === 0 ? (

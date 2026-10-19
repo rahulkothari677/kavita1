@@ -11,7 +11,7 @@ const STEPS: { key: OrderStatus; label: string; desc: string }[] = [
 ];
 
 export function OrderTimeline({ status, history }: { status: OrderStatus; history: { status: string; at: string }[] }) {
-  if (status === "CANCELLED") return <p className="rounded-2xl bg-rose/10 p-4 text-center text-rose">This order was cancelled. Message us on WhatsApp if this is unexpected.</p>;
+  if (status === "CANCELLED") return <p className="rounded-2xl bg-danger/10 p-4 text-center text-danger">This order was cancelled. Message us on WhatsApp if this is unexpected.</p>;
   const idx = STEPS.findIndex((s) => s.key === status);
   return (
     <ol className="relative grid grid-cols-5 gap-1">

@@ -31,7 +31,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <div className="paper-grain min-h-screen pb-16 md:pb-0">
         <Header categories={categories} announcement={settings.announcementActive ? settings.announcement : null} />
         {!settings.acceptingOrders && (
-          <div className="bg-gold-2/30 px-4 py-2.5 text-center text-sm text-ink">{settings.vacationMessage}</div>
+          <div className="bg-accent-soft/30 px-4 py-2.5 text-center text-sm text-ink">{settings.vacationMessage}</div>
         )}
         <main>{children}</main>
         <Footer settings={settings} categories={categories} />

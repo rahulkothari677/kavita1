@@ -33,7 +33,7 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-[75]">
       <div className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]" onClick={() => setCartOpen(false)} />
-      <aside className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-paper shadow-2xl animate-fade-up">
+      <aside className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-canvas shadow-2xl animate-fade-up">
         <div className="flex items-center justify-between border-b border-ink/10 px-5 py-4">
           <h2 className="font-display text-2xl font-semibold">Your bag</h2>
           <button onClick={() => setCartOpen(false)} aria-label="Close bag" className="rounded-full p-2 hover:bg-ink/5">
@@ -43,7 +43,7 @@ export function CartDrawer() {
 
         {cart.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <div className="grid size-20 place-items-center rounded-full bg-cream">
+            <div className="grid size-20 place-items-center rounded-full bg-tint">
               <ShoppingBag className="size-8 text-ink/60" />
             </div>
             <p className="font-display text-2xl">Your bag is empty</p>
@@ -63,8 +63,8 @@ export function CartDrawer() {
                 ) : (
                   <p>🎉 You&apos;ve unlocked <b>free shipping</b>!</p>
                 )}
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-cream-2">
-                  <div className="h-full rounded-full bg-gold transition-all" style={{ width: `${pct}%` }} />
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint-strong">
+                  <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${pct}%` }} />
                 </div>
               </div>
             )}
@@ -72,14 +72,14 @@ export function CartDrawer() {
               {cart.map((l) => (
                 <li key={l.productId} className="flex gap-4 py-4">
                   <Link href={`/product/${l.slug}`} onClick={() => setCartOpen(false)} className="shrink-0">
-                    <img src={imgUrl(l.image, 200)} alt={l.name} className="size-20 rounded-xl bg-cream object-cover" />
+                    <img src={imgUrl(l.image, 200)} alt={l.name} className="size-20 rounded-xl bg-tint object-cover" />
                   </Link>
                   <div className="min-w-0 flex-1">
                     <div className="flex justify-between gap-2">
                       <Link href={`/product/${l.slug}`} onClick={() => setCartOpen(false)} className="font-medium leading-snug">
                         {l.name}
                       </Link>
-                      <button onClick={() => removeFromCart(l.productId)} className="text-muted hover:text-rose" aria-label="Remove">
+                      <button onClick={() => removeFromCart(l.productId)} className="text-muted hover:text-danger" aria-label="Remove">
                         <Trash2 className="size-4" />
                       </button>
                     </div>
@@ -106,12 +106,12 @@ export function CartDrawer() {
                     {pairs.map((p) => (
                       <div key={p.id} className="text-center">
                         <Link href={`/product/${p.slug}`} onClick={() => setCartOpen(false)}>
-                          <img src={imgUrl(p.images[0], 200)} alt={p.name} className="aspect-square w-full rounded-xl bg-cream object-cover" />
+                          <img src={imgUrl(p.images[0], 200)} alt={p.name} className="aspect-square w-full rounded-xl bg-tint object-cover" />
                         </Link>
                         <p className="mt-1.5 line-clamp-1 text-xs">{p.name}</p>
                         <button
                           onClick={() => addToCart({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0] ?? null, price: p.price, maxQty: p.madeToOrder ? 20 : p.stock })}
-                          className="mt-1 text-xs font-medium text-ink-2 underline-offset-2 hover:underline"
+                          className="mt-1 text-xs font-medium text-ink-soft underline-offset-2 hover:underline"
                         >
                           + Add · {formatINR(p.price)}
                         </button>

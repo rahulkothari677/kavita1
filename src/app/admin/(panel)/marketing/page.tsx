@@ -69,7 +69,7 @@ export default function MarketingPage() {
               const expired = cp.expiresAt && new Date(cp.expiresAt).getTime() < Date.now();
               return (
                 <li key={cp.id} className="flex items-center gap-3 py-3">
-                  <span className="rounded-lg border border-dashed border-gold bg-gold-2/10 px-3 py-1 font-mono text-sm font-semibold">{cp.code}</span>
+                  <span className="rounded-lg border border-dashed border-accent bg-accent-soft/10 px-3 py-1 font-mono text-sm font-semibold">{cp.code}</span>
                   <div className="flex-1 text-sm">
                     <p>
                       {cp.type === "PERCENT" ? `${cp.value}% off` : `${formatINR(cp.value)} off`}
@@ -85,7 +85,7 @@ export default function MarketingPage() {
                       await api(`/api/admin/coupons/${cp.id}`, { method: "DELETE" });
                       reload();
                     }}
-                    className="text-muted hover:text-rose"
+                    className="text-muted hover:text-danger"
                     aria-label="Delete"
                   >
                     <Trash2 className="size-4" />
@@ -100,7 +100,7 @@ export default function MarketingPage() {
       <Panel
         title={
           <span className="flex items-center gap-2">
-            <Sparkles className="size-4 text-gold" /> AI campaign planner
+            <Sparkles className="size-4 text-accent" /> AI campaign planner
           </span>
         }
       >
@@ -112,16 +112,16 @@ export default function MarketingPage() {
         </div>
         {camp && (
           <div className="mt-5 space-y-4">
-            <div className="rounded-2xl bg-ink p-5 text-cream">
-              <p className="text-xs tracking-[0.25em] text-gold-2 uppercase">Campaign</p>
+            <div className="rounded-2xl bg-ink p-5 text-on-ink">
+              <p className="text-xs tracking-[0.25em] text-accent-soft uppercase">Campaign</p>
               <p className="mt-1 font-display text-3xl">{camp.theme}</p>
-              <p className="mt-2 text-sm text-cream/80">{camp.offerIdea}</p>
+              <p className="mt-2 text-sm text-on-ink/80">{camp.offerIdea}</p>
               <button
                 onClick={() => {
                   setC({ ...c, code: camp.couponCode });
                   setOpen(true);
                 }}
-                className="btn btn-gold btn-sm mt-3"
+                className="btn btn-accent btn-sm mt-3"
               >
                 Create code {camp.couponCode}
               </button>
@@ -129,7 +129,7 @@ export default function MarketingPage() {
             <CopyBlock title="WhatsApp broadcast" text={camp.whatsappBroadcast} onCopy={copy} />
             <CopyBlock title="Instagram post" text={camp.instagramPost} onCopy={copy} />
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-xl bg-cream/50 p-4 text-sm">
+              <div className="rounded-xl bg-tint/50 p-4 text-sm">
                 <p className="font-medium">Feature these pieces</p>
                 <ul className="mt-2 list-inside list-disc text-muted">
                   {camp.productPicks.map((p) => (
@@ -137,7 +137,7 @@ export default function MarketingPage() {
                   ))}
                 </ul>
               </div>
-              <div className="rounded-xl bg-cream/50 p-4 text-sm">
+              <div className="rounded-xl bg-tint/50 p-4 text-sm">
                 <p className="font-medium">Reel & story ideas</p>
                 <ul className="mt-2 list-inside list-disc text-muted">
                   {camp.contentIdeas.map((p) => (
@@ -156,7 +156,7 @@ export default function MarketingPage() {
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2">
             {subs.subscribers.map((s) => (
-              <li key={s.id} className="flex justify-between rounded-xl bg-cream/40 px-3 py-2 text-sm">
+              <li key={s.id} className="flex justify-between rounded-xl bg-tint/40 px-3 py-2 text-sm">
                 <span>{s.contact}</span>
                 <span className="text-xs text-muted">{timeAgo(s.createdAt)}</span>
               </li>
@@ -206,7 +206,7 @@ function CopyBlock({ title, text, onCopy }: { title: string; text: string; onCop
     <div className="rounded-xl border border-ink/10 p-4">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium">{title}</p>
-        <button onClick={() => onCopy(text)} className="flex items-center gap-1 text-xs text-ink-2">
+        <button onClick={() => onCopy(text)} className="flex items-center gap-1 text-xs text-ink-soft">
           <Copy className="size-3.5" /> Copy
         </button>
       </div>

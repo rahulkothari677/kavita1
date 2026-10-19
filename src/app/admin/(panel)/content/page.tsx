@@ -57,7 +57,7 @@ export default function ContentPage() {
         <div className="space-y-5">
           {slides.map((sl, i) => (
             <div key={sl.id} className="grid gap-4 rounded-2xl border border-ink/10 p-4 md:grid-cols-[160px_1fr]">
-              <label className="relative grid aspect-square cursor-pointer place-items-center overflow-hidden rounded-full border-2 border-dashed border-ink/15 bg-cream/40">
+              <label className="relative grid aspect-square cursor-pointer place-items-center overflow-hidden rounded-full border-2 border-dashed border-ink/15 bg-tint/40">
                 {uploading === sl.id ? <Loader2 className="size-5 animate-spin" /> : sl.image ? <img src={imgUrl(sl.image, 400)} alt="" className="size-full object-cover" /> : <span className="flex flex-col items-center gap-1 text-xs text-muted"><ImagePlus className="size-6" /> Logo shown</span>}
                 <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files, (url) => setSlide(i, { image: url }), sl.id)} />
               </label>
@@ -74,7 +74,7 @@ export default function ContentPage() {
                   <button onClick={() => moveSlide(i, 1)} className="grid size-8 place-items-center rounded-full hover:bg-ink/5" aria-label="Move down"><ArrowDown className="size-4" /></button>
                   {sl.image && <button onClick={() => setSlide(i, { image: "" })} className="text-xs text-muted underline">Remove image</button>}
                   {slides.length > 1 && (
-                    <button onClick={() => set("heroSlides", slides.filter((_, n) => n !== i))} className="ml-auto grid size-8 place-items-center rounded-full text-rose hover:bg-rose/10" aria-label="Delete slide"><Trash2 className="size-4" /></button>
+                    <button onClick={() => set("heroSlides", slides.filter((_, n) => n !== i))} className="ml-auto grid size-8 place-items-center rounded-full text-danger hover:bg-danger/10" aria-label="Delete slide"><Trash2 className="size-4" /></button>
                   )}
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default function ContentPage() {
 
       <Panel title="About / Our story">
         <div className="grid gap-4 md:grid-cols-[160px_1fr]">
-          <label className="relative grid aspect-[4/5] cursor-pointer place-items-center overflow-hidden rounded-t-full rounded-b-2xl border-2 border-dashed border-ink/15 bg-cream/40">
+          <label className="relative grid aspect-[4/5] cursor-pointer place-items-center overflow-hidden rounded-t-full rounded-b-2xl border-2 border-dashed border-ink/15 bg-tint/40">
             {uploading === "artist" ? <Loader2 className="size-5 animate-spin" /> : s.artistImage ? <img src={imgUrl(s.artistImage, 400)} alt="" className="size-full object-cover" /> : <span className="flex flex-col items-center gap-1 px-2 text-center text-xs text-muted"><ImagePlus className="size-6" /> Your photo</span>}
             <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files, (url) => set("artistImage", url), "artist")} />
           </label>
@@ -107,7 +107,7 @@ export default function ContentPage() {
                 <input value={f.q} onChange={(e) => set("faqs", s.faqs.map((x, n) => (n === i ? { ...x, q: e.target.value } : x)))} placeholder="Question" className="input font-medium" />
                 <textarea value={f.a} onChange={(e) => set("faqs", s.faqs.map((x, n) => (n === i ? { ...x, a: e.target.value } : x)))} placeholder="Answer" rows={2} className="input text-sm" />
               </div>
-              <button onClick={() => set("faqs", s.faqs.filter((_, n) => n !== i))} className="self-start p-2 text-muted hover:text-rose" aria-label="Delete FAQ"><Trash2 className="size-4" /></button>
+              <button onClick={() => set("faqs", s.faqs.filter((_, n) => n !== i))} className="self-start p-2 text-muted hover:text-danger" aria-label="Delete FAQ"><Trash2 className="size-4" /></button>
             </div>
           ))}
         </div>

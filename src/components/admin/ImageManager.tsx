@@ -57,10 +57,10 @@ export function ImageManager({ images, onChange, onNewFiles }: { images: string[
               if (dragIdx !== null) move(dragIdx, i);
               setDragIdx(null);
             }}
-            className={`group relative aspect-square overflow-hidden rounded-xl bg-cream ${i === 0 ? "ring-2 ring-gold" : ""}`}
+            className={`group relative aspect-square overflow-hidden rounded-xl bg-tint ${i === 0 ? "ring-2 ring-accent" : ""}`}
           >
             <img src={imgUrl(src, 300)} alt="" className="size-full object-cover" />
-            {i === 0 && <span className="absolute left-1.5 top-1.5 rounded-full bg-gold px-2 py-0.5 text-[10px] font-semibold text-white">COVER</span>}
+            {i === 0 && <span className="absolute left-1.5 top-1.5 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-white">COVER</span>}
             <div className="absolute inset-x-0 bottom-0 flex justify-between bg-gradient-to-t from-black/60 to-transparent p-1.5 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
               <div className="flex gap-1">
                 <IconBtn label="Move left" onClick={() => move(i, i - 1)}>
@@ -84,7 +84,7 @@ export function ImageManager({ images, onChange, onNewFiles }: { images: string[
           </div>
         ))}
         {Array.from({ length: uploading }).map((_, i) => (
-          <div key={`u${i}`} className="grid aspect-square place-items-center rounded-xl bg-cream">
+          <div key={`u${i}`} className="grid aspect-square place-items-center rounded-xl bg-tint">
             <Loader2 className="size-6 animate-spin text-ink/40" />
           </div>
         ))}

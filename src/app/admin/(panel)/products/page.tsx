@@ -101,14 +101,14 @@ export default function ProductsPage() {
       </div>
       <div className="no-scrollbar mb-4 flex gap-1.5 overflow-x-auto">
         {FILTERS.map((f) => (
-          <button key={f.k} onClick={() => setFilter(f.k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${filter === f.k ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+          <button key={f.k} onClick={() => setFilter(f.k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${filter === f.k ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
             {f.l}
           </button>
         ))}
       </div>
 
       {sel.length > 0 && (
-        <div className="sticky top-14 z-20 mb-3 flex flex-wrap items-center gap-2 rounded-2xl bg-ink px-4 py-3 text-sm text-cream shadow-lg lg:top-2">
+        <div className="sticky top-14 z-20 mb-3 flex flex-wrap items-center gap-2 rounded-2xl bg-ink px-4 py-3 text-sm text-on-ink shadow-lg lg:top-2">
           <span className="mr-2 font-medium">{sel.length} selected</span>
           <BulkBtn onClick={() => bulk("patch", { isActive: true }, "Published")}><Eye className="size-3.5" /> Publish</BulkBtn>
           <BulkBtn onClick={() => bulk("patch", { isActive: false }, "Hidden")}><EyeOff className="size-3.5" /> Hide</BulkBtn>
@@ -116,7 +116,7 @@ export default function ProductsPage() {
           <select
             onChange={(e) => e.target.value && bulk("patch", { categoryId: e.target.value === "none" ? null : e.target.value }, "Category updated")}
             value=""
-            className="rounded-full bg-cream/10 px-3 py-1.5 text-cream"
+            className="rounded-full bg-on-ink/10 px-3 py-1.5 text-on-ink"
           >
             <option value="">Move to…</option>
             {flatCats.map((c) => (
@@ -127,7 +127,7 @@ export default function ProductsPage() {
             ))}
             <option value="none" className="text-ink">Uncategorised</option>
           </select>
-          <select onChange={(e) => e.target.value && bulk("price", { percent: Number(e.target.value) }, "Prices updated")} value="" className="rounded-full bg-cream/10 px-3 py-1.5 text-cream">
+          <select onChange={(e) => e.target.value && bulk("price", { percent: Number(e.target.value) }, "Prices updated")} value="" className="rounded-full bg-on-ink/10 px-3 py-1.5 text-on-ink">
             <option value="">Change price…</option>
             {[-20, -10, -5, 5, 10, 20].map((p) => (
               <option key={p} value={p} className="text-ink">
@@ -136,7 +136,7 @@ export default function ProductsPage() {
             ))}
           </select>
           <BulkBtn onClick={() => bulk("delete", undefined, "Deleted")}><Trash2 className="size-3.5" /> Delete</BulkBtn>
-          <button onClick={() => setSel([])} className="ml-auto text-cream/70">Clear</button>
+          <button onClick={() => setSel([])} className="ml-auto text-on-ink/70">Clear</button>
         </div>
       )}
 
@@ -164,7 +164,7 @@ export default function ProductsPage() {
           </div>
           <ul className="divide-y divide-ink/[0.06]">
             {products.map((p) => (
-              <li key={p.id} className={`grid grid-cols-[28px_56px_1fr] items-center gap-x-4 gap-y-2 px-4 py-3 md:grid-cols-[28px_56px_1fr_120px_130px_70px_110px] ${sel.includes(p.id) ? "bg-cream/40" : ""}`}>
+              <li key={p.id} className={`grid grid-cols-[28px_56px_1fr] items-center gap-x-4 gap-y-2 px-4 py-3 md:grid-cols-[28px_56px_1fr_120px_130px_70px_110px] ${sel.includes(p.id) ? "bg-tint/40" : ""}`}>
                 <input type="checkbox" checked={sel.includes(p.id)} onChange={() => toggleSel(p.id)} aria-label={`Select ${p.name}`} />
                 <Link href={`/admin/products/${p.id}`}>
                   <img src={imgUrl(p.images[0], 120)} alt="" className="size-14 rounded-xl object-cover" />
@@ -172,7 +172,7 @@ export default function ProductsPage() {
                 <div className="min-w-0">
                   <Link href={`/admin/products/${p.id}`} className="flex items-center gap-1.5 font-medium hover:underline">
                     <span className="truncate">{p.name}</span>
-                    {p.isFeatured && <Star className="size-3.5 shrink-0 fill-gold text-gold" />}
+                    {p.isFeatured && <Star className="size-3.5 shrink-0 fill-accent text-accent" />}
                   </Link>
                   <p className="truncate text-xs text-muted">
                     {p.categoryName ?? "Uncategorised"}
@@ -183,13 +183,13 @@ export default function ProductsPage() {
                 <div className="col-span-3 flex flex-wrap items-center gap-3 pl-[44px] md:contents">
                   <PriceCell value={p.price} onSave={(price) => patch(p.id, { price })} />
                   {p.madeToOrder ? (
-                    <span className="text-xs text-gold">Made to order</span>
+                    <span className="text-xs text-accent">Made to order</span>
                   ) : (
                     <div className="flex items-center gap-1">
                       <button onClick={() => patch(p.id, { stock: Math.max(0, p.stock - 1) })} className="grid size-7 place-items-center rounded-full border border-ink/10" aria-label="Less stock">
                         <Minus className="size-3" />
                       </button>
-                      <span className={`w-8 text-center text-sm ${p.stock === 0 ? "font-semibold text-rose" : ""}`}>{p.stock}</span>
+                      <span className={`w-8 text-center text-sm ${p.stock === 0 ? "font-semibold text-danger" : ""}`}>{p.stock}</span>
                       <button onClick={() => patch(p.id, { stock: p.stock + 1 })} className="grid size-7 place-items-center rounded-full border border-ink/10" aria-label="More stock">
                         <Plus className="size-3" />
                       </button>
@@ -229,7 +229,7 @@ function PriceCell({ value, onSave }: { value: number; onSave: (v: number) => vo
   const [v, setV] = useState(String(value));
   if (!editing)
     return (
-      <button onClick={() => (setV(String(value)), setEditing(true))} className="rounded-lg px-1.5 py-1 text-left text-sm font-medium hover:bg-cream" title="Tap to edit price">
+      <button onClick={() => (setV(String(value)), setEditing(true))} className="rounded-lg px-1.5 py-1 text-left text-sm font-medium hover:bg-tint" title="Tap to edit price">
         {formatINR(value)}
       </button>
     );
@@ -251,7 +251,7 @@ function PriceCell({ value, onSave }: { value: number; onSave: (v: number) => vo
 
 function BulkBtn({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex items-center gap-1.5 rounded-full bg-cream/10 px-3 py-1.5 hover:bg-cream/20">
+    <button onClick={onClick} className="flex items-center gap-1.5 rounded-full bg-on-ink/10 px-3 py-1.5 hover:bg-on-ink/20">
       {children}
     </button>
   );

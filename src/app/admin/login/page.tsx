@@ -14,12 +14,12 @@ export default async function LoginPage() {
     <div className="grid min-h-screen bg-ink lg:grid-cols-2">
       <div className="relative hidden items-center justify-center overflow-hidden lg:flex">
         <MirrorRing className="absolute size-[640px] animate-spin-slow opacity-30" count={22} />
-        <div className="relative text-center text-cream">
+        <div className="relative text-center text-on-ink">
           <img src="/brand/medallion.webp" alt="" className="mx-auto size-56 rounded-full shadow-2xl" />
-          <p className="mt-8 font-script text-4xl text-gold-2">Art that adds happiness</p>
+          <p className="mt-8 font-script text-4xl text-accent-soft">Art that adds happiness</p>
         </div>
       </div>
-      <div className="flex items-center justify-center bg-paper p-6">
+      <div className="flex items-center justify-center bg-canvas p-6">
         <div className="w-full max-w-sm">
           <img src="/brand/medallion.webp" alt="" className="mx-auto size-20 rounded-full shadow-lg lg:hidden" />
           <h1 className="mt-6 font-display text-4xl font-semibold">{setup ? "Welcome, Kavita!" : "Studio admin"}</h1>

@@ -150,7 +150,7 @@ export function StoreProvider({ settings, children }: { settings: PublicSettings
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-[calc(140px+env(safe-area-inset-bottom))] z-[80] flex flex-col items-center gap-2 px-4 md:bottom-8">
         {toasts.map((t) => (
-          <div key={t.id} className="animate-fade-up rounded-full bg-ink px-5 py-2.5 text-sm text-cream shadow-xl">
+          <div key={t.id} className="animate-fade-up rounded-full bg-ink px-5 py-2.5 text-sm text-on-ink shadow-xl">
             {t.msg}
           </div>
         ))}

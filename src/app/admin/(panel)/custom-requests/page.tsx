@@ -33,7 +33,7 @@ export default function CustomRequestsPage() {
       <PageHeader title="Custom requests" subtitle="Ideas customers sent from the Custom Order page." />
       <div className="no-scrollbar mb-4 flex gap-1.5 overflow-x-auto">
         {[{ k: "ALL", l: "All" }, ...STATUSES].map((s) => (
-          <button key={s.k} onClick={() => setFilter(s.k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${filter === s.k ? "bg-ink text-cream" : "bg-white text-muted"}`}>
+          <button key={s.k} onClick={() => setFilter(s.k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${filter === s.k ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
             {s.l}
           </button>
         ))}
@@ -61,14 +61,14 @@ export default function CustomRequestsPage() {
                 </div>
                 <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed">{r.description}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
-                  {r.size && <span className="rounded-full bg-cream px-2.5 py-1">📏 {r.size}</span>}
-                  {r.colors && <span className="rounded-full bg-cream px-2.5 py-1">🎨 {r.colors}</span>}
-                  {r.budget && <span className="rounded-full bg-cream px-2.5 py-1">💰 {r.budget}</span>}
-                  {r.deadline && <span className="rounded-full bg-cream px-2.5 py-1">📅 {new Date(r.deadline).toLocaleDateString("en-IN")}</span>}
+                  {r.size && <span className="rounded-full bg-tint px-2.5 py-1">📏 {r.size}</span>}
+                  {r.colors && <span className="rounded-full bg-tint px-2.5 py-1">🎨 {r.colors}</span>}
+                  {r.budget && <span className="rounded-full bg-tint px-2.5 py-1">💰 {r.budget}</span>}
+                  {r.deadline && <span className="rounded-full bg-tint px-2.5 py-1">📅 {new Date(r.deadline).toLocaleDateString("en-IN")}</span>}
                 </div>
                 {r.aiConcept && (
-                  <p className="mt-3 whitespace-pre-wrap rounded-xl bg-gold-2/10 p-3 text-xs">
-                    <Sparkles className="mr-1 inline size-3.5 text-gold" />
+                  <p className="mt-3 whitespace-pre-wrap rounded-xl bg-accent-soft/10 p-3 text-xs">
+                    <Sparkles className="mr-1 inline size-3.5 text-accent" />
                     {r.aiConcept}
                   </p>
                 )}
@@ -110,7 +110,7 @@ export default function CustomRequestsPage() {
                       setData((d) => d && { requests: d.requests.filter((x) => x.id !== r.id) });
                       toast("Deleted");
                     }}
-                    className="ml-auto text-muted hover:text-rose"
+                    className="ml-auto text-muted hover:text-danger"
                     aria-label="Delete"
                   >
                     <Trash2 className="size-4" />

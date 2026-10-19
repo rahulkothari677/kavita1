@@ -60,7 +60,7 @@ export function GiftFinderClient() {
         <button
           key={o}
           onClick={() => onPick(o)}
-          className={`rounded-2xl border px-4 py-4 text-left text-[15px] transition hover:-translate-y-0.5 hover:shadow-md ${value === o ? "border-ink bg-ink text-cream" : "border-ink/12 bg-white"}`}
+          className={`rounded-2xl border px-4 py-4 text-left text-[15px] transition hover:-translate-y-0.5 hover:shadow-md ${value === o ? "border-ink bg-ink text-on-ink" : "border-ink/12 bg-white"}`}
         >
           {o}
         </button>
@@ -71,7 +71,7 @@ export function GiftFinderClient() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-20">
       <div className="text-center">
-        <p className="inline-flex items-center gap-2 rounded-full bg-cream px-4 py-1.5 text-[12px] tracking-[0.25em] text-gold uppercase">
+        <p className="inline-flex items-center gap-2 rounded-full bg-tint px-4 py-1.5 text-[12px] tracking-[0.25em] text-accent uppercase">
           <Sparkles className="size-3.5" /> AI Gift Finder
         </p>
         <h1 className="mt-4 font-display text-5xl md:text-6xl">The perfect handmade gift</h1>
@@ -107,7 +107,7 @@ export function GiftFinderClient() {
                 <button
                   key={b.l}
                   onClick={() => (setBudget(b.v), setStep(3))}
-                  className={`rounded-2xl border px-4 py-5 text-[15px] transition hover:-translate-y-0.5 hover:shadow-md ${budget === b.v ? "border-ink bg-ink text-cream" : "border-ink/12 bg-white"}`}
+                  className={`rounded-2xl border px-4 py-5 text-[15px] transition hover:-translate-y-0.5 hover:shadow-md ${budget === b.v ? "border-ink bg-ink text-on-ink" : "border-ink/12 bg-white"}`}
                 >
                   {b.l}
                 </button>
@@ -125,7 +125,7 @@ export function GiftFinderClient() {
               className="input mt-8"
               placeholder="Optional — e.g. she loves blue, minimal style, new flat, very spiritual…"
             />
-            {err && <p className="mt-3 text-sm text-rose">{err}</p>}
+            {err && <p className="mt-3 text-sm text-danger">{err}</p>}
             <button onClick={run} disabled={busy} className="btn btn-primary mt-5 w-full py-4 text-base">
               {busy ? <Loader2 className="size-5 animate-spin" /> : <Sparkles className="size-5" />} {busy ? "Finding the perfect piece…" : "Show my gift ideas"}
             </button>
@@ -169,8 +169,8 @@ export function GiftFinderClient() {
               </div>
             )}
             {result.personalTouch && (
-              <div className="mx-auto mt-8 max-w-2xl rounded-2xl bg-cream p-5 text-center">
-                <p className="text-xs tracking-[0.25em] text-gold uppercase">A personal touch</p>
+              <div className="mx-auto mt-8 max-w-2xl rounded-2xl bg-tint p-5 text-center">
+                <p className="text-xs tracking-[0.25em] text-accent uppercase">A personal touch</p>
                 <p className="mt-2">{result.personalTouch}</p>
               </div>
             )}

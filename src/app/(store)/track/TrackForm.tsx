@@ -30,7 +30,7 @@ export function TrackForm({ initialOrder }: { initialOrder: string }) {
         <label className="label">WhatsApp number</label>
         <input required value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" className="input" />
       </div>
-      {err && <p className="text-sm text-rose">{err}</p>}
+      {err && <p className="text-sm text-danger">{err}</p>}
       <button className="btn btn-primary w-full">Track order</button>
     </form>
   );

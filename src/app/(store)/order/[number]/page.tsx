@@ -51,7 +51,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
           <OrderTimeline status={order.status} history={order.history} />
         </div>
         {(order.courier || order.trackingNumber) && (
-          <div className="mt-6 rounded-2xl bg-cream p-4 text-sm">
+          <div className="mt-6 rounded-2xl bg-tint p-4 text-sm">
             📦 Shipped via <b>{order.courier ?? "courier"}</b>
             {order.trackingNumber && (
               <>
@@ -63,7 +63,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
         <ul className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
           {order.items.map((i, n) => (
             <li key={n} className="flex items-center gap-3 py-3">
-              {i.image ? <img src={imgUrl(i.image, 120)} alt="" className="size-14 rounded-xl object-cover" /> : <div className="grid size-14 place-items-center rounded-xl bg-cream">🎁</div>}
+              {i.image ? <img src={imgUrl(i.image, 120)} alt="" className="size-14 rounded-xl object-cover" /> : <div className="grid size-14 place-items-center rounded-xl bg-tint">🎁</div>}
               <div className="flex-1">
                 <p className="text-sm font-medium">{i.name}</p>
                 <p className="text-xs text-muted">Qty {i.quantity}{i.note ? ` · ✏️ ${i.note}` : ""}</p>
