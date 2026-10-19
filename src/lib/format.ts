@@ -1,5 +1,14 @@
+const INR = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+const INR_COMPACT = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", notation: "compact", maximumFractionDigits: 1 });
+
+/** ₹1,850 · ₹1,25,000 */
 export function formatINR(amount: number) {
-  return "₹" + Math.round(amount).toLocaleString("en-IN");
+  return INR.format(Math.round(amount));
+}
+
+/** ₹1.3L — for tight admin tiles */
+export function formatINRCompact(amount: number) {
+  return INR_COMPACT.format(Math.round(amount));
 }
 
 export function slugify(text: string) {
@@ -19,7 +28,7 @@ export function discountPercent(price: number, compareAt: number | null | undefi
 
 /** Resize hint for Cloudinary-hosted images; other URLs are returned untouched. */
 export function imgUrl(url: string | null | undefined, width = 800) {
-  if (!url) return "/brand/medallion.webp";
+  if (!url) return "/demo/placeholder.svg";
   if (url.includes("res.cloudinary.com") && url.includes("/upload/") && !url.includes("/upload/f_auto")) {
     return url.replace("/upload/", `/upload/f_auto,q_auto,c_limit,w_${width}/`);
   }
