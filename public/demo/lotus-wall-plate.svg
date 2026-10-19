@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <linearGradient id="mirror" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#cfd8e3"/><stop offset="0.55" stop-color="#9aa8b8"/><stop offset="1" stop-color="#eef2f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-opacity="0.28"/></filter>
+  </defs>
+  <rect width="800" height="800" fill="#efe6d4"/>
+  <g filter="url(#shadow)"><circle cx="400" cy="400" r="330" fill="#7a1f3d"/><circle cx="400" cy="400" r="318" fill="none" stroke="#f0d9a8" stroke-width="10"/></g>
+  <g transform="translate(480,400) rotate(90)">
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="none" stroke="#f0d9a8" stroke-width="5.12" stroke-linejoin="round"/>
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="469.2820323027551" cy="440" r="6" fill="#f0d9a8"/><g transform="translate(440,469.28203230275506) rotate(150)">
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="none" stroke="#f0d9a8" stroke-width="5.12" stroke-linejoin="round"/>
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="400" cy="480" r="6" fill="#f0d9a8"/><g transform="translate(360,469.2820323027551) rotate(210)">
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="none" stroke="#f0d9a8" stroke-width="5.12" stroke-linejoin="round"/>
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="330.71796769724494" cy="440" r="6" fill="#f0d9a8"/><g transform="translate(320,400) rotate(270)">
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="none" stroke="#f0d9a8" stroke-width="5.12" stroke-linejoin="round"/>
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="330.7179676972449" cy="360" r="6" fill="#f0d9a8"/><g transform="translate(359.99999999999994,330.71796769724494) rotate(330)">
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="none" stroke="#f0d9a8" stroke-width="5.12" stroke-linejoin="round"/>
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="400" cy="320" r="6" fill="#f0d9a8"/><g transform="translate(440,330.71796769724494) rotate(390.00000000000006)">
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="none" stroke="#f0d9a8" stroke-width="5.12" stroke-linejoin="round"/>
+    <path d="M0,-22.4 C16,-6.4 16,9.6 0,16 C-16,9.6 -16,-6.4 0,-22.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="469.2820323027551" cy="360" r="6" fill="#f0d9a8"/><g transform="translate(565,400) rotate(90)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="559.3777613376963" cy="442.70514244191594" r="7" fill="#f0d9a8"/><g transform="translate(542.8941916244323,482.5) rotate(120)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="516.6726188957804" cy="516.6726188957804" r="7" fill="#f0d9a8"/><g transform="translate(482.5,542.8941916244323) rotate(150)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="442.70514244191594" cy="559.3777613376963" r="7" fill="#f0d9a8"/><g transform="translate(400,565) rotate(180)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="357.2948575580841" cy="559.3777613376963" r="7" fill="#f0d9a8"/><g transform="translate(317.50000000000006,542.8941916244323) rotate(210)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="283.3273811042197" cy="516.6726188957804" r="7" fill="#f0d9a8"/><g transform="translate(257.1058083755676,482.5) rotate(240.00000000000003)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="240.62223866230372" cy="442.7051424419159" r="7" fill="#f0d9a8"/><g transform="translate(235,400) rotate(270)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="240.62223866230372" cy="357.29485755808406" r="7" fill="#f0d9a8"/><g transform="translate(257.1058083755676,317.5) rotate(300)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="283.3273811042197" cy="283.3273811042196" r="7" fill="#f0d9a8"/><g transform="translate(317.49999999999994,257.1058083755677) rotate(330)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="357.29485755808395" cy="240.62223866230377" r="7" fill="#f0d9a8"/><g transform="translate(399.99999999999994,235) rotate(360)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="442.7051424419158" cy="240.62223866230372" r="7" fill="#f0d9a8"/><g transform="translate(482.5,257.1058083755676) rotate(390.00000000000006)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="516.6726188957803" cy="283.3273811042196" r="7" fill="#f0d9a8"/><g transform="translate(542.8941916244323,317.49999999999994) rotate(419.99999999999994)">
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="none" stroke="#f0d9a8" stroke-width="6.4" stroke-linejoin="round"/>
+    <path d="M0,-28 C20,-8 20,12 0,20 C-20,12 -20,-8 0,-28Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="559.3777613376963" cy="357.29485755808395" r="7" fill="#f0d9a8"/><g transform="translate(650,400) rotate(90)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="646.201938253052" cy="443.41204441673256" r="8" fill="#f0d9a8"/><g transform="translate(634.9231551964771,485.50503583141716) rotate(110)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="616.5063509461097" cy="525" r="8" fill="#f0d9a8"/><g transform="translate(591.5111107797445,560.6969024216348) rotate(130)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="560.6969024216348" cy="591.5111107797445" r="8" fill="#f0d9a8"/><g transform="translate(525,616.5063509461097) rotate(150)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="485.5050358314172" cy="634.9231551964771" r="8" fill="#f0d9a8"/><g transform="translate(443.4120444167326,646.201938253052) rotate(170)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="400" cy="650" r="8" fill="#f0d9a8"/><g transform="translate(356.58795558326744,646.201938253052) rotate(190)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="314.49496416858284" cy="634.9231551964771" r="8" fill="#f0d9a8"/><g transform="translate(275.00000000000006,616.5063509461097) rotate(210)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="239.30309757836525" cy="591.5111107797446" r="8" fill="#f0d9a8"/><g transform="translate(208.48888922025552,560.6969024216348) rotate(230)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="183.49364905389038" cy="525.0000000000001" r="8" fill="#f0d9a8"/><g transform="translate(165.07684480352293,485.5050358314172) rotate(250)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="153.798061746948" cy="443.41204441673267" r="8" fill="#f0d9a8"/><g transform="translate(150,400.00000000000006) rotate(270)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="153.79806174694798" cy="356.5879555832675" r="8" fill="#f0d9a8"/><g transform="translate(165.0768448035229,314.49496416858284) rotate(290)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="183.4936490538903" cy="275.00000000000006" r="8" fill="#f0d9a8"/><g transform="translate(208.48888922025546,239.3030975783652) rotate(310)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="239.30309757836514" cy="208.48888922025552" r="8" fill="#f0d9a8"/><g transform="translate(274.9999999999999,183.49364905389038) rotate(330)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="314.49496416858267" cy="165.07684480352296" r="8" fill="#f0d9a8"/><g transform="translate(356.58795558326744,153.798061746948) rotate(350)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="399.99999999999994" cy="150" r="8" fill="#f0d9a8"/><g transform="translate(443.4120444167325,153.79806174694798) rotate(370)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="485.50503583141705" cy="165.07684480352287" r="8" fill="#f0d9a8"/><g transform="translate(525,183.49364905389035) rotate(390.00000000000006)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="560.6969024216348" cy="208.48888922025546" r="8" fill="#f0d9a8"/><g transform="translate(591.5111107797445,239.3030975783651) rotate(410)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="616.5063509461096" cy="274.9999999999999" r="8" fill="#f0d9a8"/><g transform="translate(634.923155196477,314.49496416858267) rotate(430)">
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="none" stroke="#f0d9a8" stroke-width="7.68" stroke-linejoin="round"/>
+    <path d="M0,-33.599999999999994 C24,-9.600000000000001 24,14.399999999999999 0,24 C-24,14.399999999999999 -24,-9.600000000000001 0,-33.599999999999994Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><circle cx="646.2019382530519" cy="356.58795558326716" r="8" fill="#f0d9a8"/><circle cx="400" cy="400" r="44" fill="url(#mirror)" stroke="#f0d9a8" stroke-width="12"/>
+</svg>

@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #16244a;
+  --color-ink-2: #22356b;
+  --color-ink-3: #0d1733;
+  --color-cream: #f3ead8;
+  --color-cream-2: #e9dcc3;
+  --color-paper: #fbf7ef;
+  --color-sand: #d9c7a5;
+  --color-gold: #b48a4e;
+  --color-gold-2: #d4b06a;
+  --color-mirror: #d6dee8;
+  --color-muted: #6b6a74;
+  --color-wa: #1fa855;
+  --color-rose: #b5485d;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-jost), "Jost", system-ui, sans-serif;
+  --font-script: var(--font-script), "Great Vibes", cursive;
+
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-shimmer: shimmer 3.2s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+
+/* Subtle paper grain for the storefront */
+.paper-grain {
+  background-image:
+    radial-gradient(rgba(22, 36, 74, 0.035) 1px, transparent 1px),
+    radial-gradient(rgba(180, 138, 78, 0.04) 1px, transparent 1px);
+  background-size:
+    22px 22px,
+    31px 31px;
+  background-position:
+    0 0,
+    11px 15px;
+}
+
+/* Lippan dotted border motif */
+.dot-rule {
+  height: 10px;
+  background-image: radial-gradient(circle, currentColor 2.2px, transparent 2.6px);
+  background-size: 18px 10px;
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.5;
+}
+
+.marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.prose-ka p {
+  margin-bottom: 0.9em;
+  line-height: 1.75;
+}
+
+/* Form controls */
+.input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(22, 36, 74, 0.15);
+  background: white;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.input:focus {
+  border-color: var(--color-ink-2);
+  box-shadow: 0 0 0 3px rgba(34, 53, 107, 0.12);
+}
+.label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+.btn-primary:hover {
+  background: var(--color-ink-2);
+}
+.btn-outline {
+  border: 1px solid rgba(22, 36, 74, 0.25);
+  color: var(--color-ink);
+  background: transparent;
+}
+.btn-outline:hover {
+  border-color: var(--color-ink);
+  background: rgba(22, 36, 74, 0.04);
+}
+.btn-wa {
+  background: var(--color-wa);
+  color: white;
+}
+.btn-wa:hover {
+  filter: brightness(1.06);
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--color-gold-2), var(--color-gold));
+  color: var(--color-ink-3);
+}
+.btn-sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.card {
+  background: white;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(22, 36, 74, 0.08);
+}
+
+.mirror-shine {
+  background: linear-gradient(135deg, #ffffff 0%, #d7dfe9 40%, #a3b1c2 55%, #eef2f7 100%);
+}

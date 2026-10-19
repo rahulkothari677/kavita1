@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <linearGradient id="mirror" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#cfd8e3"/><stop offset="0.55" stop-color="#9aa8b8"/><stop offset="1" stop-color="#eef2f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-opacity="0.28"/></filter>
+  </defs>
+  <rect width="800" height="800" fill="#e8e0cf"/>
+  <g filter="url(#shadow)"><rect x="80" y="220" width="640" height="360" rx="180" fill="#1b2a4e"/><rect x="100" y="240" width="600" height="320" rx="160" fill="none" stroke="#f3ead8" stroke-width="8"/></g>
+  <circle cx="170" cy="275" r="7" fill="#f3ead8"/><circle cx="170" cy="525" r="7" fill="#f3ead8"/><circle cx="205" cy="275" r="7" fill="#f3ead8"/><circle cx="205" cy="525" r="7" fill="#f3ead8"/><circle cx="240" cy="275" r="7" fill="#f3ead8"/><circle cx="240" cy="525" r="7" fill="#f3ead8"/><circle cx="275" cy="275" r="7" fill="#f3ead8"/><circle cx="275" cy="525" r="7" fill="#f3ead8"/><circle cx="310" cy="275" r="7" fill="#f3ead8"/><circle cx="310" cy="525" r="7" fill="#f3ead8"/><circle cx="345" cy="275" r="7" fill="#f3ead8"/><circle cx="345" cy="525" r="7" fill="#f3ead8"/><circle cx="380" cy="275" r="7" fill="#f3ead8"/><circle cx="380" cy="525" r="7" fill="#f3ead8"/><circle cx="415" cy="275" r="7" fill="#f3ead8"/><circle cx="415" cy="525" r="7" fill="#f3ead8"/><circle cx="450" cy="275" r="7" fill="#f3ead8"/><circle cx="450" cy="525" r="7" fill="#f3ead8"/><circle cx="485" cy="275" r="7" fill="#f3ead8"/><circle cx="485" cy="525" r="7" fill="#f3ead8"/><circle cx="520" cy="275" r="7" fill="#f3ead8"/><circle cx="520" cy="525" r="7" fill="#f3ead8"/><circle cx="555" cy="275" r="7" fill="#f3ead8"/><circle cx="555" cy="525" r="7" fill="#f3ead8"/><circle cx="590" cy="275" r="7" fill="#f3ead8"/><circle cx="590" cy="525" r="7" fill="#f3ead8"/><circle cx="625" cy="275" r="7" fill="#f3ead8"/><circle cx="625" cy="525" r="7" fill="#f3ead8"/><g transform="translate(170,400) rotate(-90)">
+    <path d="M0,-36.4 C26,-10.4 26,15.6 0,26 C-26,15.6 -26,-10.4 0,-36.4Z" fill="none" stroke="#f3ead8" stroke-width="8.32" stroke-linejoin="round"/>
+    <path d="M0,-36.4 C26,-10.4 26,15.6 0,26 C-26,15.6 -26,-10.4 0,-36.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><g transform="translate(630,400) rotate(90)">
+    <path d="M0,-36.4 C26,-10.4 26,15.6 0,26 C-26,15.6 -26,-10.4 0,-36.4Z" fill="none" stroke="#f3ead8" stroke-width="8.32" stroke-linejoin="round"/>
+    <path d="M0,-36.4 C26,-10.4 26,15.6 0,26 C-26,15.6 -26,-10.4 0,-36.4Z" fill="url(#mirror)" transform="scale(0.72)"/>
+  </g><text x="400" y="415" font-family="Georgia, serif" font-size="74" text-anchor="middle" fill="#f3ead8" font-style="italic">Welcome</text>
+</svg>
