@@ -1,96 +1,144 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Download, Search, Users } from "lucide-react";
-import { Empty, Loading, PageHeader, useLoad } from "@/components/admin/ui";
+import { Download, Phone, Repeat, Users } from "lucide-react";
+import { Empty, PageHeader, useLoad } from "@/components/admin/ui";
+import { ADMIN_ICONS, btn, cardShell, cx, downloadCsv, FilterChips, relTime, SearchField, SkeletonRows, StateChip } from "@/components/admin/pages/kit";
 import { WhatsAppIcon } from "@/components/Motifs";
-import { formatINR, timeAgo } from "@/lib/format";
+import { formatINR } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 import type { Customer } from "@/lib/analytics";
+
+type Seg = "all" | "repeat" | "vip" | "lapsed";
+const SEGS: { key: Seg; label: string; test: (c: Customer) => boolean }[] = [
+  { key: "all", label: "All", test: () => true },
+  { key: "repeat", label: "Repeat", test: (c) => c.orders > 1 },
+  { key: "vip", label: "₹5k+ spent", test: (c) => c.spent >= 5000 },
+  { key: "lapsed", label: "Quiet for 90 days", test: (c) => Date.now() - new Date(c.lastOrder).getTime() > 90 * 86400000 },
+];
 
 export default function CustomersPage() {
   const { data, loading } = useLoad<{ customers: Customer[] }>("/api/admin/customers");
   const [q, setQ] = useState("");
-  const [seg, setSeg] = useState("all");
+  const [seg, setSeg] = useState<Seg>("all");
+  const all = useMemo(() => data?.customers ?? [], [data]);
+  const counts = useMemo(() => Object.fromEntries(SEGS.map((s) => [s.key, all.filter(s.test).length])) as Record<Seg, number>, [all]);
   const list = useMemo(() => {
-    let l = data?.customers ?? [];
+    let l = all.filter((SEGS.find((s) => s.key === seg) ?? SEGS[0]).test);
     if (q) l = l.filter((c) => `${c.name} ${c.phone} ${c.city ?? ""}`.toLowerCase().includes(q.toLowerCase()));
-    if (seg === "repeat") l = l.filter((c) => c.orders > 1);
-    if (seg === "vip") l = l.filter((c) => c.spent >= 5000);
-    if (seg === "lapsed") l = l.filter((c) => Date.now() - new Date(c.lastOrder).getTime() > 90 * 86400000);
     return l;
-  }, [data, q, seg]);
+  }, [all, q, seg]);
 
-  const exportCsv = () => {
-    const rows = [["Name", "Phone", "City", "Orders", "Spent", "Last order"], ...list.map((c) => [c.name, c.phone, c.city ?? "", c.orders, c.spent, c.lastOrder.slice(0, 10)])];
-    const blob = new Blob(["﻿" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "customers.csv";
-    a.click();
-  };
+  const exportCsv = () =>
+    downloadCsv("customers.csv", [["Name", "Phone", "City", "Orders", "Spent", "Last order"], ...list.map((c) => [c.name, c.phone, c.city ?? "", c.orders, c.spent, c.lastOrder.slice(0, 10)])]);
+
+  const hello = (c: Customer) => waLink(c.phone, `Hi ${c.name.split(" ")[0]}! `);
 
   return (
-    <div>
+    <div className={ADMIN_ICONS}>
       <PageHeader
         title="Customers"
-        subtitle="Built automatically from your orders."
+        subtitle={data ? `${all.length} ${all.length === 1 ? "customer" : "customers"}, built from your orders` : "Built from your orders"}
         actions={
-          <button onClick={exportCsv} className="btn btn-outline btn-sm">
-            <Download className="size-4" /> Export (for WhatsApp broadcast)
+          <button onClick={exportCsv} disabled={!list.length} className={btn("secondary")}>
+            <Download className="size-4" aria-hidden /> Export CSV
           </button>
         }
       />
-      <div className="mb-4 flex flex-wrap gap-2">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search customers…" className="input pl-10" />
-        </div>
-        <div className="flex gap-1.5">
-          {[
-            ["all", "All"],
-            ["repeat", "Repeat"],
-            ["vip", "₹5k+ VIP"],
-            ["lapsed", "Not ordered in 90d"],
-          ].map(([k, l]) => (
-            <button key={k} onClick={() => setSeg(k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${seg === k ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
-              {l}
-            </button>
-          ))}
-        </div>
+      <div className="mb-4 flex flex-col gap-3">
+        <FilterChips label="Customer groups" value={seg} onChange={setSeg} items={SEGS.map((s) => ({ key: s.key, label: s.label, count: counts[s.key] }))} />
+        <SearchField value={q} onChange={setQ} label="Search customers" placeholder="Search name, phone or city" className="md:max-w-md" />
       </div>
+
       {loading && !data ? (
-        <Loading />
+        <SkeletonRows rows={6} />
       ) : list.length === 0 ? (
-        <div className="rounded-2xl bg-white">
-          <Empty icon={<Users className="size-6" />} title="No customers yet" text="Customers appear here after their first order." />
+        <div className={cardShell}>
+          <Empty icon={<Users />} title={all.length ? "No one matches" : "Your first customer will appear here"} text={all.length ? "Try another group or search." : "Customers are added automatically after their first order."} />
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-ink/[0.07] bg-white">
-          <ul className="divide-y divide-ink/[0.06]">
+        <>
+          {/* Mobile rows */}
+          <ul className={cx(cardShell, "md:hidden")}>
             {list.map((c) => (
-              <li key={c.phone} className="flex items-center gap-3 px-4 py-3">
-                <div className="grid size-10 place-items-center rounded-full bg-tint font-display text-lg">{c.name[0]}</div>
+              <li key={c.phone} className="flex min-h-[76px] items-center gap-3 border-b border-admin-line py-3 pr-2 pl-4 last:border-0">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-plinth text-[16px] font-semibold" aria-hidden>
+                  {c.name.trim()[0]?.toUpperCase() ?? "?"}
+                </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium">
-                    {c.name} {c.orders > 1 && <span className="ml-1 rounded-full bg-accent-soft/20 px-2 py-0.5 text-[10px] text-accent">REPEAT</span>}
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="truncate text-[16px] leading-6 font-semibold">{c.name}</p>
+                    <p className="tabular shrink-0 text-[16px] leading-6 font-semibold">{formatINR(c.spent)}</p>
+                  </div>
+                  <p className="tabular truncate text-[14px] leading-5 text-muted">
+                    {c.orders} {c.orders === 1 ? "order" : "orders"}
+                    {c.city ? ` · ${c.city}` : ""} · {relTime(c.lastOrder)}
                   </p>
-                  <p className="text-xs text-muted">
-                    {c.phone}
-                    {c.city ? ` · ${c.city}` : ""} · last order {timeAgo(c.lastOrder)}
-                  </p>
+                  {c.orders > 1 && (
+                    <div className="mt-1.5">
+                      <StateChip tone="neutral" icon={<Repeat className="size-3" aria-hidden />}>
+                        Repeat
+                      </StateChip>
+                    </div>
+                  )}
                 </div>
-                <div className="text-right">
-                  <p className="font-medium">{formatINR(c.spent)}</p>
-                  <p className="text-xs text-muted">{c.orders} orders</p>
-                </div>
-                <a href={waLink(c.phone, `Hi ${c.name.split(" ")[0]}! 🌸`)} target="_blank" rel="noreferrer" className="grid size-9 place-items-center rounded-full bg-wa/10 text-wa" aria-label="WhatsApp">
-                  <WhatsAppIcon className="size-4" />
+                <a href={hello(c)} target="_blank" rel="noreferrer" className="icon-btn shrink-0 text-wa!" aria-label={`WhatsApp ${c.name}`}>
+                  <WhatsAppIcon className="size-[22px]" />
                 </a>
               </li>
             ))}
           </ul>
-        </div>
+
+          {/* Desktop table */}
+          <div className={cx(cardShell, "hidden overflow-visible md:block")}>
+            <table className="w-full border-separate border-spacing-0 text-[14px]">
+              <thead>
+                <tr className="text-left text-[12px] text-muted">
+                  {["Customer", "Phone", "City", "Orders", "Spent", "Last order", ""].map((h, i) => (
+                    <th key={i} scope="col" className={cx("sticky top-0 z-10 h-10 border-b border-admin-line bg-admin-inset px-3 font-semibold first:rounded-tl-[8px] first:pl-4 last:rounded-tr-[8px]", (h === "Orders" || h === "Spent") && "text-right")}>
+                      {h || <span className="sr-only">Actions</span>}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {list.map((c) => (
+                  <tr key={c.phone} className="h-11 hover:bg-admin-inset [&>td]:border-b [&>td]:border-admin-line last:[&>td]:border-0">
+                    <td className="py-1.5 pr-3 pl-4">
+                      <span className="flex items-center gap-2.5">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-plinth text-[13px] font-semibold" aria-hidden>
+                          {c.name.trim()[0]?.toUpperCase() ?? "?"}
+                        </span>
+                        <span className="truncate font-medium">{c.name}</span>
+                        {c.orders > 1 && (
+                          <StateChip tone="neutral" icon={<Repeat className="size-3" aria-hidden />}>
+                            Repeat
+                          </StateChip>
+                        )}
+                      </span>
+                    </td>
+                    <td className="tabular px-3 whitespace-nowrap">{c.phone}</td>
+                    <td className="px-3 text-muted">{c.city ?? "—"}</td>
+                    <td className="tabular px-3 text-right">{c.orders}</td>
+                    <td className="tabular px-3 text-right font-semibold">{formatINR(c.spent)}</td>
+                    <td className="tabular px-3 whitespace-nowrap text-muted">{relTime(c.lastOrder)}</td>
+                    <td className="w-24 pr-2">
+                      <span className="flex justify-end gap-0.5">
+                        <a href={`tel:${c.phone}`} className="grid size-9 place-items-center rounded-full hover:bg-admin-sidebar" aria-label={`Call ${c.name}`}>
+                          <Phone className="size-4" />
+                        </a>
+                        <a href={hello(c)} target="_blank" rel="noreferrer" className="grid size-9 place-items-center rounded-full text-wa hover:bg-admin-sidebar" aria-label={`WhatsApp ${c.name}`}>
+                          <WhatsAppIcon className="size-[18px]" />
+                        </a>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="tabular mt-3 text-[13px] text-muted">Tip: export a group as CSV to build a WhatsApp broadcast list.</p>
+        </>
       )}
     </div>
   );

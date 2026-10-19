@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 import { getSettings } from "@/lib/settings";
 import { waLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/Motifs";
+import { PageIntro } from "@/components/store/pages/ui";
 
 export const metadata: Metadata = { title: "FAQs" };
+
+/* <details> accordion; the height animates where ::details-content + interpolate-size are supported. */
+const DETAILS_ANIM =
+  "[interpolate-size:allow-keywords] [&::details-content]:h-0 [&::details-content]:overflow-hidden [&::details-content]:transition-[height,content-visibility] [&::details-content]:duration-[250ms] [&::details-content]:ease-[var(--ease-out)] [&::details-content]:[transition-behavior:allow-discrete] open:[&::details-content]:h-auto";
 
 export default async function FaqPage() {
   const s = await getSettings();
@@ -13,27 +20,70 @@ export default async function FaqPage() {
     mainEntity: s.faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
   return (
-    <div className="mx-auto max-w-3xl px-4 py-14 md:py-20">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <p className="text-center text-[12px] tracking-[0.3em] text-accent uppercase">Help</p>
-      <h1 className="mt-2 text-center font-display text-5xl md:text-6xl">Questions, answered</h1>
-      <div className="mt-12 divide-y divide-ink/10 border-y border-ink/10">
-        {s.faqs.map((f, i) => (
-          <details key={i} className="group py-6" open={i === 0}>
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-2xl">
-              {f.q}
-              <span className="text-2xl font-light transition group-open:rotate-45">+</span>
-            </summary>
-            <p className="mt-3 leading-relaxed text-ink/75">{f.a}</p>
-          </details>
-        ))}
-      </div>
-      <div className="mt-12 rounded-3xl bg-tint p-8 text-center">
-        <p className="font-display text-3xl">Still curious?</p>
-        <p className="mt-2 text-muted">Kavita replies personally — usually within a few hours.</p>
-        <a href={waLink(s.whatsappNumber, "Hi! I have a question 🌸")} target="_blank" rel="noreferrer" className="btn btn-wa mt-5">
-          <WhatsAppIcon className="size-5" /> Ask on WhatsApp
-        </a>
+    <div className="container-x section-y">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-6">
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-[96px]">
+            <PageIntro
+              eyebrow="Help"
+              title={
+                <>
+                  Questions, <em>answered</em>
+                </>
+              }
+              lede="Ordering, delivery, payment and caring for handmade pieces."
+            />
+            <div className="mt-8 hidden border-t border-line pt-6 lg:block">
+              <p className="text-[15px] text-muted">Can’t find it here?</p>
+              <a href={waLink(s.whatsappNumber, "Hi! I have a question.")} target="_blank" rel="noreferrer" className="btn btn-wa-outline mt-4">
+                <WhatsAppIcon className="size-5" /> Ask on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:col-span-7 lg:col-start-6">
+          {s.faqs.length > 0 ? (
+            <div className="border-t border-line">
+              {s.faqs.map((f, i) => (
+                <details key={i} className={`group border-b border-line ${DETAILS_ANIM}`} open={i === 0}>
+                  <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-medium [&::-webkit-details-marker]:hidden">
+                    <span>{f.q}</span>
+                    <Plus aria-hidden className="size-4 shrink-0 transition-transform duration-[220ms] ease-[var(--ease-out)] group-open:rotate-45" strokeWidth={1.5} />
+                  </summary>
+                  <p className="max-w-[62ch] pb-5 text-[15px] leading-[1.65] text-ink-2">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[15px] text-muted">We’re writing our answers. Ask us anything on WhatsApp in the meantime.</p>
+          )}
+
+          <div className="mt-12 lg:hidden">
+            <p className="font-display text-[24px] leading-tight">Still curious?</p>
+            <p className="mt-2 text-[15px] text-muted">Message the studio and we’ll answer personally.</p>
+            <a href={waLink(s.whatsappNumber, "Hi! I have a question.")} target="_blank" rel="noreferrer" className="btn btn-wa-outline mt-5 w-full sm:w-auto">
+              <WhatsAppIcon className="size-5" /> Ask on WhatsApp
+            </a>
+          </div>
+
+          <p className="mt-10 text-[14px] text-muted">
+            More detail in our{" "}
+            <Link href="/policies/shipping" className="link">
+              <span className="text-ink">shipping</span>
+            </Link>
+            ,{" "}
+            <Link href="/policies/returns" className="link">
+              <span className="text-ink">returns</span>
+            </Link>{" "}
+            and{" "}
+            <Link href="/policies/care" className="link">
+              <span className="text-ink">care</span>
+            </Link>{" "}
+            guides.
+          </p>
+        </div>
       </div>
     </div>
   );

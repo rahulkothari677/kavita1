@@ -2,156 +2,321 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import {
-  BarChart3,
-  ExternalLink,
-  FolderTree,
-  LayoutDashboard,
-  LogOut,
-  Megaphone,
-  Menu,
-  MessageSquareQuote,
-  Package,
-  Palette,
-  Plus,
-  Settings,
-  ShoppingBag,
-  Sparkles,
-  Users,
-  Wand2,
-  X,
-} from "lucide-react";
-import { ToastProvider } from "./ui";
+import { useEffect, useRef, useState } from "react";
+import { AlertTriangle, ArrowUpRight, Camera, ChevronRight, Home, LogOut, Megaphone, MoreHorizontal, Package, PenLine, Plus, ShoppingBag } from "lucide-react";
+import { WhatsAppIcon } from "@/components/Motifs";
+import { Modal, ToastProvider } from "./ui";
+import { AdminChromeContext } from "./core/chrome";
+import { ALL_NAV, NAV_GROUPS, activeHref, type CountKey, type NavItem } from "./core/nav";
 
 type Counts = { pendingOrders: number; newRequests: number; pendingReviews: number };
 
-const NAV = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingBag, count: "pendingOrders" as const },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/categories", label: "Categories", icon: FolderTree },
-  { href: "/admin/custom-requests", label: "Custom requests", icon: Palette, count: "newRequests" as const },
-  { href: "/admin/customers", label: "Customers", icon: Users },
-  { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote, count: "pendingReviews" as const },
-  { href: "/admin/marketing", label: "Offers & marketing", icon: Megaphone },
-  { href: "/admin/ai-studio", label: "AI Studio", icon: Wand2 },
-  { href: "/admin/content", label: "Website content", icon: BarChart3 },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
-];
+const SW = 1.75; // admin icon stroke
+
+function Medallion({ size = 24 }: { size?: number }) {
+  return <img src="/brand/medallion.webp" alt="" width={size} height={size} style={{ width: size, height: size }} className="shrink-0 rounded-full" />;
+}
+
+function StudioMark() {
+  return (
+    <span className="font-display text-[18px] leading-none font-normal tracking-[-0.01em] text-ink">
+      Studio
+      <span aria-hidden className="bindi" />
+    </span>
+  );
+}
 
 export function AdminShell({ children, counts, tempDb = false }: { children: React.ReactNode; counts: Counts; tempDb?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const isActive = (href: string) => (href === "/admin" ? pathname === "/admin" : pathname.startsWith(href));
+  const [sheet, setSheet] = useState<null | "create" | "more">(null);
+  const [saveBarActive, setSaveBarActive] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
+  const active = activeHref(pathname);
+  const countOf = (k?: CountKey) => (k ? counts[k] : 0);
+
+  // Close sheets on navigation.
+  useEffect(() => {
+    setSheet(null);
+    setNavHidden(false);
+  }, [pathname]);
+
+  // Mobile floating bar hides on scroll down, returns on scroll up.
+  const lastY = useRef(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dy = y - lastY.current;
+      if (Math.abs(dy) < 6) return;
+      setNavHidden(dy > 0 && y > 80);
+      lastY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
     router.push("/admin/login");
   };
 
-  const sidebar = (
-    <div className="flex h-full flex-col">
-      <Link href="/admin" className="flex items-center gap-3 px-5 py-5">
-        <img src="/brand/medallion.webp" alt="" className="size-10 rounded-full ring-2 ring-on-ink/20" />
-        <div className="leading-tight">
-          <p className="font-display text-xl font-semibold text-on-ink">Kavita&apos;s</p>
-          <p className="text-[10px] tracking-[0.3em] text-on-ink/60">STUDIO ADMIN</p>
-        </div>
-      </Link>
-      <div className="px-3">
-        <Link href="/admin/products/new" onClick={() => setOpen(false)} className="btn btn-accent w-full justify-start rounded-xl">
-          <Sparkles className="size-4" /> Add product with AI
-        </Link>
-      </div>
-      <nav className="mt-4 flex-1 space-y-0.5 overflow-y-auto px-3 pb-4">
-        {NAV.map(({ href, label, icon: Icon, count }) => {
-          const n = count ? counts[count] : 0;
-          return (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setOpen(false)}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14.5px] transition ${isActive(href) ? "bg-on-ink/12 text-on-ink" : "text-on-ink/65 hover:bg-on-ink/6 hover:text-on-ink"}`}
-            >
-              <Icon className="size-[18px]" strokeWidth={1.7} />
-              <span className="flex-1">{label}</span>
-              {n > 0 && <span className="rounded-full bg-accent-soft px-2 py-px text-[11px] font-semibold text-ink">{n}</span>}
-            </Link>
-          );
-        })}
-      </nav>
-      <div className="space-y-1 border-t border-on-ink/10 p-3">
-        <a href="/" target="_blank" className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-on-ink/65 hover:text-on-ink">
-          <ExternalLink className="size-4" /> View website
-        </a>
-        <button onClick={logout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-on-ink/65 hover:text-on-ink">
-          <LogOut className="size-4" /> Log out
-        </button>
-      </div>
-    </div>
-  );
-
-  const tabs = [
-    { href: "/admin", label: "Home", icon: LayoutDashboard },
-    { href: "/admin/orders", label: "Orders", icon: ShoppingBag, count: counts.pendingOrders },
-    { href: "/admin/products/new", label: "Add", icon: Plus, primary: true },
-    { href: "/admin/products", label: "Products", icon: Package },
-  ];
+  // ── Mobile bar ───────────────────────────────────────────────────────
+  const slot = pathname === "/admin" ? 0 : pathname.startsWith("/admin/orders") ? 1 : pathname.startsWith("/admin/products") ? 3 : 4;
+  const activeSlot = sheet === "create" ? 2 : sheet === "more" ? 4 : slot;
+  const tab = (on: boolean) => `relative flex h-full flex-col items-center justify-center gap-1 text-[11px] leading-none ${on ? "font-semibold text-ink" : "font-medium text-muted"}`;
+  const moreItems = ALL_NAV.filter((i) => !["/admin", "/admin/orders", "/admin/products"].includes(i.href));
+  const moreHasCount = moreItems.some((i) => countOf(i.count) > 0);
 
   return (
-    <ToastProvider>
-      <div className="min-h-screen bg-admin">
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 bg-ink lg:block">{sidebar}</aside>
-        {open && (
-          <div className="fixed inset-0 z-[120] lg:hidden">
-            <div className="absolute inset-0 bg-ink/50" onClick={() => setOpen(false)} />
-            <aside className="absolute inset-y-0 left-0 w-72 animate-fade-up bg-ink">
-              <button onClick={() => setOpen(false)} className="absolute right-3 top-5 p-2 text-on-ink" aria-label="Close menu">
-                <X className="size-5" />
+    <AdminChromeContext.Provider value={{ saveBarActive, setSaveBarActive }}>
+      <ToastProvider>
+        <div className="min-h-screen bg-admin text-[16px] leading-6 text-ink md:text-[14px] md:leading-5">
+          <a href="#admin-main" className="sr-only z-[300] rounded-[6px] bg-ink px-4 py-2 text-canvas focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+            Skip to content
+          </a>
+
+          {/* Desktop sidebar ≥1024 */}
+          <aside className="fixed inset-y-0 left-0 z-40 hidden w-[240px] flex-col border-r border-admin-line bg-admin-sidebar lg:flex" aria-label="Studio navigation">
+            <Link href="/admin" className="flex h-16 shrink-0 items-center gap-2.5 px-5">
+              <Medallion />
+              <StudioMark />
+              <span className="sr-only">: Kavita’s Artistry admin home</span>
+            </Link>
+            <nav className="flex-1 overflow-y-auto px-3 pb-4">
+              {NAV_GROUPS.map((g) => (
+                <div key={g.label} className="mt-4 first:mt-1">
+                  <p className="px-2.5 pb-1.5 text-[11px] font-semibold tracking-[0.06em] text-muted uppercase">{g.label}</p>
+                  <ul className="space-y-0.5">
+                    {g.items.map((item) => (
+                      <li key={item.href}>
+                        <Row item={item} on={active === item.href} n={countOf(item.count)} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </nav>
+            <div className="space-y-0.5 border-t border-admin-line p-3">
+              <a href="/" target="_blank" rel="noreferrer" className="flex h-[34px] items-center gap-2.5 rounded-[6px] px-2.5 text-[14px] font-medium text-ink hover:bg-admin-sidebar-hover">
+                <ArrowUpRight className="size-[18px] text-muted" strokeWidth={SW} aria-hidden />
+                View website
+                <span className="sr-only">(opens in a new tab)</span>
+              </a>
+              <button onClick={logout} className="flex h-[34px] w-full items-center gap-2.5 rounded-[6px] px-2.5 text-[14px] font-medium text-ink hover:bg-admin-sidebar-hover">
+                <LogOut className="size-[18px] text-muted" strokeWidth={SW} aria-hidden />
+                Log out
               </button>
-              {sidebar}
-            </aside>
-          </div>
-        )}
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-ink/[0.06] bg-admin/90 px-4 backdrop-blur lg:hidden">
-          <button onClick={() => setOpen(true)} aria-label="Open menu" className="-ml-1 p-1.5">
-            <Menu className="size-5" />
-          </button>
-          <img src="/brand/medallion.webp" alt="" className="size-8 rounded-full" />
-          <span className="font-display text-lg font-semibold">Studio Admin</span>
-        </header>
-        <main className="pb-28 lg:ml-64 lg:pb-12">
-          {tempDb && (
-            <div className="bg-danger px-4 py-2.5 text-center text-sm text-white">
-              ⚠️ Database not connected — changes may be lost. In Vercel open your project → <b>Storage</b> → <b>Create Database</b> → <b>Turso</b> → connect, then redeploy.
             </div>
-          )}
-          <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-9">{children}</div>
-        </main>
-        <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-ink/10 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-          {tabs.map(({ href, label, icon: Icon, primary, count }) =>
-            primary ? (
-              <Link key={href} href={href} className="flex flex-col items-center justify-center" aria-label="Add product">
-                <span className="-mt-6 grid size-14 place-items-center rounded-full bg-ink text-on-ink shadow-lg ring-4 ring-admin">
-                  <Icon className="size-6" />
+          </aside>
+
+          {/* Tablet icon rail 768–1023 */}
+          <aside className="fixed inset-y-0 left-0 z-40 hidden w-16 flex-col items-center border-r border-admin-line bg-admin-sidebar md:flex lg:hidden" aria-label="Studio navigation">
+            <Link href="/admin" className="grid h-16 shrink-0 place-items-center" aria-label="Studio home">
+              <Medallion size={28} />
+            </Link>
+            <nav className="flex flex-1 flex-col items-center gap-1 pb-3">
+              {NAV_GROUPS.map((g, gi) => (
+                <div key={g.label} className={`flex flex-col items-center gap-1 ${gi ? "mt-1 border-t border-admin-line pt-2" : ""}`}>
+                  {g.items.map((item) => (
+                    <RailItem key={item.href} item={item} on={active === item.href} n={countOf(item.count)} />
+                  ))}
+                </div>
+              ))}
+            </nav>
+            <div className="flex flex-col items-center gap-1 border-t border-admin-line py-3">
+              <a href="/" target="_blank" rel="noreferrer" className="group relative grid size-11 place-items-center rounded-[6px] text-muted hover:bg-admin-sidebar-hover hover:text-ink" aria-label="View website (opens in a new tab)">
+                <ArrowUpRight className="size-5" strokeWidth={SW} aria-hidden />
+              </a>
+              <button onClick={logout} className="grid size-11 place-items-center rounded-[6px] text-muted hover:bg-admin-sidebar-hover hover:text-ink" aria-label="Log out">
+                <LogOut className="size-5" strokeWidth={SW} aria-hidden />
+              </button>
+            </div>
+          </aside>
+
+          {/* Mobile top strip */}
+          <header className="flex h-14 items-center justify-between px-4 md:hidden">
+            <Link href="/admin" className="flex items-center gap-2" aria-label="Studio home">
+              <Medallion />
+              <StudioMark />
+            </Link>
+            <a href="/" target="_blank" rel="noreferrer" className="icon-btn -mr-2 text-ink" aria-label="View website (opens in a new tab)">
+              <ArrowUpRight className="size-5" strokeWidth={SW} />
+            </a>
+          </header>
+
+          <main id="admin-main" className="pb-24 md:ml-16 md:pb-12 lg:ml-[240px]">
+            {tempDb && (
+              <div role="alert" className="flex items-start gap-2.5 bg-danger px-4 py-3 text-[14px] leading-5 text-white md:px-8">
+                <AlertTriangle className="mt-0.5 size-4 shrink-0" strokeWidth={SW} aria-hidden />
+                <p>
+                  <b className="font-semibold">Database not connected.</b> Changes may be lost. In Vercel open your project → <b className="font-semibold">Storage</b> → <b className="font-semibold">Create Database</b> → <b className="font-semibold">Turso</b> → connect, then redeploy.
+                </p>
+              </div>
+            )}
+            <div className="mx-auto max-w-[1200px] px-4 pt-2 pb-6 md:px-8 md:py-8 lg:px-10">{children}</div>
+          </main>
+
+          {/* Mobile floating bar <768 */}
+          <nav
+            aria-label="Studio navigation"
+            className={`fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-40 h-16 rounded-[20px] border border-[rgb(28_25_22/0.06)] bg-white/86 shadow-[0_8px_24px_-8px_rgb(28_25_22/0.18)] backdrop-blur-[20px] backdrop-saturate-[1.8] transition-transform duration-[280ms] ease-[var(--ease-out)] md:hidden ${
+              navHidden || saveBarActive ? "translate-y-[calc(100%+24px)]" : ""
+            }`}
+          >
+            {/* the gliding bindi */}
+            {activeSlot !== 2 && (
+              <span aria-hidden className="pointer-events-none absolute top-1.5 left-0 flex w-1/5 justify-center transition-transform duration-[260ms] ease-[var(--ease-out)]" style={{ transform: `translateX(${activeSlot * 100}%)` }}>
+                <span className="size-1 rounded-full bg-accent" />
+              </span>
+            )}
+            <div className="grid h-full grid-cols-5">
+              <Link href="/admin" className={tab(activeSlot === 0)} aria-current={slot === 0 ? "page" : undefined}>
+                <Home className="size-[22px]" strokeWidth={SW} aria-hidden />
+                Home
+              </Link>
+              <Link href="/admin/orders" className={tab(activeSlot === 1)} aria-current={slot === 1 ? "page" : undefined} aria-label={counts.pendingOrders ? `Orders, ${counts.pendingOrders} new` : undefined}>
+                <span className="relative">
+                  <ShoppingBag className="size-[22px]" strokeWidth={SW} aria-hidden />
+                  {counts.pendingOrders > 0 && (
+                    <span aria-hidden className="tabular absolute -top-1.5 -right-2.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-ink px-1 text-[11px] font-semibold text-white ring-2 ring-white">
+                      {counts.pendingOrders > 99 ? "99+" : counts.pendingOrders}
+                    </span>
+                  )}
                 </span>
+                Orders
               </Link>
-            ) : (
-              <Link key={href} href={href} className={`relative flex flex-col items-center gap-0.5 py-2.5 text-[11px] ${isActive(href) && !(href === "/admin/products" && pathname === "/admin/products/new") ? "text-ink" : "text-muted"}`}>
-                <Icon className="size-5" strokeWidth={1.8} />
-                {label}
-                {count ? <span className="absolute right-[22%] top-1.5 size-2 rounded-full bg-danger" /> : null}
+              <div className="grid place-items-center">
+                <button
+                  type="button"
+                  onClick={() => setSheet("create")}
+                  aria-haspopup="dialog"
+                  aria-expanded={sheet === "create"}
+                  aria-label="Create"
+                  className="grid size-12 place-items-center rounded-full bg-ink text-white transition-transform duration-[120ms] active:scale-[0.92]"
+                >
+                  <Plus className="size-6" strokeWidth={2} aria-hidden />
+                </button>
+              </div>
+              <Link href="/admin/products" className={tab(activeSlot === 3)} aria-current={slot === 3 ? "page" : undefined}>
+                <Package className="size-[22px]" strokeWidth={SW} aria-hidden />
+                Products
               </Link>
-            ),
-          )}
-          <button onClick={() => setOpen(true)} className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] text-muted">
-            <Menu className="size-5" strokeWidth={1.8} />
-            More
-          </button>
-        </nav>
-      </div>
-    </ToastProvider>
+              <button type="button" onClick={() => setSheet("more")} className={tab(activeSlot === 4)} aria-haspopup="dialog" aria-expanded={sheet === "more"}>
+                <span className="relative">
+                  <MoreHorizontal className="size-[22px]" strokeWidth={SW} aria-hidden />
+                  {moreHasCount && <span aria-hidden className="absolute -top-0.5 -right-1 size-2 rounded-full bg-ink ring-2 ring-white" />}
+                </span>
+                More
+              </button>
+            </div>
+          </nav>
+
+          {/* Create sheet */}
+          <Modal open={sheet === "create"} onClose={() => setSheet(null)} title="Create">
+            <ul className="-mx-2 -my-2">
+              <CreateRow href="/admin/products/new?camera=1" title="Snap & Sell: add with camera" text="Take a photo, AI drafts the listing" ai icon={<Camera className="size-5" strokeWidth={SW} />} />
+              <CreateRow href="/admin/products/new?manual=1" title="Add product manually" text="Fill in the details yourself" icon={<PenLine className="size-5" strokeWidth={SW} />} />
+              <CreateRow href="/admin/orders/new" title="Record a WhatsApp order" text="Log an order you got in chat" icon={<WhatsAppIcon className="size-5" />} />
+              <CreateRow href="/admin/marketing" title="New offer" text="Coupon or festive campaign" icon={<Megaphone className="size-5" strokeWidth={SW} />} />
+            </ul>
+          </Modal>
+
+          {/* More sheet */}
+          <Modal open={sheet === "more"} onClose={() => setSheet(null)} title="All sections">
+            <ul className="grid grid-cols-2 gap-2">
+              {moreItems.map((item) => {
+                const Icon = item.icon;
+                const n = countOf(item.count);
+                const on = active === item.href;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      aria-current={on ? "page" : undefined}
+                      className={`flex h-16 items-center gap-3 rounded-[8px] border px-3 text-[15px] leading-tight ${on ? "border-ink bg-white font-semibold" : "border-admin-line bg-white font-medium hover:bg-admin-inset"}`}
+                    >
+                      <Icon className={`size-5 shrink-0 ${item.ai ? "text-ai-fg" : "text-muted"}`} strokeWidth={SW} aria-hidden />
+                      <span className="min-w-0 flex-1">{item.short ?? item.label}</span>
+                      {n > 0 && <span className="tabular grid h-5 min-w-5 place-items-center rounded-full bg-admin-sidebar-hover px-1.5 text-[11px] font-semibold">{n}</span>}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-admin-line pt-4">
+              <a href="/" target="_blank" rel="noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[6px] border border-admin-line text-[15px] font-medium">
+                <ArrowUpRight className="size-4" strokeWidth={SW} aria-hidden /> View website
+              </a>
+              <button onClick={logout} className="flex h-12 items-center justify-center gap-2 rounded-[6px] border border-admin-line text-[15px] font-medium">
+                <LogOut className="size-4" strokeWidth={SW} aria-hidden /> Log out
+              </button>
+            </div>
+          </Modal>
+        </div>
+      </ToastProvider>
+    </AdminChromeContext.Provider>
+  );
+}
+
+// ── Desktop sidebar row ──────────────────────────────────────────────
+function Row({ item, on, n }: { item: NavItem; on: boolean; n: number }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      aria-current={on ? "page" : undefined}
+      className={`relative flex h-[34px] items-center gap-2.5 rounded-[6px] border px-2.5 text-[14px] transition-colors duration-150 ${
+        on ? "border-admin-line bg-white font-semibold text-ink" : "border-transparent font-medium text-ink hover:bg-admin-sidebar-hover"
+      }`}
+    >
+      {on && <span aria-hidden className="absolute top-1/2 -left-[13px] h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-accent" />}
+      <Icon className={`size-[18px] shrink-0 ${item.ai ? "text-ai-fg" : on ? "text-ink" : "text-muted"}`} strokeWidth={SW} aria-hidden />
+      <span className="min-w-0 flex-1 truncate">{item.label}</span>
+      {n > 0 && (
+        <span className="tabular grid h-[18px] min-w-[18px] place-items-center rounded-full bg-admin-sidebar-hover px-1.5 text-[11px] font-semibold text-ink">
+          {n}
+          <span className="sr-only"> waiting</span>
+        </span>
+      )}
+    </Link>
+  );
+}
+
+// ── Tablet rail item ─────────────────────────────────────────────────
+function RailItem({ item, on, n }: { item: NavItem; on: boolean; n: number }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      aria-label={n ? `${item.label}, ${n} waiting` : item.label}
+      aria-current={on ? "page" : undefined}
+      className={`group relative grid size-11 place-items-center rounded-[6px] border transition-colors duration-150 ${on ? "border-admin-line bg-white text-ink" : "border-transparent text-muted hover:bg-admin-sidebar-hover hover:text-ink"}`}
+    >
+      {on && <span aria-hidden className="absolute top-1/2 -left-[11px] h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-accent" />}
+      <Icon className={`size-5 ${item.ai ? "text-ai-fg" : ""}`} strokeWidth={SW} aria-hidden />
+      {n > 0 && <span aria-hidden className="absolute top-1.5 right-1.5 size-2 rounded-full bg-ink ring-2 ring-admin-sidebar" />}
+      <span
+        role="tooltip"
+        className="shadow-float pointer-events-none absolute top-1/2 left-full z-50 ml-3 -translate-y-1/2 rounded-[6px] bg-ink px-2.5 py-1.5 text-[12px] font-medium whitespace-nowrap text-canvas opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+      >
+        {item.label}
+        {n > 0 && <span className="tabular"> · {n}</span>}
+      </span>
+    </Link>
+  );
+}
+
+function CreateRow({ href, title, text, icon, ai }: { href: string; title: string; text: string; icon: React.ReactNode; ai?: boolean }) {
+  return (
+    <li>
+      <Link href={href} className="flex min-h-16 items-center gap-3 rounded-[8px] px-2 py-2 hover:bg-admin-inset">
+        <span className={`grid size-11 shrink-0 place-items-center rounded-[8px] border ${ai ? "border-ai-line bg-ai-bg text-ai-fg" : "border-admin-line bg-admin-inset text-ink"}`}>{icon}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[16px] leading-6 font-semibold">{title}</span>
+          <span className="block text-[14px] leading-5 text-muted">{text}</span>
+        </span>
+        <ChevronRight className="size-4 text-muted" strokeWidth={SW} aria-hidden />
+      </Link>
+    </li>
   );
 }

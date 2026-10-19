@@ -1,19 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDown, ArrowUp, ImagePlus, Loader2, Plus, Trash2 } from "lucide-react";
-import { Loading, PageHeader, Panel, Switch, useToast } from "@/components/admin/ui";
+import { ArrowDown, ArrowUp, BookOpen, ImagePlus, LayoutTemplate, Loader2, Megaphone, MessageCircleQuestion, Plus, ScrollText, Trash2 } from "lucide-react";
+import { adminBtn, Loading, PageHeader, Switch, useToast } from "@/components/admin/ui";
 import { useSettingsForm } from "@/components/admin/useSettings";
 import { SaveBar } from "@/components/admin/SaveBar";
+import { Field, LoadError, Section } from "@/components/admin/core/form";
 import { uploadImages } from "@/lib/client-image";
 import { imgUrl } from "@/lib/format";
 import type { HeroSlide } from "@/lib/types";
 
+const SW = 1.75;
+const iconBtn = "grid size-11 place-items-center rounded-[6px] text-muted transition-colors hover:bg-admin-sidebar hover:text-ink disabled:opacity-40 md:size-9";
+
 export default function ContentPage() {
-  const { s, set, save, saving, dirty } = useSettingsForm();
+  const { s, set, save, saving, dirty, discard, error, reload } = useSettingsForm();
   const toast = useToast();
   const [uploading, setUploading] = useState<string | null>(null);
-  if (!s) return <Loading />;
+  if (!s) return error ? <LoadError message={error} onRetry={reload} /> : <Loading />;
 
   const upload = async (files: FileList | null, done: (url: string) => void, key: string) => {
     if (!files?.[0]) return;
@@ -37,100 +41,178 @@ export default function ContentPage() {
     [next[i], next[j]] = [next[j], next[i]];
     set("heroSlides", next);
   };
+  const addSlide = () => set("heroSlides", [...slides, { id: `h${Date.now()}`, title: "New headline", subtitle: "", eyebrow: "", ctaLabel: "Explore the collection", ctaLink: "/shop", image: "" }]);
+  const setFaq = (i: number, patch: Partial<{ q: string; a: string }>) => set("faqs", s.faqs.map((x, n) => (n === i ? { ...x, ...patch } : x)));
 
   return (
-    <div className="space-y-6 pb-24">
-      <PageHeader title="Website content" subtitle="Change what customers see — no coding needed." />
-
-      <Panel title="Announcement bar" action={<Switch checked={s.announcementActive} onChange={(v) => set("announcementActive", v)} />}>
-        <input value={s.announcement} onChange={(e) => set("announcement", e.target.value)} className="input" placeholder="✨ Free shipping above ₹1999" />
-      </Panel>
-
-      <Panel
-        title="Homepage hero slides"
-        action={
-          <button onClick={() => set("heroSlides", [...slides, { id: `h${Date.now()}`, title: "New slide", subtitle: "", eyebrow: "", ctaLabel: "Shop now", ctaLink: "/shop", image: "" }])} className="btn btn-outline btn-sm">
-            <Plus className="size-4" /> Add slide
-          </button>
+    <div className="pb-24 md:pb-8">
+      <PageHeader
+        title="Website content"
+        subtitle="Change what customers see. No coding needed."
+        actions={
+          <a href="/" target="_blank" rel="noreferrer" className={adminBtn.secondary}>
+            Preview website <span aria-hidden>↗</span>
+          </a>
         }
-      >
-        <div className="space-y-5">
-          {slides.map((sl, i) => (
-            <div key={sl.id} className="grid gap-4 rounded-2xl border border-ink/10 p-4 md:grid-cols-[160px_1fr]">
-              <label className="relative grid aspect-square cursor-pointer place-items-center overflow-hidden rounded-full border-2 border-dashed border-ink/15 bg-tint/40">
-                {uploading === sl.id ? <Loader2 className="size-5 animate-spin" /> : sl.image ? <img src={imgUrl(sl.image, 400)} alt="" className="size-full object-cover" /> : <span className="flex flex-col items-center gap-1 text-xs text-muted"><ImagePlus className="size-6" /> Logo shown</span>}
-                <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files, (url) => setSlide(i, { image: url }), sl.id)} />
+      />
+
+      <div className="space-y-6">
+        <Section title="Announcement bar" text="The thin dark strip above the header. Separate up to three messages with a middle dot ( · )." icon={<Megaphone />}>
+          <div className="flex items-start gap-4">
+            <Field label="Message" className="min-w-0 flex-1" helper={s.codAvailable ? undefined : "Cash-on-delivery mentions are hidden while COD is off in Settings."}>
+              <input value={s.announcement} onChange={(e) => set("announcement", e.target.value)} className="input" placeholder="Free shipping over ₹1,999 · Custom orders open" />
+            </Field>
+            <div className="flex shrink-0 flex-col items-center gap-2 pt-1">
+              <span className="text-[13px] font-semibold">{s.announcementActive ? "On" : "Off"}</span>
+              <Switch checked={s.announcementActive} onChange={(v) => set("announcementActive", v)} label="Show announcement bar" />
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Homepage hero" text="The first slide is what customers see at the top of your homepage. Keep spare versions below and move one up to swap." icon={<LayoutTemplate />}>
+          <ol className="space-y-4">
+            {slides.map((sl, i) => (
+              <li key={sl.id} className={`rounded-[8px] border p-4 ${i === 0 ? "border-ink" : "border-admin-line bg-admin-inset"}`}>
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <p className="text-[13px] font-semibold">
+                    {i === 0 ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <span aria-hidden className="size-1.5 rounded-full bg-success" /> Live on homepage
+                      </span>
+                    ) : (
+                      <span className="text-muted">Spare version {i}</span>
+                    )}
+                  </p>
+                  <div className="flex items-center">
+                    <button type="button" onClick={() => moveSlide(i, -1)} disabled={i === 0} className={iconBtn} aria-label={i === 1 ? "Make this the live hero" : "Move up"}>
+                      <ArrowUp className="size-4" strokeWidth={SW} />
+                    </button>
+                    <button type="button" onClick={() => moveSlide(i, 1)} disabled={i === slides.length - 1} className={iconBtn} aria-label="Move down">
+                      <ArrowDown className="size-4" strokeWidth={SW} />
+                    </button>
+                    {slides.length > 1 && (
+                      <button type="button" onClick={() => set("heroSlides", slides.filter((_, n) => n !== i))} className={`${iconBtn} hover:text-danger`} aria-label="Delete this version">
+                        <Trash2 className="size-4" strokeWidth={SW} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-[140px_1fr]">
+                  <div>
+                    <label className="relative grid aspect-[4/5] w-full max-w-[160px] cursor-pointer place-items-center overflow-hidden rounded-t-full rounded-b-[2px] border border-dashed border-line-strong bg-plinth focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
+                      {uploading === sl.id ? (
+                        <Loader2 className="size-5 animate-spin text-muted" aria-label="Uploading" />
+                      ) : sl.image ? (
+                        <img src={imgUrl(sl.image, 400)} alt="Hero photo" className="size-full object-cover" />
+                      ) : (
+                        <span className="flex flex-col items-center gap-1 px-3 text-center text-[12px] leading-4 text-muted">
+                          <ImagePlus className="size-5" strokeWidth={SW} aria-hidden /> Add photo
+                          <span>(uses a featured piece if empty)</span>
+                        </span>
+                      )}
+                      <input type="file" accept="image/*" className="sr-only" aria-label="Upload hero photo" onChange={(e) => upload(e.target.files, (url) => setSlide(i, { image: url }), sl.id)} />
+                    </label>
+                    {sl.image && (
+                      <button type="button" onClick={() => setSlide(i, { image: "" })} className="mt-1 min-h-11 text-[13px] text-muted underline underline-offset-2 hover:text-ink md:min-h-8">
+                        Remove photo
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid content-start gap-3 md:grid-cols-2">
+                    <Field label="Headline" helper="Short and warm. Around 6 to 9 words reads best." className="md:col-span-2">
+                      <input value={sl.title} onChange={(e) => setSlide(i, { title: e.target.value })} placeholder="Art made slowly, by hand." className="input" />
+                    </Field>
+                    <Field label="Supporting line" className="md:col-span-2">
+                      <textarea value={sl.subtitle ?? ""} onChange={(e) => setSlide(i, { subtitle: e.target.value })} rows={2} className="input" />
+                    </Field>
+                    <Field label="Button text">
+                      <input value={sl.ctaLabel ?? ""} onChange={(e) => setSlide(i, { ctaLabel: e.target.value })} placeholder="Explore the collection" className="input" />
+                    </Field>
+                    <Field label="Button link">
+                      <input value={sl.ctaLink ?? ""} onChange={(e) => setSlide(i, { ctaLink: e.target.value })} placeholder="/shop" className="input" spellCheck={false} autoCapitalize="none" />
+                    </Field>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <button type="button" onClick={addSlide} className={`${adminBtn.secondary} mt-4`}>
+            <Plus className="size-4" strokeWidth={SW} aria-hidden /> Add a spare version
+          </button>
+        </Section>
+
+        <Section title="Your story" text="Shown on the About page and in ‘Meet the maker’ on the homepage." icon={<BookOpen />}>
+          <div className="grid gap-4 sm:grid-cols-[140px_1fr]">
+            <div>
+              <label className="relative grid aspect-[4/5] w-full max-w-[160px] cursor-pointer place-items-center overflow-hidden rounded-t-full rounded-b-[2px] border border-dashed border-line-strong bg-plinth focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
+                {uploading === "artist" ? (
+                  <Loader2 className="size-5 animate-spin text-muted" aria-label="Uploading" />
+                ) : s.artistImage ? (
+                  <img src={imgUrl(s.artistImage, 400)} alt="Your portrait" className="size-full object-cover" />
+                ) : (
+                  <span className="flex flex-col items-center gap-1 px-3 text-center text-[12px] leading-4 text-muted">
+                    <ImagePlus className="size-5" strokeWidth={SW} aria-hidden /> Your photo
+                  </span>
+                )}
+                <input type="file" accept="image/*" className="sr-only" aria-label="Upload your portrait" onChange={(e) => upload(e.target.files, (url) => set("artistImage", url), "artist")} />
               </label>
-              <div className="space-y-2.5">
-                <input value={sl.eyebrow ?? ""} onChange={(e) => setSlide(i, { eyebrow: e.target.value })} placeholder="Small text above title" className="input py-2 text-sm" />
-                <input value={sl.title} onChange={(e) => setSlide(i, { title: e.target.value })} placeholder="Big headline" className="input font-display text-xl" />
-                <textarea value={sl.subtitle ?? ""} onChange={(e) => setSlide(i, { subtitle: e.target.value })} placeholder="Supporting text" rows={2} className="input text-sm" />
-                <div className="grid grid-cols-2 gap-2">
-                  <input value={sl.ctaLabel ?? ""} onChange={(e) => setSlide(i, { ctaLabel: e.target.value })} placeholder="Button text" className="input py-2 text-sm" />
-                  <input value={sl.ctaLink ?? ""} onChange={(e) => setSlide(i, { ctaLink: e.target.value })} placeholder="/shop?category=…" className="input py-2 text-sm" />
+              {s.artistImage && (
+                <button type="button" onClick={() => set("artistImage", "")} className="mt-1 min-h-11 text-[13px] text-muted underline underline-offset-2 hover:text-ink md:min-h-8">
+                  Remove photo
+                </button>
+              )}
+            </div>
+            <div className="grid content-start gap-3 md:grid-cols-2">
+              <Field label="Title">
+                <input value={s.aboutTitle} onChange={(e) => set("aboutTitle", e.target.value)} className="input" />
+              </Field>
+              <Field label="Your name" helper="Used as your sign-off.">
+                <input value={s.artistName} onChange={(e) => set("artistName", e.target.value)} className="input" />
+              </Field>
+              <Field label="Story" helper="Leave a blank line between paragraphs." className="md:col-span-2">
+                <textarea value={s.aboutStory} onChange={(e) => set("aboutStory", e.target.value)} rows={9} className="input" />
+              </Field>
+            </div>
+          </div>
+        </Section>
+
+        <Section title="FAQs" text="Answers to what customers ask most on WhatsApp." icon={<MessageCircleQuestion />}>
+          {s.faqs.length === 0 && <p className="mb-3 text-[14px] text-muted">No questions yet.</p>}
+          <ol className="space-y-3">
+            {s.faqs.map((f, i) => (
+              <li key={i} className="flex gap-2 rounded-[8px] border border-admin-line p-3 md:p-4">
+                <span className="tabular w-6 shrink-0 pt-3 text-[13px] font-semibold text-muted">{String(i + 1).padStart(2, "0")}</span>
+                <div className="min-w-0 flex-1 space-y-2">
+                  <input value={f.q} onChange={(e) => setFaq(i, { q: e.target.value })} placeholder="Question" aria-label={`Question ${i + 1}`} className="input font-semibold" />
+                  <textarea value={f.a} onChange={(e) => setFaq(i, { a: e.target.value })} placeholder="Answer" aria-label={`Answer ${i + 1}`} rows={2} className="input" />
                 </div>
-                <div className="flex gap-1">
-                  <button onClick={() => moveSlide(i, -1)} className="grid size-8 place-items-center rounded-full hover:bg-ink/5" aria-label="Move up"><ArrowUp className="size-4" /></button>
-                  <button onClick={() => moveSlide(i, 1)} className="grid size-8 place-items-center rounded-full hover:bg-ink/5" aria-label="Move down"><ArrowDown className="size-4" /></button>
-                  {sl.image && <button onClick={() => setSlide(i, { image: "" })} className="text-xs text-muted underline">Remove image</button>}
-                  {slides.length > 1 && (
-                    <button onClick={() => set("heroSlides", slides.filter((_, n) => n !== i))} className="ml-auto grid size-8 place-items-center rounded-full text-danger hover:bg-danger/10" aria-label="Delete slide"><Trash2 className="size-4" /></button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Panel>
+                <button type="button" onClick={() => set("faqs", s.faqs.filter((_, n) => n !== i))} className={`${iconBtn} shrink-0 hover:text-danger`} aria-label={`Delete question ${i + 1}`}>
+                  <Trash2 className="size-4" strokeWidth={SW} />
+                </button>
+              </li>
+            ))}
+          </ol>
+          <button type="button" onClick={() => set("faqs", [...s.faqs, { q: "", a: "" }])} className={`${adminBtn.secondary} mt-4`}>
+            <Plus className="size-4" strokeWidth={SW} aria-hidden /> Add a question
+          </button>
+        </Section>
 
-      <Panel title="About / Our story">
-        <div className="grid gap-4 md:grid-cols-[160px_1fr]">
-          <label className="relative grid aspect-[4/5] cursor-pointer place-items-center overflow-hidden rounded-t-full rounded-b-2xl border-2 border-dashed border-ink/15 bg-tint/40">
-            {uploading === "artist" ? <Loader2 className="size-5 animate-spin" /> : s.artistImage ? <img src={imgUrl(s.artistImage, 400)} alt="" className="size-full object-cover" /> : <span className="flex flex-col items-center gap-1 px-2 text-center text-xs text-muted"><ImagePlus className="size-6" /> Your photo</span>}
-            <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files, (url) => set("artistImage", url), "artist")} />
-          </label>
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <input value={s.aboutTitle} onChange={(e) => set("aboutTitle", e.target.value)} placeholder="Title" className="input" />
-              <input value={s.artistName} onChange={(e) => set("artistName", e.target.value)} placeholder="Your name (signature)" className="input" />
-            </div>
-            <textarea value={s.aboutStory} onChange={(e) => set("aboutStory", e.target.value)} rows={8} className="input" />
+        <Section title="Policies" text="Linked from the footer and the checkout." icon={<ScrollText />}>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="Shipping policy">
+              <textarea value={s.shippingPolicy} onChange={(e) => set("shippingPolicy", e.target.value)} rows={5} className="input" />
+            </Field>
+            <Field label="Returns & damage policy">
+              <textarea value={s.returnPolicy} onChange={(e) => set("returnPolicy", e.target.value)} rows={5} className="input" />
+            </Field>
+            <Field label="Care guide" helper="Used for products that don’t have their own care notes." className="md:col-span-2">
+              <textarea value={s.careGuide} onChange={(e) => set("careGuide", e.target.value)} rows={3} className="input" />
+            </Field>
           </div>
-        </div>
-      </Panel>
+        </Section>
+      </div>
 
-      <Panel title="FAQs" action={<button onClick={() => set("faqs", [...s.faqs, { q: "", a: "" }])} className="btn btn-outline btn-sm"><Plus className="size-4" /> Add</button>}>
-        <div className="space-y-3">
-          {s.faqs.map((f, i) => (
-            <div key={i} className="flex gap-2">
-              <div className="flex-1 space-y-2">
-                <input value={f.q} onChange={(e) => set("faqs", s.faqs.map((x, n) => (n === i ? { ...x, q: e.target.value } : x)))} placeholder="Question" className="input font-medium" />
-                <textarea value={f.a} onChange={(e) => set("faqs", s.faqs.map((x, n) => (n === i ? { ...x, a: e.target.value } : x)))} placeholder="Answer" rows={2} className="input text-sm" />
-              </div>
-              <button onClick={() => set("faqs", s.faqs.filter((_, n) => n !== i))} className="self-start p-2 text-muted hover:text-danger" aria-label="Delete FAQ"><Trash2 className="size-4" /></button>
-            </div>
-          ))}
-        </div>
-      </Panel>
-
-      <Panel title="Policies">
-        <div className="space-y-4">
-          <div>
-            <label className="label">Shipping policy</label>
-            <textarea value={s.shippingPolicy} onChange={(e) => set("shippingPolicy", e.target.value)} rows={3} className="input" />
-          </div>
-          <div>
-            <label className="label">Returns & damage policy</label>
-            <textarea value={s.returnPolicy} onChange={(e) => set("returnPolicy", e.target.value)} rows={3} className="input" />
-          </div>
-          <div>
-            <label className="label">Care guide (default for products)</label>
-            <textarea value={s.careGuide} onChange={(e) => set("careGuide", e.target.value)} rows={2} className="input" />
-          </div>
-        </div>
-      </Panel>
-
-      <SaveBar dirty={dirty} saving={saving} onSave={save} />
+      <SaveBar dirty={dirty} saving={saving} onSave={save} onDiscard={discard} />
     </div>
   );
 }

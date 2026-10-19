@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api, useToast } from "./ui";
 import type { StoreSettings } from "@/lib/types";
 
@@ -11,30 +11,53 @@ export function useSettingsForm() {
   const [system, setSystem] = useState<SystemInfo | null>(null);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<number | null>(null);
+  const saved = useRef<StoreSettings | null>(null);
   const toast = useToast();
-  useEffect(() => {
-    api<{ settings: StoreSettings; system: SystemInfo }>("/api/admin/settings").then((d) => {
-      setS(d.settings);
-      setSystem(d.system);
-    });
+
+  const load = useCallback(() => {
+    setError(null);
+    api<{ settings: StoreSettings; system: SystemInfo }>("/api/admin/settings")
+      .then((d) => {
+        saved.current = d.settings;
+        setS(d.settings);
+        setSystem(d.system);
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : "Could not load settings"));
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
   const set = <K extends keyof StoreSettings>(k: K, v: StoreSettings[K]) => {
     setS((x) => (x ? { ...x, [k]: v } : x));
     setDirty(true);
   };
+
   const save = async () => {
     if (!s) return;
     setSaving(true);
     try {
       const d = await api<{ settings: StoreSettings }>("/api/admin/settings", { method: "PUT", body: s });
+      saved.current = d.settings;
       setS(d.settings);
       setDirty(false);
-      toast("Saved — your website is updated");
+      setSavedAt(Date.now());
+      toast("Saved. Your website is updated");
     } catch (e) {
-      toast(e instanceof Error ? e.message : "Failed", "err");
+      toast(e instanceof Error ? e.message : "Could not save", "err");
     } finally {
       setSaving(false);
     }
   };
-  return { s, set, save, saving, dirty, system };
+
+  /** Throw away unsaved edits and return to the last saved state. */
+  const discard = () => {
+    if (saved.current) setS(saved.current);
+    setDirty(false);
+  };
+
+  return { s, set, save, saving, dirty, system, discard, savedAt, error, reload: load };
 }

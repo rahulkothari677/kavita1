@@ -1,90 +1,162 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
-import { FacebookIcon as Facebook, InstagramIcon as Instagram, Lotus, WhatsAppIcon, YoutubeIcon as Youtube } from "../Motifs";
+import { Plus } from "lucide-react";
+import { Eyebrow, GiantWordmark } from "@/components/brand";
 import { NewsletterForm } from "./NewsletterForm";
 import type { Category, StoreSettings } from "@/lib/types";
 import { waLink } from "@/lib/whatsapp";
 
-export function Footer({ settings, categories }: { settings: StoreSettings; categories: Category[] }) {
+type FooterLink = { href: string; label: string; external?: boolean };
+type Column = { title: string; links: FooterLink[] };
+
+function FooterAnchor({ l, className = "" }: { l: FooterLink; className?: string }) {
+  const cls = `transition-colors hover:text-accent-on-dark ${className}`;
+  return l.external ? (
+    <a href={l.href} target="_blank" rel="noreferrer" className={cls}>
+      {l.label}
+    </a>
+  ) : (
+    <Link href={l.href} className={cls}>
+      {l.label}
+    </Link>
+  );
+}
+
+/** Desktop: a plain column. Phones: a 52px accordion row (native <details>, no JS). */
+function FooterColumn({ col }: { col: Column }) {
+  const list = (
+    <ul className="space-y-1 text-[14px] lg:space-y-2.5">
+      {col.links.map((l) => (
+        <li key={l.href + l.label}>
+          <FooterAnchor l={l} className="inline-flex min-h-11 items-center lg:min-h-0" />
+        </li>
+      ))}
+    </ul>
+  );
   return (
-    <footer className="mt-24 bg-ink text-on-ink">
-      <div className="mx-auto max-w-7xl px-4 py-14 md:px-6">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
-          <div>
-            <div className="flex items-center gap-3">
-              <img src="/brand/medallion.webp" alt="" className="size-14 rounded-full" />
-              <div>
-                <p className="font-display text-3xl font-semibold leading-none">Kavita&apos;s</p>
-                <p className="text-[11px] tracking-[0.35em] text-on-ink/70">ARTISTRY</p>
-              </div>
-            </div>
-            <p className="mt-5 max-w-xs font-script text-2xl text-accent-soft">Art that adds happiness to your space</p>
-            <div className="mt-6 flex gap-2">
-              {settings.instagram && (
-                <a href={settings.instagram} target="_blank" rel="noreferrer" className="rounded-full border border-on-ink/20 p-2.5 hover:bg-on-ink/10" aria-label="Instagram">
-                  <Instagram className="size-4" />
-                </a>
-              )}
-              {settings.facebook && (
-                <a href={settings.facebook} target="_blank" rel="noreferrer" className="rounded-full border border-on-ink/20 p-2.5 hover:bg-on-ink/10" aria-label="Facebook">
-                  <Facebook className="size-4" />
-                </a>
-              )}
-              {settings.youtube && (
-                <a href={settings.youtube} target="_blank" rel="noreferrer" className="rounded-full border border-on-ink/20 p-2.5 hover:bg-on-ink/10" aria-label="YouTube">
-                  <Youtube className="size-4" />
-                </a>
-              )}
-              <a href={waLink(settings.whatsappNumber, "Hi Kavita's Artistry! 🌸")} target="_blank" rel="noreferrer" className="rounded-full border border-on-ink/20 p-2.5 hover:bg-on-ink/10" aria-label="WhatsApp">
-                <WhatsAppIcon className="size-4" />
-              </a>
-            </div>
+    <>
+      <details className="group border-b border-line-on-dark lg:hidden">
+        <summary className="flex h-[52px] cursor-pointer list-none items-center justify-between text-[11px] font-semibold tracking-[0.14em] text-muted-on-dark uppercase [&::-webkit-details-marker]:hidden">
+          {col.title}
+          <Plus aria-hidden className="size-4 text-on-dark transition-transform duration-[220ms] group-open:rotate-45" strokeWidth={1.5} />
+        </summary>
+        <div className="pb-4">{list}</div>
+      </details>
+      <div className="hidden lg:block">
+        <h3 className="text-[11px] font-semibold tracking-[0.14em] text-muted-on-dark uppercase lg:text-[12px]">{col.title}</h3>
+        <div className="mt-5">{list}</div>
+      </div>
+    </>
+  );
+}
+
+export function Footer({ settings, categories }: { settings: StoreSettings; categories: Category[] }) {
+  const wa = waLink(settings.whatsappNumber, "Hi Kavita’s Artistry! I have a question.");
+  const columns: Column[] = [
+    {
+      title: "Shop",
+      links: [
+        { href: "/shop", label: "All pieces" },
+        ...categories.slice(0, 6).map((c) => ({ href: `/shop?category=${c.slug}`, label: c.name })),
+      ],
+    },
+    {
+      title: "Help",
+      links: [
+        { href: "/track", label: "Track your order" },
+        { href: "/faq", label: "FAQs" },
+        { href: "/policies/shipping", label: "Shipping" },
+        { href: "/policies/returns", label: "Returns & damage" },
+        { href: "/policies/care", label: "Care guide" },
+      ],
+    },
+    {
+      title: "Studio",
+      links: [
+        { href: "/about", label: "Our story" },
+        { href: "/custom-order", label: "Custom orders" },
+        { href: "/gift-finder", label: "Gift finder" },
+        { href: "/wishlist", label: "Wishlist" },
+      ],
+    },
+    {
+      title: "Contact",
+      links: [
+        { href: wa, label: "WhatsApp us", external: true },
+        ...(settings.email ? [{ href: `mailto:${settings.email}`, label: settings.email, external: true }] : []),
+        ...(settings.phone ? [{ href: `tel:${settings.phone.replace(/[^\d+]/g, "")}`, label: settings.phone, external: true }] : []),
+      ],
+    },
+  ];
+
+  const socials = ([
+    settings.instagram ? { href: settings.instagram, label: "Instagram", external: true } : null,
+    settings.facebook ? { href: settings.facebook, label: "Facebook", external: true } : null,
+    settings.youtube ? { href: settings.youtube, label: "YouTube", external: true } : null,
+    { href: wa, label: "WhatsApp", external: true },
+  ] as (FooterLink | null)[]).filter((x): x is FooterLink => x !== null);
+
+  // Only the methods actually offered (FAQ: UPI or bank transfer once confirmed on WhatsApp).
+  const payments = ["UPI", "Bank transfer", ...(settings.codAvailable ? ["Cash on delivery"] : [])];
+
+  return (
+    <footer className="on-dark bg-ink-deep pb-[calc(64px+env(safe-area-inset-bottom))] text-on-dark lg:pb-0">
+      <div className="container-x pt-16 lg:pt-24">
+        {/* Newsletter */}
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-6">
+          <div className="lg:col-span-6">
+            <Eyebrow>From the studio</Eyebrow>
+            <h2 className="mt-4 max-w-[16ch] font-display text-[32px] leading-[1.1] font-[380] tracking-[-0.015em] lg:text-[40px]">
+              Letters from the <em>studio</em>, once a month
+            </h2>
           </div>
-          <div>
-            <h4 className="mb-4 text-xs tracking-[0.25em] text-on-ink/60">SHOP</h4>
-            <ul className="space-y-2.5 text-[15px]">
-              {categories.slice(0, 6).map((c) => (
-                <li key={c.id}>
-                  <Link href={`/shop?category=${c.slug}`} className="hover:text-accent-soft">
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link href="/custom-order" className="hover:text-accent-soft">
-                  Custom orders
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-4 text-xs tracking-[0.25em] text-on-ink/60">HELP</h4>
-            <ul className="space-y-2.5 text-[15px]">
-              <li><Link href="/track" className="hover:text-accent-soft">Track your order</Link></li>
-              <li><Link href="/faq" className="hover:text-accent-soft">FAQs</Link></li>
-              <li><Link href="/policies/shipping" className="hover:text-accent-soft">Shipping</Link></li>
-              <li><Link href="/policies/returns" className="hover:text-accent-soft">Returns & damage</Link></li>
-              <li><Link href="/policies/care" className="hover:text-accent-soft">Care guide</Link></li>
-              <li><Link href="/about" className="hover:text-accent-soft">Our story</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-4 text-xs tracking-[0.25em] text-on-ink/60">STAY IN TOUCH</h4>
-            <p className="mb-3 text-sm text-on-ink/75">New collections, festive drops and studio stories — no spam, promise.</p>
+          <div className="lg:col-span-5 lg:col-start-8">
+            <p className="mb-2 text-[14px] text-muted-on-dark">New pieces, festive drops and notes from Kavita’s work table. No spam.</p>
             <NewsletterForm />
-            <ul className="mt-6 space-y-2 text-sm text-on-ink/80">
-              {settings.phone && <li className="flex items-center gap-2"><Phone className="size-4" /> {settings.phone}</li>}
-              {settings.email && <li className="flex items-center gap-2"><Mail className="size-4" /> {settings.email}</li>}
-              {settings.address && <li className="flex items-center gap-2"><MapPin className="size-4" /> {settings.address}</li>}
-            </ul>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-on-ink/15 pt-6 text-xs text-on-ink/60 md:flex-row">
-          <p>© {new Date().getFullYear()} {settings.storeName}. Handmade with love in India.</p>
-          <Lotus className="h-5 text-accent-soft" />
-          <p>Orders confirmed personally on WhatsApp 💛</p>
+
+        {/* Brand + link columns */}
+        <div className="mt-14 grid gap-10 border-t border-line-on-dark pt-10 lg:mt-20 lg:grid-cols-12 lg:gap-6 lg:pt-14">
+          <div className="lg:col-span-4">
+            <span className="grid size-10 place-items-center rounded-full bg-canvas">
+              <img src="/brand/medallion.webp" alt="" width={32} height={32} loading="lazy" decoding="async" className="size-8 rounded-full" />
+            </span>
+            <p className="eyebrow no-dot mt-5">Handmade with love · India</p>
+            <p className="mt-3 max-w-[34ch] text-[14px] leading-relaxed text-muted-on-dark">
+              Lippan mirror work, mandalas, festive and personalised pieces, made by hand in Kavita’s home studio. Every order is confirmed personally on WhatsApp.
+            </p>
+          </div>
+          <div className="border-t border-line-on-dark lg:col-span-8 lg:grid lg:grid-cols-4 lg:gap-6 lg:border-t-0">
+            {columns.map((c) => (
+              <FooterColumn key={c.title} col={c} />
+            ))}
+          </div>
+        </div>
+
+        {/* Payments, copyright, socials */}
+        <div className="mt-10 flex flex-col gap-5 border-t border-line-on-dark py-8 text-[13px] text-muted-on-dark lg:mt-16 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+          <p>
+            <span className="sr-only">We accept: </span>
+            {payments.join(" · ")}
+          </p>
+          <p>
+            © {new Date().getFullYear()} Kavita’s Artistry · Handmade in India ·{" "}
+            <span lang="hi" className="font-deva text-on-dark">
+              हस्तनिर्मित
+            </span>
+          </p>
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-2" aria-label="Social links">
+            {socials.map((s) => (
+              <li key={s.label}>
+                <a href={s.href} target="_blank" rel="noreferrer" className="group inline-flex min-h-11 items-center text-on-dark lg:min-h-0">
+                  <span className="link">{s.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
+      <GiantWordmark />
     </footer>
   );
 }

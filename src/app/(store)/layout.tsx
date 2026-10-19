@@ -5,6 +5,7 @@ import { CartDrawer } from "@/components/store/CartDrawer";
 import { FloatingActions } from "@/components/store/FloatingActions";
 import { MobileTabBar } from "@/components/store/MobileTabBar";
 import { QuickView } from "@/components/store/QuickView";
+import { AnnouncementBar } from "@/components/store/chrome/AnnouncementBar";
 import { getSettings } from "@/lib/settings";
 import { categoryTree } from "@/lib/repo";
 import { aiProvider } from "@/lib/ai";
@@ -25,15 +26,31 @@ export default async function StoreLayout({ children }: { children: React.ReactN
     aiAssistantName: settings.aiAssistantName,
     aiAvailable: aiProvider() !== null,
     instagram: settings.instagram,
+    codAvailable: settings.codAvailable,
   };
   return (
     <StoreProvider settings={pub}>
-      <div className="paper-grain min-h-screen pb-16 md:pb-0">
-        <Header categories={categories} announcement={settings.announcementActive ? settings.announcement : null} />
-        {!settings.acceptingOrders && (
-          <div className="bg-accent-soft/30 px-4 py-2.5 text-center text-sm text-ink">{settings.vacationMessage}</div>
+      <div className="flex min-h-screen flex-col">
+        <a
+          href="#main"
+          className="sr-only z-[90] rounded-[4px] bg-ink px-4 py-3 text-[14px] font-medium text-canvas focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        >
+          Skip to content
+        </a>
+        <AnnouncementBar text={settings.announcementActive ? settings.announcement : null} codAvailable={settings.codAvailable} />
+        <Header categories={categories} />
+        {!settings.acceptingOrders && settings.vacationMessage && (
+          <div role="note" className="border-b border-line bg-plinth">
+            <p className="container-x flex items-center justify-center gap-2.5 py-2.5 text-center text-[14px] text-ink-2">
+              <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-accent" />
+              {settings.vacationMessage}
+            </p>
+          </div>
         )}
-        <main>{children}</main>
+        {/* Below lg the tab bar (64px + safe area) floats over the page bottom */}
+        <main id="main" tabIndex={-1} className="flex-1 pb-[calc(64px+env(safe-area-inset-bottom)+16px)] outline-none lg:pb-16">
+          {children}
+        </main>
         <Footer settings={settings} categories={categories} />
       </div>
       <CartDrawer />

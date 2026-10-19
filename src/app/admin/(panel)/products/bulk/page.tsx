@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CheckCircle2, ImagePlus, Link2, Loader2, Sparkles, Trash2, AlertTriangle } from "lucide-react";
-import { api, Panel, useToast } from "@/components/admin/ui";
+import { AlertTriangle, CheckCircle2, ImagePlus, Link2, Loader2, RotateCcw, Sparkles, Trash2 } from "lucide-react";
+import { api } from "@/components/admin/ui";
+import { ADMIN_ICONS, AiDraftChip, btn, ContextBar, cx, DetailHeader, field, StateChip, useActionToast, useEasedProgress } from "@/components/admin/pages/kit";
 import { toAiImage, uploadImages } from "@/lib/client-image";
 import type { Category } from "@/lib/types";
 
@@ -19,6 +19,8 @@ type Item = {
   price: string;
   categoryId: string;
   draft?: Record<string, unknown>;
+  /** Fields still holding the AI's first draft (cleared when edited). */
+  aiFilled?: ("name" | "price" | "categoryId")[];
 };
 
 export default function BulkUploadPage() {
@@ -27,13 +29,18 @@ export default function BulkUploadPage() {
   const [running, setRunning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [aiOn, setAiOn] = useState(true);
+  const [dragOver, setDragOver] = useState(false);
   const input = useRef<HTMLInputElement>(null);
-  const toast = useToast();
+  const toast = useActionToast();
   const router = useRouter();
 
   useEffect(() => {
-    api<{ categories: Category[] }>("/api/admin/categories").then((d) => setCats(d.categories));
-    api<{ system: { ai: string | null } }>("/api/admin/settings").then((d) => setAiOn(Boolean(d.system.ai)));
+    api<{ categories: Category[] }>("/api/admin/categories")
+      .then((d) => setCats(d.categories))
+      .catch(() => {});
+    api<{ system: { ai: string | null } }>("/api/admin/settings")
+      .then((d) => setAiOn(Boolean(d.system.ai)))
+      .catch(() => {});
   }, []);
 
   const addFiles = (list: FileList | null) => {
@@ -55,6 +62,13 @@ export default function BulkUploadPage() {
     });
 
   const update = (key: string, patch: Partial<Item>) => setItems((cur) => cur.map((it) => (it.key === key ? { ...it, ...patch } : it)));
+  const edit = (it: Item, k: "name" | "price" | "categoryId", v: string) => update(it.key, { [k]: v, aiFilled: (it.aiFilled ?? []).filter((x) => x !== k) });
+
+  const removeItem = (idx: number) => {
+    const it = items[idx];
+    setItems((c) => c.filter((x) => x.key !== it.key));
+    toast("Removed from the batch", "ok", { label: "Undo", onClick: () => setItems((c) => [...c.slice(0, idx), it, ...c.slice(idx)]) });
+  };
 
   const processOne = async (it: Item) => {
     update(it.key, { status: "working", error: undefined });
@@ -65,14 +79,25 @@ export default function BulkUploadPage() {
           ? Promise.all(it.files.slice(0, 3).map((f) => toAiImage(f))).then((images) => api<{ draft: Record<string, unknown> }>("/api/admin/ai/product-from-images", { body: { images } }).then((d) => d.draft))
           : Promise.resolve(undefined),
       ]);
-      update(it.key, {
-        status: "done",
-        images: urls,
-        draft,
-        name: it.name || String(draft?.name ?? ""),
-        price: it.price || String(draft?.suggestedPrice ?? ""),
-        categoryId: it.categoryId || String(draft?.categoryId ?? ""),
-      });
+      setItems((cur) =>
+        cur.map((x) => {
+          if (x.key !== it.key) return x;
+          const aiFilled: Item["aiFilled"] = [];
+          if (!x.name && draft?.name) aiFilled.push("name");
+          if (!x.price && draft?.suggestedPrice) aiFilled.push("price");
+          if (!x.categoryId && draft?.categoryId) aiFilled.push("categoryId");
+          return {
+            ...x,
+            status: "done",
+            images: urls,
+            draft,
+            aiFilled,
+            name: x.name || String(draft?.name ?? ""),
+            price: x.price || String(draft?.suggestedPrice ?? ""),
+            categoryId: x.categoryId || String(draft?.categoryId ?? ""),
+          };
+        }),
+      );
     } catch (e) {
       update(it.key, { status: "error", error: e instanceof Error ? e.message : "Failed" });
     }
@@ -91,7 +116,7 @@ export default function BulkUploadPage() {
 
   const saveAll = async (publish: boolean) => {
     const ready = items.filter((i) => i.status === "done" && i.name.trim());
-    if (!ready.length) return toast("Nothing ready to save yet", "err");
+    if (!ready.length) return toast("Nothing is ready to save yet", "err");
     setSaving(true);
     try {
       const products = ready.map((i) => {
@@ -107,97 +132,126 @@ export default function BulkUploadPage() {
         };
       });
       await api("/api/admin/products/bulk", { body: { action: "create", products } });
-      toast(`${products.length} products ${publish ? "published" : "saved as drafts"} 🎉`);
+      toast(`${products.length} ${products.length === 1 ? "piece" : "pieces"} ${publish ? "published" : "saved as drafts"}`);
       router.push("/admin/products");
     } catch (e) {
-      toast(e instanceof Error ? e.message : "Failed", "err");
+      toast(e instanceof Error ? e.message : "Could not save", "err");
     } finally {
       setSaving(false);
     }
   };
 
   const doneCount = items.filter((i) => i.status === "done").length;
+  const workingCount = items.filter((i) => i.status === "working").length;
+  const progress = items.length ? doneCount / items.length : 0;
+  const flatCats = cats.flatMap((c) => [c, ...(c.children ?? [])]);
 
   return (
-    <div className="pb-24">
-      <div className="mb-6 flex items-center gap-3">
-        <Link href="/admin/products" className="grid size-9 place-items-center rounded-full bg-white shadow-sm" aria-label="Back">
-          <ArrowLeft className="size-4" />
-        </Link>
-        <div>
-          <h1 className="font-display text-3xl font-semibold md:text-4xl">Bulk upload</h1>
-          <p className="text-sm text-muted">Add many photos at once — {aiOn ? "AI writes a full listing for each piece." : "then name & price each piece."}</p>
-        </div>
-      </div>
+    <div className={cx(ADMIN_ICONS, "pb-24 md:pb-8")}>
+      <DetailHeader back={{ href: "/admin/products", label: "Products" }} title="Bulk upload" meta={aiOn ? "Add many photos at once. AI drafts a full listing for each piece." : "Add many photos at once, then name and price each piece."} />
 
       <div
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={(e) => (e.preventDefault(), setDragOver(true))}
+        onDragLeave={() => setDragOver(false)}
         onDrop={(e) => {
           e.preventDefault();
+          setDragOver(false);
           addFiles(e.dataTransfer.files);
         }}
-        onClick={() => input.current?.click()}
-        className="cursor-pointer rounded-[1.75rem] border-2 border-dashed border-ink/15 bg-white p-10 text-center transition hover:border-ink/40"
+        className={cx("rounded-[8px] border border-dashed bg-white px-5 py-10 text-center transition-colors", dragOver ? "border-ink bg-admin-inset" : "border-line-strong")}
       >
-        <ImagePlus className="mx-auto size-10 text-ink/40" />
-        <p className="mt-3 font-display text-2xl">Drop photos here or tap to choose</p>
-        <p className="mt-1 text-sm text-muted">One photo = one product. Have several photos of the same piece? Use “Join with previous”.</p>
+        <span className="mx-auto grid size-14 place-items-center rounded-[12px] bg-plinth text-ink">
+          <ImagePlus className="size-6" aria-hidden />
+        </span>
+        <p className="mt-3 font-display text-[22px] leading-tight">Drop photos here</p>
+        <p className="mx-auto mt-1 max-w-md text-[14px] text-muted">One photo makes one piece. Several photos of the same piece? Use “Join with previous”.</p>
+        <button type="button" onClick={() => input.current?.click()} className={btn("primary", "mt-4")}>
+          Choose photos
+        </button>
         <input ref={input} type="file" accept="image/*" multiple hidden onChange={(e) => (addFiles(e.target.files), (e.target.value = ""))} />
       </div>
 
       {items.length > 0 && (
         <>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <p className="text-sm text-muted">
-              {items.length} products · {doneCount} ready
-            </p>
-            <button onClick={runAll} disabled={running || doneCount === items.length} className="btn btn-primary btn-sm ml-auto">
-              {running ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />} {running ? "Working…" : aiOn ? "Upload & write listings with AI" : "Upload photos"}
-            </button>
+          <div className={cx("mt-4 overflow-hidden rounded-[8px] border", aiOn ? "border-ai-line bg-ai-bg" : "border-admin-line bg-white")}>
+            {running && (
+              <div className="h-0.5 bg-ai-line" aria-hidden>
+                <div className={cx("h-full transition-[width] duration-500", aiOn ? "bg-ai-fg" : "bg-ink")} style={{ width: `${Math.round(progress * 100)}%` }} />
+              </div>
+            )}
+            <div className="flex flex-wrap items-center gap-3 p-4">
+              <p className={cx("tabular text-[14px] font-medium", aiOn ? "text-ai-fg" : "text-ink")} role="status" aria-live="polite">
+                {items.length} {items.length === 1 ? "piece" : "pieces"} · {doneCount} ready{workingCount ? ` · ${workingCount} in progress` : ""}
+              </p>
+              <button onClick={runAll} disabled={running || doneCount === items.length} className={btn(aiOn ? "ai" : "primary", "ml-auto")}>
+                {running ? <Loader2 className="size-4 animate-spin" aria-hidden /> : aiOn ? <Sparkles className="size-4" aria-hidden /> : null}
+                {running ? (aiOn ? "AI is writing…" : "Uploading…") : aiOn ? "Upload & write listings with AI" : "Upload photos"}
+              </button>
+            </div>
           </div>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+
+          <ul className="mt-3 grid gap-3 md:mt-4 md:grid-cols-2 md:gap-4">
             {items.map((it, idx) => (
-              <Panel key={it.key} className={it.status === "error" ? "ring-1 ring-danger/40" : ""}>
-                <div className="flex gap-4">
-                  <div className="grid w-28 shrink-0 grid-cols-2 gap-1">
+              <li key={it.key} className={cx("rounded-[8px] border bg-white p-4", it.status === "error" ? "border-danger" : it.status === "working" && aiOn ? "border-ai-line" : "border-admin-line")}>
+                <div className="flex gap-3">
+                  <div className="grid w-24 shrink-0 grid-cols-2 gap-1 self-start">
                     {it.previews.map((src, n) => (
-                      <img key={n} src={src} alt="" className={`aspect-square w-full rounded-lg object-cover ${n === 0 ? "col-span-2" : ""}`} />
+                      <img key={n} src={src} alt="" className={cx("aspect-[4/5] w-full rounded-[6px] bg-plinth object-cover", n === 0 && "col-span-2")} />
                     ))}
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
-                    <div className="flex items-center gap-2 text-xs">
-                      {it.status === "working" && (
-                        <span className="flex items-center gap-1 text-accent">
-                          <Loader2 className="size-3.5 animate-spin" /> {aiOn ? "AI writing…" : "Uploading…"}
-                        </span>
+                    <div className="flex min-h-8 flex-wrap items-center gap-2">
+                      {it.status === "idle" && (
+                        <StateChip tone="neutral" fill="empty">
+                          Waiting
+                        </StateChip>
                       )}
+                      {it.status === "working" &&
+                        (aiOn ? (
+                          <WorkingChip />
+                        ) : (
+                          <StateChip tone="info" icon={<Loader2 className="size-3 animate-spin" aria-hidden />}>
+                            Uploading…
+                          </StateChip>
+                        ))}
                       {it.status === "done" && (
-                        <span className="flex items-center gap-1 text-wa">
-                          <CheckCircle2 className="size-3.5" /> Ready
-                        </span>
+                        <StateChip tone="success" icon={<CheckCircle2 className="size-3" aria-hidden />}>
+                          Ready
+                        </StateChip>
                       )}
                       {it.status === "error" && (
-                        <span className="flex items-center gap-1 text-danger">
-                          <AlertTriangle className="size-3.5" /> {it.error}
-                        </span>
+                        <StateChip tone="danger" icon={<AlertTriangle className="size-3" aria-hidden />}>
+                          Failed
+                        </StateChip>
                       )}
-                      <div className="ml-auto flex gap-1">
+                      <div className="ml-auto flex items-center gap-1">
                         {idx > 0 && it.status === "idle" && (
-                          <button onClick={() => mergeUp(idx)} className="flex items-center gap-1 rounded-full bg-tint px-2 py-1" title="These photos are of the same piece as the previous one">
-                            <Link2 className="size-3" /> Join with previous
+                          <button onClick={() => mergeUp(idx)} className="inline-flex min-h-9 items-center gap-1 rounded-full bg-admin-sidebar px-2.5 text-[12.5px] font-medium hover:bg-admin-sidebar-hover" title="These photos show the same piece as the one before">
+                            <Link2 className="size-3.5" aria-hidden /> Join with previous
                           </button>
                         )}
-                        <button onClick={() => setItems((c) => c.filter((x) => x.key !== it.key))} className="rounded-full p-1 text-muted hover:text-danger" aria-label="Remove">
-                          <Trash2 className="size-3.5" />
+                        <button onClick={() => removeItem(idx)} disabled={it.status === "working"} className="grid size-11 place-items-center rounded-full text-muted hover:bg-status-danger-bg hover:text-danger disabled:opacity-40 md:size-9" aria-label="Remove from batch">
+                          <Trash2 className="size-4" />
                         </button>
                       </div>
                     </div>
-                    <input value={it.name} onChange={(e) => update(it.key, { name: e.target.value })} placeholder={aiOn ? "Name (AI will fill)" : "Product name"} className="input py-2 text-sm" />
+                    {it.status === "error" && (
+                      <p className="flex flex-wrap items-center gap-2 text-[13px] text-danger">
+                        {it.error}
+                        <button onClick={() => processOne(it)} className="inline-flex min-h-9 items-center gap-1 font-semibold text-ink underline">
+                          <RotateCcw className="size-3.5" aria-hidden /> Retry
+                        </button>
+                      </p>
+                    )}
+                    <div className="relative">
+                      <input value={it.name} onChange={(e) => edit(it, "name", e.target.value)} placeholder={aiOn ? "Name (AI will fill this)" : "Name"} aria-label="Name" className={cx(field, it.aiFilled?.includes("name") && "pr-24!")} />
+                      {it.aiFilled?.includes("name") && <AiDraftChip className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2" />}
+                    </div>
                     <div className="flex gap-2">
-                      <input value={it.price} onChange={(e) => update(it.key, { price: e.target.value.replace(/\D/g, "") })} placeholder="₹ Price" inputMode="numeric" className="input w-28 py-2 text-sm" />
-                      <select value={it.categoryId} onChange={(e) => update(it.key, { categoryId: e.target.value })} className="input py-2 text-sm">
+                      <input value={it.price} onChange={(e) => edit(it, "price", e.target.value.replace(/\D/g, ""))} placeholder="₹ Price" aria-label="Price in rupees" inputMode="numeric" className={cx(field, "tabular w-28! shrink-0", it.aiFilled?.includes("price") && "border-ai-line! bg-ai-bg!")} />
+                      <select value={it.categoryId} onChange={(e) => edit(it, "categoryId", e.target.value)} aria-label="Category" className={cx(field, "min-w-0", it.aiFilled?.includes("categoryId") && "border-ai-line! bg-ai-bg!")}>
                         <option value="">Category…</option>
-                        {cats.flatMap((c) => [c, ...(c.children ?? [])]).map((c) => (
+                        {flatCats.map((c) => (
                           <option key={c.id} value={c.id}>
                             {c.parentId ? "↳ " : ""}
                             {c.name}
@@ -205,33 +259,37 @@ export default function BulkUploadPage() {
                         ))}
                       </select>
                     </div>
-                    {it.draft?.shortDescription ? <p className="line-clamp-2 text-xs text-muted">{String(it.draft.shortDescription)}</p> : null}
-                    {it.status === "error" && (
-                      <button onClick={() => processOne(it)} className="text-xs underline">
-                        Retry
-                      </button>
-                    )}
+                    {it.draft?.shortDescription ? <p className="line-clamp-2 text-[13px] text-muted">{String(it.draft.shortDescription)}</p> : null}
                   </div>
                 </div>
-              </Panel>
+              </li>
             ))}
-          </div>
+          </ul>
         </>
       )}
 
-      {doneCount > 0 && (
-        <div className="fixed inset-x-0 bottom-[68px] z-30 border-t border-ink/10 bg-white/95 px-4 py-3 backdrop-blur lg:bottom-0 lg:left-64">
-          <div className="mx-auto flex max-w-6xl items-center justify-end gap-2">
-            <span className="mr-auto text-xs text-muted">Products without a price are saved as drafts.</span>
-            <button disabled={saving} onClick={() => saveAll(false)} className="btn btn-outline">
-              Save as drafts
-            </button>
-            <button disabled={saving} onClick={() => saveAll(true)} className="btn btn-primary">
-              {saving && <Loader2 className="size-4 animate-spin" />} Publish {doneCount}
-            </button>
-          </div>
-        </div>
-      )}
+      <ContextBar
+        show={doneCount > 0}
+        busy={saving}
+        message="Pieces without a price are saved as drafts"
+        secondaryLabel="Save as drafts"
+        onSecondary={() => saveAll(false)}
+        primaryLabel={<span className="tabular">Publish {doneCount}</span>}
+        onPrimary={() => saveAll(true)}
+      />
     </div>
+  );
+}
+
+/** Neel chip with a tiny eased bar while AI writes one listing. */
+function WorkingChip() {
+  const p = useEasedProgress(true, 12);
+  return (
+    <span className="inline-flex h-[22px] items-center gap-1.5 overflow-hidden rounded-full border border-ai-line bg-ai-bg pr-2 pl-1.5 text-[11.5px] font-semibold text-ai-fg">
+      <Sparkles className="size-3" aria-hidden /> AI writing…
+      <span className="h-0.5 w-10 rounded-full bg-ai-line" aria-hidden>
+        <span className="block h-full rounded-full bg-ai-fg transition-[width] duration-500" style={{ width: `${Math.round(p * 100)}%` }} />
+      </span>
+    </span>
   );
 }

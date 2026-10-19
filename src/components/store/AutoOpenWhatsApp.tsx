@@ -13,5 +13,9 @@ export function AutoOpenWhatsApp({ url, orderNumber }: { url: string; orderNumbe
     const t = setTimeout(() => (window.location.href = url), 600);
     return () => clearTimeout(t);
   }, [url, orderNumber]);
-  return null;
+  return (
+    <p role="status" className="sr-only">
+      Opening WhatsApp so you can send your order.
+    </p>
+  );
 }

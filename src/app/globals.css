@@ -165,6 +165,7 @@
   }
 }
 
+@layer base {
 /* ── Base ─────────────────────────────────────────────────────────── */
 html {
   -webkit-tap-highlight-color: transparent;
@@ -206,6 +207,9 @@ p {
   outline-color: var(--color-accent-on-dark);
 }
 
+}
+
+@layer components {
 /* Fraunces: never bold, modern lining numerals, optical sizing on */
 .font-display {
   font-family: var(--font-display);
@@ -755,6 +759,8 @@ input[type="radio"] {
   .glint:hover::after {
     animation: glint 700ms var(--ease-in-out) 1;
   }
+}
+
 }
 
 /* View transitions */

@@ -1,126 +1,196 @@
 "use client";
 
-import { useState } from "react";
-import { Palette, Sparkles, Trash2 } from "lucide-react";
-import { api, confirmAction, Empty, Loading, PageHeader, useLoad, useToast } from "@/components/admin/ui";
+import { useMemo, useState } from "react";
+import { CalendarDays, Palette, PenTool, Ruler, Sparkles, Trash2, Wallet } from "lucide-react";
+import { api, Empty, PageHeader, useLoad } from "@/components/admin/ui";
+import { ADMIN_ICONS, btn, cardShell, cx, field, FilterChips, relTime, Sk, StateChip, useActionToast, useConfirm, type Fill, type Tone } from "@/components/admin/pages/kit";
 import { WhatsAppIcon } from "@/components/Motifs";
-import { formatINR, timeAgo } from "@/lib/format";
+import { formatINR } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 import type { CustomRequest } from "@/lib/types";
 
-const STATUSES = [
-  { k: "NEW", l: "New", c: "bg-amber-100 text-amber-800" },
-  { k: "DISCUSSING", l: "Discussing", c: "bg-sky-100 text-sky-800" },
-  { k: "QUOTED", l: "Quoted", c: "bg-violet-100 text-violet-800" },
-  { k: "ACCEPTED", l: "Accepted", c: "bg-emerald-100 text-emerald-800" },
-  { k: "DECLINED", l: "Declined", c: "bg-ink/5 text-muted" },
+const STATUSES: { k: string; l: string; tone: Tone; fill: Fill; struck?: boolean }[] = [
+  { k: "NEW", l: "New", tone: "warning", fill: "empty" },
+  { k: "DISCUSSING", l: "Discussing", tone: "info", fill: "half" },
+  { k: "QUOTED", l: "Quoted", tone: "info", fill: "half" },
+  { k: "ACCEPTED", l: "Accepted", tone: "neutral", fill: "full" },
+  { k: "DECLINED", l: "Declined", tone: "neutral", fill: "empty", struck: true },
 ];
 
 export default function CustomRequestsPage() {
   const { data, setData, loading } = useLoad<{ requests: CustomRequest[] }>("/api/admin/custom-requests");
-  const toast = useToast();
+  const toast = useActionToast();
+  const [ask, confirmDialog] = useConfirm();
   const [filter, setFilter] = useState("ALL");
-  const list = (data?.requests ?? []).filter((r) => filter === "ALL" || r.status === filter);
+  const all = useMemo(() => data?.requests ?? [], [data]);
+  const list = all.filter((r) => filter === "ALL" || r.status === filter);
+  const count = (k: string) => all.filter((r) => r.status === k).length;
 
-  const update = async (r: CustomRequest, patch: Partial<CustomRequest>) => {
+  const update = async (r: CustomRequest, patch: Partial<CustomRequest>, msg?: string) => {
     const next = { ...r, ...patch };
     setData((d) => d && { requests: d.requests.map((x) => (x.id === r.id ? next : x)) });
-    await api(`/api/admin/custom-requests/${r.id}`, { method: "PATCH", body: { status: next.status, quotedPrice: next.quotedPrice, adminNotes: next.adminNotes } });
+    try {
+      await api(`/api/admin/custom-requests/${r.id}`, { method: "PATCH", body: { status: next.status, quotedPrice: next.quotedPrice, adminNotes: next.adminNotes } });
+      if (msg)
+        toast(msg, "ok", {
+          label: "Undo",
+          onClick: async () => {
+            setData((d) => d && { requests: d.requests.map((x) => (x.id === r.id ? r : x)) });
+            await api(`/api/admin/custom-requests/${r.id}`, { method: "PATCH", body: { status: r.status, quotedPrice: r.quotedPrice, adminNotes: r.adminNotes } }).catch(() => {});
+          },
+        });
+    } catch (e) {
+      setData((d) => d && { requests: d.requests.map((x) => (x.id === r.id ? r : x)) });
+      toast(e instanceof Error ? e.message : "Could not save", "err");
+    }
+  };
+
+  const remove = async (r: CustomRequest) => {
+    const ok = await ask({ title: `Delete ${r.name}’s request?`, body: "Their idea and your notes will be removed.", confirmLabel: "Delete request" });
+    if (!ok) return;
+    try {
+      await api(`/api/admin/custom-requests/${r.id}`, { method: "DELETE" });
+      setData((d) => d && { requests: d.requests.filter((x) => x.id !== r.id) });
+      toast("Request deleted");
+    } catch (e) {
+      toast(e instanceof Error ? e.message : "Could not delete", "err");
+    }
   };
 
   return (
-    <div>
-      <PageHeader title="Custom requests" subtitle="Ideas customers sent from the Custom Order page." />
-      <div className="no-scrollbar mb-4 flex gap-1.5 overflow-x-auto">
-        {[{ k: "ALL", l: "All" }, ...STATUSES].map((s) => (
-          <button key={s.k} onClick={() => setFilter(s.k)} className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm ${filter === s.k ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
-            {s.l}
-          </button>
-        ))}
-      </div>
+    <div className={ADMIN_ICONS}>
+      <PageHeader title="Custom requests" subtitle="Ideas customers sent from your Custom order page." />
+      <FilterChips
+        label="Filter requests"
+        className="mb-4"
+        value={filter}
+        onChange={setFilter}
+        items={[{ key: "ALL", label: "All", count: all.length }, ...STATUSES.map((s) => ({ key: s.k, label: s.l, count: count(s.k) || undefined }))]}
+      />
       {loading && !data ? (
-        <Loading />
+        <div role="status" aria-label="Loading" className="grid gap-3 md:grid-cols-2 md:gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cx(cardShell, "space-y-3 p-4 md:p-5")}>
+              <Sk className="h-5 w-1/3" />
+              <Sk className="h-14 w-full" />
+              <Sk className="h-10 w-full" />
+            </div>
+          ))}
+        </div>
       ) : list.length === 0 ? (
-        <div className="rounded-2xl bg-white">
-          <Empty icon={<Palette className="size-6" />} title="No requests yet" text="Share your Custom Order page on Instagram to get personalised orders." />
+        <div className={cardShell}>
+          <Empty icon={<PenTool />} title={all.length ? "Nothing in this group" : "Share your Custom order page"} text={all.length ? "Try another filter." : "Post it on Instagram or WhatsApp status to start getting personalised orders."} />
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
           {list.map((r) => {
             const st = STATUSES.find((s) => s.k === r.status) ?? STATUSES[0];
+            const first = r.name.split(" ")[0];
             return (
-              <div key={r.id} className="rounded-2xl border border-ink/[0.07] bg-white p-5">
+              <li key={r.id} className={cx(cardShell, "flex flex-col p-4 md:p-5")}>
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-display text-xl font-semibold">{r.name}</p>
-                    <p className="text-xs text-muted">
-                      {r.type ?? "Custom piece"} · {timeAgo(r.createdAt)}
+                  <div className="min-w-0">
+                    <p className="truncate text-[17px] leading-6 font-semibold">{r.name}</p>
+                    <p className="tabular text-[13px] text-muted">
+                      {r.type ?? "Custom piece"} · {relTime(r.createdAt)} · {r.phone}
                     </p>
                   </div>
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${st.c}`}>{st.l}</span>
+                  <StateChip tone={st.tone} fill={st.fill} struck={st.struck}>
+                    {st.l}
+                  </StateChip>
                 </div>
-                <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed">{r.description}</p>
-                <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
-                  {r.size && <span className="rounded-full bg-tint px-2.5 py-1">📏 {r.size}</span>}
-                  {r.colors && <span className="rounded-full bg-tint px-2.5 py-1">🎨 {r.colors}</span>}
-                  {r.budget && <span className="rounded-full bg-tint px-2.5 py-1">💰 {r.budget}</span>}
-                  {r.deadline && <span className="rounded-full bg-tint px-2.5 py-1">📅 {new Date(r.deadline).toLocaleDateString("en-IN")}</span>}
-                </div>
-                {r.aiConcept && (
-                  <p className="mt-3 whitespace-pre-wrap rounded-xl bg-accent-soft/10 p-3 text-xs">
-                    <Sparkles className="mr-1 inline size-3.5 text-accent" />
-                    {r.aiConcept}
-                  </p>
+                <p className="mt-3 text-[15px] leading-6 whitespace-pre-wrap text-ink-2">{r.description}</p>
+                {(r.size || r.colors || r.budget || r.deadline) && (
+                  <ul className="mt-3 flex flex-wrap gap-1.5 text-[13px]">
+                    {r.size && <Fact icon={<Ruler className="size-3.5" aria-hidden />} label="Size" value={r.size} />}
+                    {r.colors && <Fact icon={<Palette className="size-3.5" aria-hidden />} label="Colours" value={r.colors} />}
+                    {r.budget && <Fact icon={<Wallet className="size-3.5" aria-hidden />} label="Budget" value={r.budget} />}
+                    {r.deadline && <Fact icon={<CalendarDays className="size-3.5" aria-hidden />} label="Needed by" value={new Date(r.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} />}
+                  </ul>
                 )}
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  <select value={r.status} onChange={(e) => update(r, { status: e.target.value })} className="input py-2 text-sm">
-                    {STATUSES.map((s) => (
-                      <option key={s.k} value={s.k}>
-                        {s.l}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    defaultValue={r.quotedPrice ?? ""}
-                    onBlur={(e) => update(r, { quotedPrice: Number(e.target.value.replace(/\D/g, "")) || null })}
-                    placeholder="Quote ₹"
-                    className="input py-2 text-sm"
-                    inputMode="numeric"
-                  />
+                {r.aiConcept && (
+                  <div className="mt-3 rounded-[6px] border border-ai-line bg-ai-bg p-3 text-[13px] leading-5 text-ai-fg">
+                    <p className="mb-1 flex items-center gap-1.5 font-semibold">
+                      <Sparkles className="size-3.5" aria-hidden /> AI concept
+                    </p>
+                    <p className="whitespace-pre-wrap">{r.aiConcept}</p>
+                  </div>
+                )}
+                <div className="mt-4 grid grid-cols-2 gap-2 border-t border-admin-line pt-4">
+                  <div>
+                    <label htmlFor={`st-${r.id}`} className="label">
+                      Status
+                    </label>
+                    <select id={`st-${r.id}`} value={r.status} onChange={(e) => update(r, { status: e.target.value }, `Marked ${STATUSES.find((s) => s.k === e.target.value)?.l.toLowerCase() ?? "updated"}`)} className={field}>
+                      {STATUSES.map((s) => (
+                        <option key={s.k} value={s.k}>
+                          {s.l}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor={`q-${r.id}`} className="label">
+                      Quote (₹)
+                    </label>
+                    <input
+                      id={`q-${r.id}`}
+                      defaultValue={r.quotedPrice ?? ""}
+                      onBlur={(e) => {
+                        const v = Number(e.target.value.replace(/\D/g, "")) || null;
+                        if (v !== r.quotedPrice) update(r, { quotedPrice: v });
+                      }}
+                      placeholder="e.g. 2400"
+                      className={cx(field, "tabular")}
+                      inputMode="numeric"
+                    />
+                  </div>
                 </div>
-                <textarea defaultValue={r.adminNotes ?? ""} onBlur={(e) => update(r, { adminNotes: e.target.value })} placeholder="Private notes…" rows={2} className="input mt-2 text-sm" />
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <a href={waLink(r.phone, `Hi ${r.name.split(" ")[0]}! 🎨 Thank you for your custom order idea — I'd love to make this for you.`)} target="_blank" rel="noreferrer" className="btn btn-wa btn-sm">
+                <label htmlFor={`n-${r.id}`} className="label mt-3">
+                  Private notes
+                </label>
+                <textarea
+                  id={`n-${r.id}`}
+                  defaultValue={r.adminNotes ?? ""}
+                  onBlur={(e) => e.target.value !== (r.adminNotes ?? "") && update(r, { adminNotes: e.target.value })}
+                  placeholder="Only you can see these"
+                  rows={2}
+                  className={field}
+                />
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <a href={waLink(r.phone, `Hi ${first}! Thank you for your custom order idea. I’d love to make this for you.`)} target="_blank" rel="noreferrer" className={btn("wa")}>
                     <WhatsAppIcon className="size-4" /> Reply
                   </a>
                   {r.quotedPrice ? (
                     <a
-                      href={waLink(r.phone, `Hi ${r.name.split(" ")[0]}! Here's the quote for your custom ${r.type ?? "piece"}: *${formatINR(r.quotedPrice)}*. It will take about 7–10 days to make. Shall I go ahead? 😊`)}
+                      href={waLink(r.phone, `Hi ${first}! Here’s the quote for your custom ${r.type ?? "piece"}: *${formatINR(r.quotedPrice)}*. It will take about 7–10 days to make. Shall I go ahead?`)}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-outline btn-sm"
+                      className={btn("waOutline")}
                     >
-                      Send quote
+                      <WhatsAppIcon className="size-4" /> Send quote · <span className="tabular">{formatINR(r.quotedPrice)}</span>
                     </a>
                   ) : null}
-                  <button
-                    onClick={async () => {
-                      if (!confirmAction("Delete this request?")) return;
-                      await api(`/api/admin/custom-requests/${r.id}`, { method: "DELETE" });
-                      setData((d) => d && { requests: d.requests.filter((x) => x.id !== r.id) });
-                      toast("Deleted");
-                    }}
-                    className="ml-auto text-muted hover:text-danger"
-                    aria-label="Delete"
-                  >
+                  <button onClick={() => remove(r)} className="ml-auto grid size-11 place-items-center rounded-full text-muted hover:bg-status-danger-bg hover:text-danger md:size-9" aria-label={`Delete ${r.name}’s request`}>
                     <Trash2 className="size-4" />
                   </button>
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
+      {confirmDialog}
     </div>
+  );
+}
+
+function Fact({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <li className="inline-flex min-h-7 items-center gap-1.5 rounded-full bg-plinth px-2.5 py-0.5">
+      {icon}
+      <span className="sr-only">{label}:</span>
+      {value}
+    </li>
   );
 }

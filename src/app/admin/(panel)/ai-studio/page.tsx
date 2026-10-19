@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Camera, Copy, Loader2, Megaphone, MessageCircle, Sparkles, TrendingUp } from "lucide-react";
-import { api, PageHeader, Panel, useLoad, useToast } from "@/components/admin/ui";
-import { InstagramIcon as Instagram, WhatsAppIcon } from "@/components/Motifs";
+import { AlertTriangle, Camera, ChevronRight, Copy, Images, Loader2, Megaphone, MessageCircle, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
+import { api, PageHeader, Panel, useLoad } from "@/components/admin/ui";
+import { ADMIN_ICONS, AiDraftChip, AiPanel, btn, copyText, cx, field, Segmented, Sk, Thumb, useActionToast } from "@/components/admin/pages/kit";
+import { InstagramIcon, WhatsAppIcon } from "@/components/Motifs";
 import { imgUrl } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
@@ -17,26 +18,49 @@ export default function AiStudio() {
   const ai = settings?.system.ai;
 
   return (
-    <div className="space-y-6">
-      <PageHeader title="AI Studio" subtitle="Your creative assistant for posts, replies and listings." />
+    <div className={cx(ADMIN_ICONS, "space-y-3 md:space-y-4")}>
+      <PageHeader title="AI Studio" subtitle="Your helper for posts, replies and listings. Everything it writes is a draft for you to check." />
       {settings && !ai && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          AI is not switched on yet. Add a free <b>GEMINI_API_KEY</b> (or ANTHROPIC_API_KEY) in your Vercel project settings → Environment Variables, then redeploy. See <Link href="/admin/settings" className="underline">Settings</Link>.
+        <div role="note" className="flex gap-3 rounded-[8px] border border-admin-line bg-status-warning-bg p-4 text-[14px] leading-6 text-status-warning-fg">
+          <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+          <p>
+            AI isn’t switched on yet. Add a free <b>GEMINI_API_KEY</b> (or ANTHROPIC_API_KEY) in your Vercel project under Settings → Environment Variables, then redeploy.{" "}
+            <Link href="/admin/settings" className="font-semibold underline underline-offset-2">
+              Open Settings
+            </Link>
+          </p>
         </div>
       )}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Feature href="/admin/products/new" icon={Camera} title="Snap & Sell" text="Photo → full listing" />
-        <Feature href="/admin/products/bulk" icon={Sparkles} title="Bulk AI listings" text="Many photos at once" />
+      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:gap-3 lg:grid-cols-4">
+        <Feature href="/admin/products/new" icon={Camera} title="Snap & Sell" text="A photo becomes a full listing" />
+        <Feature href="/admin/products/bulk" icon={Images} title="Bulk listings" text="Many photos at once" />
         <Feature href="/admin/marketing" icon={Megaphone} title="Campaign planner" text="Festive offers & broadcasts" />
-        <Feature href="/admin" icon={TrendingUp} title="Business coach" text="Weekly insights" />
-      </div>
-      <div className="flex gap-1.5">
-        <button onClick={() => setTab("caption")} className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${tab === "caption" ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
-          <Instagram className="size-4" /> Post & caption writer
-        </button>
-        <button onClick={() => setTab("reply")} className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${tab === "reply" ? "bg-ink text-on-ink" : "bg-white text-muted"}`}>
-          <MessageCircle className="size-4" /> Customer reply helper
-        </button>
+        <Feature href="/admin" icon={TrendingUp} title="Business insights" text="On your home page" />
+      </ul>
+      <div className="pt-2">
+        <Segmented
+          label="AI tool"
+          value={tab}
+          onChange={setTab}
+          items={[
+            {
+              key: "caption",
+              label: (
+                <>
+                  <InstagramIcon className="size-4" /> Post writer
+                </>
+              ),
+            },
+            {
+              key: "reply",
+              label: (
+                <>
+                  <MessageCircle className="size-4" aria-hidden /> Reply helper
+                </>
+              ),
+            },
+          ]}
+        />
       </div>
       {tab === "caption" ? <CaptionTool /> : <ReplyTool />}
     </div>
@@ -45,19 +69,24 @@ export default function AiStudio() {
 
 function Feature({ href, icon: Icon, title, text }: { href: string; icon: React.ElementType; title: string; text: string }) {
   return (
-    <Link href={href} className="rounded-2xl border border-ink/[0.07] bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md">
-      <span className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-accent-soft/40 to-tint">
-        <Icon className="size-5 text-ink" />
-      </span>
-      <p className="mt-3 font-medium">{title}</p>
-      <p className="text-xs text-muted">{text}</p>
-    </Link>
+    <li>
+      <Link href={href} className="flex min-h-16 items-center gap-3 rounded-[8px] border border-admin-line bg-white p-3 transition-colors hover:bg-admin-inset md:p-4">
+        <span className="grid size-10 shrink-0 place-items-center rounded-[8px] border border-ai-line bg-ai-bg text-ai-fg">
+          <Icon className="size-5" aria-hidden />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-semibold">{title}</span>
+          <span className="block text-[13px] text-muted">{text}</span>
+        </span>
+        <ChevronRight className="size-4 shrink-0 text-muted" aria-hidden />
+      </Link>
+    </li>
   );
 }
 
 function CaptionTool() {
   const { data } = useLoad<{ products: Product[] }>("/api/admin/products");
-  const toast = useToast();
+  const toast = useActionToast();
   const [productId, setProductId] = useState("");
   const [platform, setPlatform] = useState("Instagram");
   const [language, setLanguage] = useState("English");
@@ -68,136 +97,160 @@ function CaptionTool() {
   const product = data?.products.find((p) => p.id === productId);
 
   const go = async () => {
-    if (!productId) return toast("Pick a product", "err");
+    if (!productId) return toast("Pick a piece first", "err");
     setBusy(true);
     try {
       setOut(await api<Caption>("/api/admin/ai/write", { body: { task: "caption", input: { productId, platform, language, tone, extra } } }));
     } catch (e) {
-      toast(e instanceof Error ? e.message : "AI failed", "err");
+      toast(e instanceof Error ? e.message : "AI could not write this", "err");
     } finally {
       setBusy(false);
     }
   };
-  const full = out ? `${out.caption}\n\n${out.hashtags.map((h) => `#${h.replace(/^#/, "")}`).join(" ")}` : "";
+  const tags = out ? out.hashtags.map((h) => `#${h.replace(/^#/, "")}`).join(" ") : "";
+  const full = out ? `${out.caption}\n\n${tags}` : "";
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
       <Panel title="What should we post?">
-        <div className="space-y-3">
-          <select value={productId} onChange={(e) => setProductId(e.target.value)} className="input">
-            <option value="">Choose a product…</option>
-            {data?.products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-          {product && <img src={imgUrl(product.images[0], 400)} alt="" className="aspect-square w-40 rounded-2xl object-cover" />}
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="cap-product" className="label">
+              Piece
+            </label>
+            <div className="flex items-center gap-3">
+              {product && <Thumb src={imgUrl(product.images[0], 160)} className="aspect-[4/5] w-12" />}
+              <select id="cap-product" value={productId} onChange={(e) => setProductId(e.target.value)} className={field}>
+                <option value="">Choose a piece…</option>
+                {data?.products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <Chips label="Platform" options={["Instagram", "WhatsApp status", "Facebook", "Pinterest"]} value={platform} onChange={setPlatform} />
           <Chips label="Language" options={["English", "Hindi", "Hinglish", "Gujarati", "Marathi"]} value={language} onChange={setLanguage} />
           <Chips label="Tone" options={["warm", "festive", "luxurious", "playful", "minimal"]} value={tone} onChange={setTone} />
-          <input value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="Anything to mention? e.g. 10% off this week, only 2 left" className="input" />
-          <button onClick={go} disabled={busy} className="btn btn-primary w-full">
-            {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />} Write my post
+          <div>
+            <label htmlFor="cap-extra" className="label">
+              Anything to mention? <span className="font-normal text-muted">(optional)</span>
+            </label>
+            <input id="cap-extra" value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="e.g. 10% off this week, only 2 left" className={field} />
+          </div>
+          <button onClick={go} disabled={busy} className={btn("ai", "w-full")}>
+            {busy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Sparkles className="size-4" aria-hidden />} Write my post
           </button>
         </div>
       </Panel>
-      <Panel title="Your post">
-        {!out ? (
-          <p className="py-10 text-center text-sm text-muted">Your caption, hashtags and story text will appear here.</p>
+      <AiPanel title="Your post" action={out ? <AiDraftChip /> : undefined}>
+        {busy && !out ? (
+          <div className="space-y-2" role="status" aria-label="Writing">
+            <Sk className="h-4 w-full" />
+            <Sk className="h-4 w-11/12" />
+            <Sk className="h-4 w-3/4" />
+          </div>
+        ) : !out ? (
+          <p className="py-10 text-center text-[14px] text-ai-fg">Your caption, hashtags and story text will appear here.</p>
         ) : (
-          <div className="space-y-4">
-            <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{out.caption}</p>
-            <p className="text-sm text-ink-soft">{out.hashtags.map((h) => `#${h.replace(/^#/, "")}`).join(" ")}</p>
-            <div className="rounded-xl bg-ink p-4 text-center font-display text-xl text-on-ink">{out.storyText}</div>
+          <div className="space-y-4" aria-live="polite">
+            <p className="text-[15px] leading-6 whitespace-pre-wrap text-ink">{out.caption}</p>
+            <p className="text-[14px] text-ai-fg">{tags}</p>
+            <div className="rounded-[8px] bg-ink-deep px-4 py-6 text-center font-display text-[22px] leading-snug text-on-dark">{out.storyText}</div>
             <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(full);
-                  toast("Copied — paste in Instagram");
-                }}
-                className="btn btn-primary btn-sm"
-              >
-                <Copy className="size-4" /> Copy caption
+              <button onClick={async () => ((await copyText(full)) ? toast("Copied. Paste it in Instagram.") : toast("Could not copy", "err"))} className={btn("primary")}>
+                <Copy className="size-4" aria-hidden /> Copy caption
               </button>
-              <a href={`https://wa.me/?text=${encodeURIComponent(full)}`} target="_blank" rel="noreferrer" className="btn btn-wa btn-sm">
+              <a href={`https://wa.me/?text=${encodeURIComponent(full)}`} target="_blank" rel="noreferrer" className={btn("wa")}>
                 <WhatsAppIcon className="size-4" /> Share
               </a>
-              <button onClick={go} disabled={busy} className="btn btn-outline btn-sm">
-                Try again
+              <button onClick={go} disabled={busy} className={btn("aiOutline")}>
+                {busy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <RotateCcw className="size-4" aria-hidden />} Try again
               </button>
             </div>
           </div>
         )}
-      </Panel>
+      </AiPanel>
     </div>
   );
 }
 
 function ReplyTool() {
-  const toast = useToast();
+  const toast = useActionToast();
   const [message, setMessage] = useState("");
   const [context, setContext] = useState("");
   const [out, setOut] = useState<Replies | null>(null);
   const [busy, setBusy] = useState(false);
   const go = async () => {
-    if (!message.trim()) return;
+    if (!message.trim()) return toast("Paste the customer’s message first", "err");
     setBusy(true);
     try {
       setOut(await api<Replies>("/api/admin/ai/write", { body: { task: "reply", input: { message, context } } }));
     } catch (e) {
-      toast(e instanceof Error ? e.message : "AI failed", "err");
+      toast(e instanceof Error ? e.message : "AI could not write replies", "err");
     } finally {
       setBusy(false);
     }
   };
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <Panel title="Paste the customer's message">
-        <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={6} className="input" placeholder="e.g. Hi, do you have the blue mandala in 18 inch? How much for 5 pieces as return gifts? Need by 20th." />
-        <input value={context} onChange={(e) => setContext(e.target.value)} placeholder="Your notes (optional) — e.g. yes possible, ₹1200 each, 10 days" className="input mt-3" />
-        <button onClick={go} disabled={busy} className="btn btn-primary mt-3 w-full">
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />} Suggest replies
+    <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
+      <Panel title="The customer’s message">
+        <label htmlFor="rp-msg" className="sr-only">
+          Customer message
+        </label>
+        <textarea id="rp-msg" value={message} onChange={(e) => setMessage(e.target.value)} rows={6} className={field} placeholder="e.g. Hi, do you have the blue mandala in 18 inch? How much for 5 pieces as return gifts? Need by 20th." />
+        <label htmlFor="rp-ctx" className="label mt-3">
+          Your notes <span className="font-normal text-muted">(optional)</span>
+        </label>
+        <input id="rp-ctx" value={context} onChange={(e) => setContext(e.target.value)} placeholder="e.g. yes possible, ₹1,200 each, 10 days" className={field} />
+        <button onClick={go} disabled={busy} className={btn("ai", "mt-4 w-full")}>
+          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Sparkles className="size-4" aria-hidden />} Suggest replies
         </button>
       </Panel>
-      <Panel title="Reply options">
-        {!out ? (
-          <p className="py-10 text-center text-sm text-muted">Three ready-to-send replies will appear here.</p>
-        ) : (
-          <div className="space-y-3">
-            {out.replies.map((r, i) => (
-              <div key={i} className="rounded-xl border border-ink/10 p-4">
-                <p className="text-xs font-medium tracking-wide text-accent uppercase">{r.label}</p>
-                <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed">{r.text}</p>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(r.text);
-                    toast("Copied");
-                  }}
-                  className="mt-2 flex items-center gap-1 text-xs text-ink-soft"
-                >
-                  <Copy className="size-3.5" /> Copy
-                </button>
-              </div>
-            ))}
+      <AiPanel title="Reply options" action={out ? <AiDraftChip /> : undefined}>
+        {busy && !out ? (
+          <div className="space-y-3" role="status" aria-label="Writing">
+            <Sk className="h-20 w-full" />
+            <Sk className="h-20 w-full" />
           </div>
+        ) : !out ? (
+          <p className="py-10 text-center text-[14px] text-ai-fg">Three ready-to-send replies will appear here.</p>
+        ) : (
+          <ul className="space-y-3" aria-live="polite">
+            {out.replies.map((r, i) => (
+              <li key={i} className="rounded-[8px] border border-ai-line bg-white p-4">
+                <p className="text-[12px] font-semibold tracking-[0.08em] text-ai-fg uppercase">{r.label}</p>
+                <p className="mt-1.5 text-[14px] leading-6 whitespace-pre-wrap text-ink">{r.text}</p>
+                <button onClick={async () => ((await copyText(r.text)) ? toast("Reply copied") : toast("Could not copy", "err"))} className="mt-2 -ml-2 inline-flex min-h-9 items-center gap-1.5 rounded-full px-2 text-[13px] font-medium hover:bg-admin-inset">
+                  <Copy className="size-3.5" aria-hidden /> Copy
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
-      </Panel>
+      </AiPanel>
     </div>
   );
 }
 
 function Chips({ label, options, value, onChange }: { label: string; options: string[]; value: string; onChange: (v: string) => void }) {
   return (
-    <div>
-      <p className="label">{label}</p>
+    <fieldset>
+      <legend className="label">{label}</legend>
       <div className="flex flex-wrap gap-1.5">
         {options.map((o) => (
-          <button key={o} onClick={() => onChange(o)} className={`rounded-full border px-3 py-1 text-sm capitalize ${value === o ? "border-ink bg-ink text-on-ink" : "border-ink/12 bg-white"}`}>
+          <button
+            key={o}
+            type="button"
+            aria-pressed={value === o}
+            onClick={() => onChange(o)}
+            className={cx("inline-flex min-h-10 items-center rounded-full px-3.5 text-[14px] font-medium capitalize md:min-h-8 md:text-[13px]", value === o ? "bg-ink text-white" : "border border-admin-line bg-white text-ink hover:bg-admin-inset")}
+          >
             {o}
           </button>
         ))}
       </div>
-    </div>
+    </fieldset>
   );
 }

@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { Check, Gift, Package } from "lucide-react";
 import { getOrder } from "@/lib/repo";
 import { getSettings } from "@/lib/settings";
 import { OrderTimeline } from "@/components/store/OrderTimeline";
 import { formatDate, formatINR, imgUrl } from "@/lib/format";
 import { orderMessageForShop, waLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/Motifs";
+import { Eyebrow } from "@/components/brand";
+import { SummaryRow } from "@/components/store/pages/ui";
 import { siteUrl } from "@/lib/site";
 import { AutoOpenWhatsApp } from "@/components/store/AutoOpenWhatsApp";
 
 export const metadata: Metadata = { title: "Your order", robots: { index: false } };
+
+const stripEmoji = (s: string) => s.replace(/^[\p{Extended_Pictographic}️\s]+/u, "");
 
 export default async function OrderPage({ params, searchParams }: { params: Promise<{ number: string }>; searchParams: Promise<{ placed?: string; p?: string; wa?: string }> }) {
   const { number } = await params;
@@ -22,67 +26,150 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   if (!order || !digits || order.phone.replace(/\D/g, "").slice(-10) !== digits) notFound();
   const settings = await getSettings();
   const resend = waLink(settings.whatsappNumber, orderMessageForShop(order, await siteUrl()));
+  const firstName = order.customerName.trim().split(/\s+/)[0] || "friend";
+  const placed = Boolean(sp.placed);
+  const payment =
+    order.paymentStatus === "PAID" ? "Paid" : order.paymentStatus === "PARTIAL" ? "Partly paid" : settings.codAvailable ? "Due · UPI or cash on delivery" : "Due · details on WhatsApp";
+  const address = [order.address, [order.city, order.state].filter(Boolean).join(", "), order.pincode].filter(Boolean);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
+    <div className="container-x pt-10 pb-16 lg:pt-16 lg:pb-24">
       {sp.wa && <AutoOpenWhatsApp url={resend} orderNumber={order.orderNumber} />}
-      {sp.placed && (
-        <div className="mb-10 text-center">
-          <CheckCircle2 className="mx-auto size-16 text-wa" strokeWidth={1.3} />
-          <h1 className="mt-4 font-display text-5xl">Thank you, {order.customerName.split(" ")[0]}!</h1>
-          <p className="mx-auto mt-3 max-w-md text-muted">
-            Your order <b className="text-ink">{order.orderNumber}</b> is saved. Please make sure you pressed <b>send</b> on WhatsApp — we&apos;ll confirm and share payment details there.
+
+      {/* ── Header: thank-you on arrival, a plain status title otherwise ── */}
+      {placed ? (
+        <header className="max-w-2xl">
+          <span aria-hidden className="grid size-12 place-items-center rounded-full border border-success text-success">
+            <Check className="size-6" strokeWidth={1.5} />
+          </span>
+          <Eyebrow className="mt-6">Order saved · {order.orderNumber}</Eyebrow>
+          <h1 className="t-h1 mt-4">
+            Thank you, <em>{firstName}</em>
+          </h1>
+          <p className="t-body-lg mt-4 max-w-[52ch] text-ink-2">
+            One last step: press <strong className="font-semibold text-ink">send</strong> in WhatsApp. We’ll reply there to confirm your order and share payment details. No payment
+            has been taken yet.
           </p>
-          <a href={resend} target="_blank" rel="noreferrer" className="btn btn-wa mt-6">
-            <WhatsAppIcon className="size-5" /> Didn&apos;t open? Send on WhatsApp
-          </a>
-        </div>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a href={resend} target="_blank" rel="noreferrer" className="btn btn-wa btn-lg">
+              <WhatsAppIcon className="size-5" /> Send on WhatsApp again
+            </a>
+            <p className="text-[13px] text-muted">Use this if WhatsApp didn’t open.</p>
+          </div>
+        </header>
+      ) : (
+        <header className="max-w-2xl">
+          <Eyebrow>Order {order.orderNumber}</Eyebrow>
+          <h1 className="t-h1 mt-4">
+            Your order, <em>so far</em>
+          </h1>
+          <p className="mt-3 text-[15px] text-muted">
+            Placed <span className="tabular">{formatDate(order.createdAt)}</span>
+          </p>
+        </header>
       )}
-      <div className="card p-6 md:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-xs tracking-[0.2em] text-muted uppercase">Order</p>
-            <p className="font-display text-3xl">{order.orderNumber}</p>
-            <p className="text-sm text-muted">{formatDate(order.createdAt)}</p>
-          </div>
-          <p className="text-2xl font-semibold">{formatINR(order.total)}</p>
-        </div>
-        <div className="mt-8">
-          <OrderTimeline status={order.status} history={order.history} />
-        </div>
-        {(order.courier || order.trackingNumber) && (
-          <div className="mt-6 rounded-2xl bg-tint p-4 text-sm">
-            📦 Shipped via <b>{order.courier ?? "courier"}</b>
-            {order.trackingNumber && (
-              <>
-                {" "}· Tracking no. <b className="select-all">{order.trackingNumber}</b>
-              </>
-            )}
-          </div>
-        )}
-        <ul className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
-          {order.items.map((i, n) => (
-            <li key={n} className="flex items-center gap-3 py-3">
-              {i.image ? <img src={imgUrl(i.image, 120)} alt="" className="size-14 rounded-xl object-cover" /> : <div className="grid size-14 place-items-center rounded-xl bg-tint">🎁</div>}
-              <div className="flex-1">
-                <p className="text-sm font-medium">{i.name}</p>
-                <p className="text-xs text-muted">Qty {i.quantity}{i.note ? ` · ✏️ ${i.note}` : ""}</p>
+
+      <div className="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-6">
+        <div className="lg:col-span-7">
+          <section aria-labelledby="progress-title" className="hairline-t pt-6">
+            <h2 id="progress-title" className="eyebrow no-dot">
+              Progress
+            </h2>
+            <div className="mt-6">
+              <OrderTimeline status={order.status} history={order.history} />
+            </div>
+            {(order.courier || order.trackingNumber) && (
+              <div className="mt-8 flex items-start gap-3 rounded-[4px] bg-plinth p-4 text-[15px]">
+                <Package aria-hidden className="mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
+                <p>
+                  Shipped with <span className="font-semibold">{order.courier ?? "our courier"}</span>
+                  {order.trackingNumber && (
+                    <>
+                      {" "}
+                      · Tracking no. <span className="tabular font-semibold select-all">{order.trackingNumber}</span>
+                    </>
+                  )}
+                </p>
               </div>
-              <p className="text-sm">{formatINR(i.price * i.quantity)}</p>
-            </li>
-          ))}
-        </ul>
-        <dl className="mt-4 space-y-1.5 border-t border-ink/10 pt-4 text-sm">
-          <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd>{formatINR(order.subtotal)}</dd></div>
-          {order.discount > 0 && <div className="flex justify-between text-wa"><dt>Discount</dt><dd>−{formatINR(order.discount)}</dd></div>}
-          <div className="flex justify-between"><dt className="text-muted">Shipping</dt><dd>{order.shipping ? formatINR(order.shipping) : "Free"}</dd></div>
-          <div className="flex justify-between text-base font-semibold"><dt>Total</dt><dd>{formatINR(order.total)}</dd></div>
-          <div className="flex justify-between"><dt className="text-muted">Payment</dt><dd>{order.paymentStatus === "PAID" ? "Paid ✓" : order.paymentStatus === "PARTIAL" ? "Partially paid" : "Pending — details on WhatsApp"}</dd></div>
-        </dl>
+            )}
+          </section>
+
+          <section aria-labelledby="items-title" className="hairline-t mt-12 pt-6">
+            <h2 id="items-title" className="eyebrow no-dot">
+              In this order
+            </h2>
+            <ul className="mt-4 divide-y divide-line">
+              {order.items.map((i, n) => (
+                <li key={n} className="flex items-center gap-4 py-4">
+                  <span className="img-well grid h-[70px] w-14 shrink-0 place-items-center">
+                    {i.image ? (
+                      <img src={imgUrl(i.image, 160)} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
+                    ) : (
+                      <Gift aria-hidden className="size-5 text-muted" strokeWidth={1.5} />
+                    )}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-display text-[17px] leading-snug">{stripEmoji(i.name)}</p>
+                    <p className="tabular mt-0.5 text-[13px] text-muted">
+                      Qty {i.quantity}
+                      {i.note ? ` · Note: ${i.note}` : ""}
+                    </p>
+                  </div>
+                  <p className="tabular text-[15px] font-medium">{formatINR(i.price * i.quantity)}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        <aside aria-label="Order summary" className="lg:col-span-4 lg:col-start-9">
+          <div className="rounded-[2px] border border-line p-5 lg:sticky lg:top-[96px] lg:p-6">
+            <p className="craft-line">Order</p>
+            <p className="tabular mt-1 text-[20px] font-semibold tracking-[-0.01em]">{order.orderNumber}</p>
+            <p className="tabular text-[13px] text-muted">{formatDate(order.createdAt)}</p>
+            <dl className="mt-6 space-y-2.5 border-t border-line pt-5">
+              <SummaryRow label="Subtotal" value={formatINR(order.subtotal)} />
+              {order.discount > 0 && <SummaryRow label={order.couponCode ? `Discount · ${order.couponCode}` : "Discount"} value={`−${formatINR(order.discount)}`} tone="success" />}
+              <SummaryRow label="Shipping" value={order.shipping ? formatINR(order.shipping) : "Free"} />
+              <div className="border-t border-line pt-3">
+                <SummaryRow label="Total" value={formatINR(order.total)} strong />
+              </div>
+              <SummaryRow label="Payment" value={payment} />
+            </dl>
+            {address.length > 0 && (
+              <div className="mt-6 border-t border-line pt-5">
+                <p className="craft-line">Delivering to</p>
+                <address className="mt-2 text-[15px] leading-relaxed not-italic text-ink-2">
+                  {order.customerName}
+                  {address.map((l, n) => (
+                    <span key={n} className="block">
+                      {l}
+                    </span>
+                  ))}
+                </address>
+              </div>
+            )}
+            <a
+              href={waLink(settings.whatsappNumber, `Hi! A question about my order ${order.orderNumber}`)}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-wa-outline mt-6 w-full"
+            >
+              <WhatsAppIcon className="size-5" /> Ask about this order
+            </a>
+          </div>
+        </aside>
       </div>
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link href="/shop" className="btn btn-outline">Continue shopping</Link>
-        {order.status === "DELIVERED" && <Link href={`/review?order=${order.orderNumber}`} className="btn btn-primary">Leave a review</Link>}
+
+      <div className="hairline-t mt-14 flex flex-col gap-3 pt-8 sm:flex-row">
+        {order.status === "DELIVERED" && (
+          <Link href={`/review?order=${order.orderNumber}`} className="btn btn-primary">
+            Leave a review
+          </Link>
+        )}
+        <Link href="/shop" className="btn btn-outline">
+          Continue shopping
+        </Link>
       </div>
     </div>
   );
