@@ -2,6 +2,7 @@ import { query, run } from "./db";
 import type { StoreSettings } from "./types";
 
 export const DEFAULT_SETTINGS: StoreSettings = {
+  theme: "limewash",
   storeName: "Kavita's Artistry",
   tagline: "Handmade with love",
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919999999999",

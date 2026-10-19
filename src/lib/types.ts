@@ -157,6 +157,7 @@ export type HeroSlide = {
 export type FaqItem = { q: string; a: string };
 
 export type StoreSettings = {
+  theme: string;
   storeName: string;
   tagline: string;
   whatsappNumber: string;

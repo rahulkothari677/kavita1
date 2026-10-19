@@ -7,6 +7,8 @@ import { useSettingsForm } from "@/components/admin/useSettings";
 import { SaveBar } from "@/components/admin/SaveBar";
 import { Field, LoadError, Section, SwitchRow } from "@/components/admin/core/form";
 import { WhatsAppIcon } from "@/components/Motifs";
+import { ThemePicker } from "@/components/admin/core/ThemePicker";
+import { Palette } from "lucide-react";
 import { waLink } from "@/lib/whatsapp";
 
 type TextKey = "storeName" | "tagline" | "whatsappNumber" | "phone" | "email" | "instagram" | "facebook" | "youtube" | "address" | "upiId" | "orderNote" | "vacationMessage" | "aiAssistantName" | "seoDescription";
@@ -67,6 +69,10 @@ export default function SettingsPage() {
       <PageHeader title="Settings" subtitle="Your shop details, ordering and integrations." />
 
       <div className="space-y-6">
+        <Section id="appearance" title="Appearance" text="Choose your website's colour theme. Preview any theme on your live site first; customers see the change after you save." icon={<Palette />}>
+          <ThemePicker value={s.theme} onChange={(id) => set("theme", id)} />
+        </Section>
+
         <Section title="WhatsApp ordering" text="Where orders arrive and how customers pay you." icon={<WhatsAppIcon className="size-4" />}>
           <div className="grid gap-4 md:grid-cols-2">
             <Field

@@ -9,11 +9,17 @@ import { AnnouncementBar } from "@/components/store/chrome/AnnouncementBar";
 import { getSettings } from "@/lib/settings";
 import { categoryTree } from "@/lib/repo";
 import { aiProvider } from "@/lib/ai";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import { getTheme, themeCss } from "@/lib/themes";
 
 export const dynamic = "force-dynamic";
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
-  const [settings, categories] = await Promise.all([getSettings(), categoryTree({ activeOnly: true })]);
+  const [settings, categories, jar] = await Promise.all([getSettings(), categoryTree({ activeOnly: true }), cookies()]);
+  const previewId = jar.get("ka_theme_preview")?.value;
+  const preview = previewId ? getTheme(previewId) : null;
+  const theme = preview ?? getTheme(settings.theme);
   const pub: PublicSettings = {
     storeName: settings.storeName,
     whatsappNumber: settings.whatsappNumber,
@@ -30,7 +36,21 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   };
   return (
     <StoreProvider settings={pub}>
+      <style dangerouslySetInnerHTML={{ __html: themeCss(theme.id) }} />
       <div className="flex min-h-screen flex-col">
+        {preview && (
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 bg-ink px-4 py-2 text-center text-[13px] text-canvas">
+            <span>
+              Previewing the <b>{preview.name}</b> theme — only you can see this.
+            </span>
+            <Link href="/admin/settings#appearance" className="underline underline-offset-2">
+              Apply in settings
+            </Link>
+            <a href="/api/theme-preview?theme=off" className="underline underline-offset-2">
+              Exit preview
+            </a>
+          </div>
+        )}
         <a
           href="#main"
           className="sr-only z-[90] rounded-[4px] bg-ink px-4 py-3 text-[14px] font-medium text-canvas focus:not-sr-only focus:fixed focus:top-3 focus:left-3"

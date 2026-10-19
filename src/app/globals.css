@@ -525,7 +525,7 @@ textarea.input {
 .input:focus,
 .input:focus-within {
   border-color: var(--color-ink);
-  box-shadow: 0 0 0 3px rgb(179 54 31 / 0.22);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
 .input[aria-invalid="true"] {
   border-color: var(--color-danger);
@@ -602,7 +602,7 @@ input[type="radio"] {
   white-space: nowrap;
 }
 .badge-image {
-  background: rgb(247 244 239 / 0.9);
+  background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
   backdrop-filter: blur(8px);
   color: var(--color-ink);
 }
