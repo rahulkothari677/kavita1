@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { Heart, Menu, Search, ShoppingBag, X, ChevronDown, Sparkles } from "lucide-react";
 import { useStore } from "./StoreProvider";
+import { SearchOverlay } from "./SearchOverlay";
 import type { Category } from "@/lib/types";
 
 export function Header({ categories, announcement }: { categories: Category[]; announcement: string | null }) {
@@ -12,9 +13,8 @@ export function Header({ categories, announcement }: { categories: Category[]; a
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
-  const [q, setQ] = useState("");
   const [scrolled, setScrolled] = useState(false);
-  const router = useRouter();
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -28,12 +28,6 @@ export function Header({ categories, announcement }: { categories: Category[]; a
     setSearchOpen(false);
     setShopOpen(false);
   }, [pathname]);
-
-  const submitSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!q.trim()) return;
-    router.push(`/shop?q=${encodeURIComponent(q.trim())}`);
-  };
 
   const nav = [
     { href: "/shop", label: "Shop" },
@@ -111,7 +105,7 @@ export function Header({ categories, announcement }: { categories: Category[]; a
           </nav>
 
           <div className="ml-auto flex items-center gap-0.5">
-            <button className="rounded-full p-2.5 hover:bg-ink/5" aria-label="Search" onClick={() => setSearchOpen((v) => !v)}>
+            <button className="rounded-full p-2.5 hover:bg-ink/5" aria-label="Search" onClick={() => setSearchOpen(true)}>
               <Search className="size-5" />
             </button>
             <Link href="/wishlist" className="relative hidden rounded-full p-2.5 hover:bg-ink/5 sm:block" aria-label="Wishlist">
@@ -128,19 +122,8 @@ export function Header({ categories, announcement }: { categories: Category[]; a
             </button>
           </div>
         </div>
-        {searchOpen && (
-          <form onSubmit={submitSearch} className="mx-auto flex max-w-3xl gap-2 px-4 pb-4 md:px-6">
-            <input
-              autoFocus
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search wall decor, name plates, gifts…"
-              className="input rounded-full"
-            />
-            <button className="btn btn-primary">Search</button>
-          </form>
-        )}
       </header>
+      <SearchOverlay open={searchOpen} onClose={closeSearch} categories={categories} />
 
       {menuOpen && (
         <div className="fixed inset-0 z-[70] md:hidden">

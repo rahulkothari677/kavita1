@@ -17,11 +17,11 @@ export function FloatingActions() {
   const showAi = settings.aiAssistantEnabled;
   return (
     <>
-      <div className="fixed bottom-5 right-4 z-[60] flex flex-col items-end gap-3 md:bottom-7 md:right-7">
+      <div className="fixed bottom-[calc(76px+env(safe-area-inset-bottom))] right-4 z-[60] flex flex-col items-end gap-3 md:bottom-7 md:right-7">
         {showAi && !assistantOpen && (
           <button
             onClick={() => setAssistantOpen(true)}
-            className="group flex items-center gap-2 rounded-full bg-ink py-3 pl-3.5 pr-4 text-cream shadow-[0_12px_30px_-8px_rgba(22,36,74,0.6)] transition hover:-translate-y-0.5"
+            className="group hidden items-center gap-2 rounded-full bg-ink py-3 pl-3.5 pr-4 text-cream md:flex shadow-[0_12px_30px_-8px_rgba(22,36,74,0.6)] transition hover:-translate-y-0.5"
           >
             <span className="grid size-7 place-items-center rounded-full bg-gold-2/90 text-ink">
               <Sparkles className="size-4" />
@@ -34,7 +34,7 @@ export function FloatingActions() {
           target="_blank"
           rel="noreferrer"
           aria-label="Chat on WhatsApp"
-          className="grid size-14 place-items-center rounded-full bg-wa text-white shadow-[0_12px_30px_-8px_rgba(31,168,85,0.7)] transition hover:scale-105"
+          className="grid size-12 place-items-center rounded-full bg-wa text-white md:size-14 shadow-[0_12px_30px_-8px_rgba(31,168,85,0.7)] transition hover:scale-105"
         >
           <WhatsAppIcon className="size-7" />
         </a>

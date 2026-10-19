@@ -3,6 +3,8 @@ import { Header } from "@/components/store/Header";
 import { Footer } from "@/components/store/Footer";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { FloatingActions } from "@/components/store/FloatingActions";
+import { MobileTabBar } from "@/components/store/MobileTabBar";
+import { QuickView } from "@/components/store/QuickView";
 import { getSettings } from "@/lib/settings";
 import { categoryTree } from "@/lib/repo";
 import { aiProvider } from "@/lib/ai";
@@ -26,7 +28,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   };
   return (
     <StoreProvider settings={pub}>
-      <div className="paper-grain min-h-screen">
+      <div className="paper-grain min-h-screen pb-16 md:pb-0">
         <Header categories={categories} announcement={settings.announcementActive ? settings.announcement : null} />
         {!settings.acceptingOrders && (
           <div className="bg-gold-2/30 px-4 py-2.5 text-center text-sm text-ink">{settings.vacationMessage}</div>
@@ -36,6 +38,8 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       </div>
       <CartDrawer />
       <FloatingActions />
+      <MobileTabBar />
+      <QuickView />
     </StoreProvider>
   );
 }

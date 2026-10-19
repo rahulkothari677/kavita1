@@ -42,7 +42,7 @@ export default async function HomePage() {
 
       {/* Categories */}
       {categories.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 pt-20 md:px-6">
+        <section className="reveal mx-auto max-w-7xl px-4 pt-20 md:px-6">
           <SectionTitle eyebrow="Explore" title="Shop by category" />
           <div className="no-scrollbar -mx-4 mt-10 flex snap-x gap-5 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
             {categories.map((c) => (
@@ -62,7 +62,7 @@ export default async function HomePage() {
 
       {/* Featured */}
       {featured.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
+        <section className="reveal mx-auto max-w-7xl px-4 pt-24 md:px-6">
           <div className="flex items-end justify-between gap-4">
             <SectionTitle eyebrow="Curated" title="Loved from the studio" align="left" />
             <Link href="/shop" className="hidden items-center gap-1 text-sm font-medium hover:text-gold md:flex">
@@ -83,7 +83,7 @@ export default async function HomePage() {
       )}
 
       {/* How ordering works */}
-      <section className="mx-auto mt-24 max-w-7xl px-4 md:px-6">
+      <section className="reveal mx-auto mt-24 max-w-7xl px-4 md:px-6">
         <div className="relative overflow-hidden rounded-[2rem] bg-cream px-6 py-14 md:px-14">
           <Lotus className="absolute -right-6 -top-6 h-40 text-ink/[0.05]" />
           <SectionTitle eyebrow="Simple & personal" title="How ordering works" />
@@ -106,7 +106,7 @@ export default async function HomePage() {
 
       {/* New arrivals */}
       {newest.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
+        <section className="reveal mx-auto max-w-7xl px-4 pt-24 md:px-6">
           <SectionTitle eyebrow="Just made" title="Fresh from the work table" />
           <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-x-6">
             {newest.map((p) => (
@@ -116,8 +116,40 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* The making — editorial process */}
+      <section className="reveal mt-24 bg-ink py-20 text-cream md:py-28">
+        <div className="mx-auto max-w-7xl px-4 md:px-6">
+          <div className="grid gap-12 md:grid-cols-[1fr_1.6fr] md:gap-20">
+            <div>
+              <p className="text-[12px] tracking-[0.3em] text-gold-2 uppercase">The making</p>
+              <h2 className="mt-3 font-display text-4xl leading-tight md:text-6xl">Slow craft, one piece at a time</h2>
+              <p className="mt-5 max-w-sm text-cream/70">
+                No moulds, no machines. Each piece passes through these hands four times before it is ready to bring happiness to your space.
+              </p>
+              <Link href="/about" className="btn mt-8 border border-cream/30 text-cream hover:bg-cream/10">
+                Meet the artist <ArrowRight className="size-4" />
+              </Link>
+            </div>
+            <ol className="grid gap-px overflow-hidden rounded-3xl bg-cream/10 sm:grid-cols-2">
+              {[
+                ["Sketch", "Every design begins as a pencil drawing, sized for your wall or your story."],
+                ["Sculpt", "Clay is rolled and shaped by hand into borders, petals and dots."],
+                ["Set", "Mirrors and details are pressed in one at a time — sometimes over a hundred."],
+                ["Finish", "Painted, sealed, signed and packed with a handwritten note."],
+              ].map(([t, d], i) => (
+                <li key={t} className="bg-ink p-7 md:p-9">
+                  <span className="font-display text-5xl text-gold-2/60">0{i + 1}</span>
+                  <h3 className="mt-3 font-display text-3xl">{t}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-cream/65">{d}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
       {/* Custom + AI split */}
-      <section className="mx-auto mt-24 grid max-w-7xl gap-5 px-4 md:grid-cols-2 md:px-6">
+      <section className="reveal mx-auto mt-24 grid max-w-7xl gap-5 px-4 md:grid-cols-2 md:px-6">
         <div className="relative overflow-hidden rounded-[2rem] bg-ink p-9 text-cream md:p-12">
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.08]"
@@ -151,7 +183,7 @@ export default async function HomePage() {
       </section>
 
       {/* Story */}
-      <section className="mx-auto mt-24 grid max-w-7xl items-center gap-12 px-4 md:grid-cols-2 md:px-6">
+      <section className="reveal mx-auto mt-24 grid max-w-7xl items-center gap-12 px-4 md:grid-cols-2 md:px-6">
         <div className="relative mx-auto w-full max-w-md">
           <div className="aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[2rem] border-8 border-white shadow-2xl">
             <img src={settings.artistImage ? imgUrl(settings.artistImage, 800) : "/brand/brand-board.jpg"} alt={settings.artistName} className="size-full object-cover" loading="lazy" />
@@ -181,7 +213,7 @@ export default async function HomePage() {
 
       {/* Testimonials */}
       {testimonials.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
+        <section className="reveal mx-auto max-w-7xl px-4 pt-24 md:px-6">
           <SectionTitle eyebrow="Kind words" title="From happy homes" />
           <div className="no-scrollbar -mx-4 mt-10 flex snap-x gap-5 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-3 md:px-0">
             {testimonials.slice(0, 6).map((r) => (
@@ -200,7 +232,7 @@ export default async function HomePage() {
       )}
 
       {/* Final CTA */}
-      <section className="mx-auto mt-24 max-w-4xl px-4 text-center md:px-6">
+      <section className="reveal mx-auto mt-24 max-w-4xl px-4 text-center md:px-6">
         <DotDivider className="text-gold" />
         <p className="mt-6 font-script text-4xl text-gold md:text-5xl">Art that adds happiness to your space</p>
         <p className="mx-auto mt-4 max-w-xl text-muted">Have a question, a wall that needs love, or a gift in mind? We&apos;re one message away.</p>

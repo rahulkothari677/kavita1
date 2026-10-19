@@ -1,13 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useStore } from "./StoreProvider";
 import { formatINR, imgUrl } from "@/lib/format";
 
+type Mini = { id: string; slug: string; name: string; price: number; images: string[]; stock: number; madeToOrder: boolean };
+
 export function CartDrawer() {
-  const { cart, cartOpen, setCartOpen, subtotal, updateQty, removeFromCart, settings } = useStore();
+  const { cart, cartOpen, setCartOpen, subtotal, updateQty, removeFromCart, settings, addToCart } = useStore();
+  const [suggest, setSuggest] = useState<Mini[]>([]);
+  useEffect(() => {
+    if (!cartOpen || suggest.length) return;
+    fetch("/api/products?limit=10")
+      .then((r) => r.json())
+      .then((d) => setSuggest(d.products ?? []))
+      .catch(() => {});
+  }, [cartOpen, suggest.length]);
+  useEffect(() => {
+    if (!cartOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [cartOpen]);
   if (!cartOpen) return null;
+  const pairs = suggest.filter((p) => !cart.some((l) => l.productId === p.id) && (p.stock > 0 || p.madeToOrder)).slice(0, 3);
   const remaining = settings.freeShippingAbove > 0 ? settings.freeShippingAbove - subtotal : 0;
   const pct = settings.freeShippingAbove > 0 ? Math.min(100, (subtotal / settings.freeShippingAbove) * 100) : 100;
 
@@ -80,8 +99,29 @@ export function CartDrawer() {
                   </div>
                 </li>
               ))}
+              {pairs.length > 0 && (
+                <li className="py-5">
+                  <p className="mb-3 text-xs tracking-[0.22em] text-muted uppercase">Pairs beautifully with</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {pairs.map((p) => (
+                      <div key={p.id} className="text-center">
+                        <Link href={`/product/${p.slug}`} onClick={() => setCartOpen(false)}>
+                          <img src={imgUrl(p.images[0], 200)} alt={p.name} className="aspect-square w-full rounded-xl bg-cream object-cover" />
+                        </Link>
+                        <p className="mt-1.5 line-clamp-1 text-xs">{p.name}</p>
+                        <button
+                          onClick={() => addToCart({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0] ?? null, price: p.price, maxQty: p.madeToOrder ? 20 : p.stock })}
+                          className="mt-1 text-xs font-medium text-ink-2 underline-offset-2 hover:underline"
+                        >
+                          + Add · {formatINR(p.price)}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </li>
+              )}
             </ul>
-            <div className="border-t border-ink/10 bg-white px-5 py-4">
+            <div className="border-t border-ink/10 bg-white px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
               <div className="mb-1 flex justify-between text-lg">
                 <span>Subtotal</span>
                 <span className="font-semibold">{formatINR(subtotal)}</span>

@@ -12,8 +12,11 @@ let ready: Promise<void> | null = null;
 
 function getClient(): Client {
   if (client) return client;
-  const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL || "file:./data/local.db";
-  if (url.startsWith("file:")) {
+  // On Vercel without a database configured, fall back to /tmp (temporary!) so the site still boots;
+  // the admin Settings page shows a clear warning until Turso is connected.
+  const fallback = process.env.VERCEL === "1" ? "file:/tmp/kavitas.db" : "file:./data/local.db";
+  const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL || fallback;
+  if (url === "file:./data/local.db") {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const fs = require("fs") as typeof import("fs");
     try {
@@ -25,10 +28,6 @@ function getClient(): Client {
     authToken: process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
   });
   return client;
-}
-
-export function isDbConfigured() {
-  return Boolean(process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL) || process.env.VERCEL !== "1";
 }
 
 const SCHEMA = [

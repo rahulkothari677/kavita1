@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Plus } from "lucide-react";
+import { Eye, Heart, Plus } from "lucide-react";
 import { useStore } from "./StoreProvider";
 import { discountPercent, formatINR, imgUrl } from "@/lib/format";
 import type { Product } from "@/lib/types";
@@ -12,7 +12,7 @@ export type CardProduct = Pick<
 >;
 
 export function ProductCard({ p, priority = false }: { p: CardProduct; priority?: boolean }) {
-  const { addToCart, wishlist, toggleWishlist } = useStore();
+  const { addToCart, wishlist, toggleWishlist, setQuickViewId } = useStore();
   const off = discountPercent(p.price, p.compareAtPrice);
   const soldOut = p.stock <= 0 && !p.madeToOrder;
   const wished = wishlist.includes(p.id);
@@ -45,6 +45,13 @@ export function ProductCard({ p, priority = false }: { p: CardProduct; priority?
           className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-paper/90 shadow-sm backdrop-blur transition hover:scale-110"
         >
           <Heart className={`size-4 ${wished ? "fill-rose text-rose" : ""}`} />
+        </button>
+        <button
+          onClick={() => setQuickViewId(p.id)}
+          aria-label="Quick view"
+          className="absolute bottom-3 left-3 hidden h-10 items-center gap-1.5 rounded-full bg-paper/95 px-4 text-xs font-medium shadow-lg backdrop-blur transition md:flex md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+        >
+          <Eye className="size-3.5" /> Quick view
         </button>
         {!soldOut && (
           <button

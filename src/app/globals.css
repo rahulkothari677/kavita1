@@ -194,3 +194,29 @@ body {
 .mirror-shine {
   background: linear-gradient(135deg, #ffffff 0%, #d7dfe9 40%, #a3b1c2 55%, #eef2f7 100%);
 }
+
+/* Elegant serif with modern (lining) numerals so prices & counts read clearly */
+.font-display {
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+/* Scroll-reveal: pure CSS, only where supported (others simply show content) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

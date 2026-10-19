@@ -15,8 +15,8 @@ export function StickyBuyBar({ name, price, image }: { name: string; price: numb
   }, []);
   if (!show) return null;
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[55] animate-fade-up border-t border-ink/10 bg-paper/95 px-4 py-3 shadow-[0_-10px_30px_-12px_rgba(22,36,74,0.3)] backdrop-blur md:hidden">
-      <div className="flex items-center gap-3 pr-16">
+    <div className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[55] animate-fade-up border-t border-ink/10 bg-paper/95 px-4 py-3 shadow-[0_-10px_30px_-12px_rgba(22,36,74,0.3)] backdrop-blur md:hidden">
+      <div className="flex items-center gap-3">
         <img src={imgUrl(image, 120)} alt="" className="size-11 rounded-lg object-cover" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">{name}</p>

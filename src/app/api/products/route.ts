@@ -16,6 +16,8 @@ const card = (p: Product) => ({
   categoryName: p.categoryName,
   rating: p.rating,
   reviewCount: p.reviewCount,
+  shortDescription: p.shortDescription,
+  size: p.size,
 });
 
 export const GET = handler(async (req: Request) => {

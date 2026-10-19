@@ -373,6 +373,7 @@ export async function createOrder(o: Omit<Order, "id" | "createdAt" | "updatedAt
     ],
   );
   if (o.couponCode) await run("UPDATE Coupon SET usageCount = usageCount + 1 WHERE code = ?", [o.couponCode]);
+  if (!["PENDING", "CANCELLED"].includes(o.status)) await adjustStock(o.items, -1);
   return { id, orderNumber };
 }
 
@@ -635,7 +636,8 @@ export async function evaluateCoupon(code: string, subtotal: number): Promise<{ 
   if (!r) return { error: "This code doesn't exist" };
   const c = toCoupon(r);
   if (!c.isActive) return { error: "This code is no longer active" };
-  if (c.expiresAt && new Date(c.expiresAt).getTime() < Date.now()) return { error: "This code has expired" };
+  const expiry = c.expiresAt && (c.expiresAt.length === 10 ? `${c.expiresAt}T23:59:59+05:30` : c.expiresAt);
+  if (expiry && new Date(expiry).getTime() < Date.now()) return { error: "This code has expired" };
   if (subtotal < c.minOrder) return { error: `Add items worth ₹${c.minOrder - subtotal} more to use this code` };
   const discount = c.type === "PERCENT" ? Math.round((subtotal * c.value) / 100) : Math.min(c.value, subtotal);
   return { discount, code: c.code };

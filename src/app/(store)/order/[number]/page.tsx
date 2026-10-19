@@ -9,10 +9,11 @@ import { formatDate, formatINR, imgUrl } from "@/lib/format";
 import { orderMessageForShop, waLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/Motifs";
 import { siteUrl } from "@/lib/site";
+import { AutoOpenWhatsApp } from "@/components/store/AutoOpenWhatsApp";
 
 export const metadata: Metadata = { title: "Your order", robots: { index: false } };
 
-export default async function OrderPage({ params, searchParams }: { params: Promise<{ number: string }>; searchParams: Promise<{ placed?: string; p?: string }> }) {
+export default async function OrderPage({ params, searchParams }: { params: Promise<{ number: string }>; searchParams: Promise<{ placed?: string; p?: string; wa?: string }> }) {
   const { number } = await params;
   const sp = await searchParams;
   const order = await getOrder(number);
@@ -24,6 +25,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
+      {sp.wa && <AutoOpenWhatsApp url={resend} orderNumber={order.orderNumber} />}
       {sp.placed && (
         <div className="mb-10 text-center">
           <CheckCircle2 className="mx-auto size-16 text-wa" strokeWidth={1.3} />

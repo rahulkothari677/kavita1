@@ -46,6 +46,8 @@ type Ctx = {
   toast: (msg: string) => void;
   assistantOpen: boolean;
   setAssistantOpen: (v: boolean) => void;
+  quickViewId: string | null;
+  setQuickViewId: (id: string | null) => void;
 };
 
 const StoreCtx = createContext<Ctx | null>(null);
@@ -71,6 +73,7 @@ export function StoreProvider({ settings, children }: { settings: PublicSettings
   const [hydrated, setHydrated] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [quickViewId, setQuickViewId] = useState<string | null>(null);
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([]);
 
   useEffect(() => {
@@ -136,14 +139,16 @@ export function StoreProvider({ settings, children }: { settings: PublicSettings
       toast,
       assistantOpen,
       setAssistantOpen,
+      quickViewId,
+      setQuickViewId,
     }),
-    [settings, cart, addToCart, cartOpen, wishlist, recent, toast, assistantOpen],
+    [settings, cart, addToCart, cartOpen, wishlist, recent, toast, assistantOpen, quickViewId],
   );
 
   return (
     <StoreCtx.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[80] flex flex-col items-center gap-2 px-4 md:bottom-8">
+      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(140px+env(safe-area-inset-bottom))] z-[80] flex flex-col items-center gap-2 px-4 md:bottom-8">
         {toasts.map((t) => (
           <div key={t.id} className="animate-fade-up rounded-full bg-ink px-5 py-2.5 text-sm text-cream shadow-xl">
             {t.msg}

@@ -4,7 +4,7 @@ import { GoogleGenAI } from "@google/genai";
 /**
  * AI provider abstraction. Set ONE of:
  *  - ANTHROPIC_API_KEY  → Claude (model: ANTHROPIC_MODEL, default claude-opus-5-5)
- *  - GEMINI_API_KEY     → Google Gemini (model: GEMINI_MODEL, default gemini-2.5-flash; has a free tier)
+ *  - GEMINI_API_KEY     → Google Gemini (model: GEMINI_MODEL, default gemini-flash-latest; has a free tier)
  * If neither is set, AI features gracefully fall back to simple rule-based behaviour.
  */
 
@@ -65,7 +65,7 @@ async function geminiCall(system: string, messages: ChatMsg[], images: AiImage[]
     return { role: m.role === "assistant" ? "model" : "user", parts };
   });
   const res = await gemini.models.generateContent({
-    model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+    model: process.env.GEMINI_MODEL || "gemini-flash-latest",
     contents,
     config: { systemInstruction: system, ...(jsonMode ? { responseMimeType: "application/json" } : {}) },
   });

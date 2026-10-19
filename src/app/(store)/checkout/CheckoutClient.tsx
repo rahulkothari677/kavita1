@@ -92,8 +92,7 @@ export function CheckoutClient() {
       localStorage.setItem("ka_customer", JSON.stringify({ ...form, notes: "" }));
       clearCart();
       if (popup) popup.location.href = data.waUrl;
-      else window.location.href = data.waUrl;
-      router.push(`/order/${data.orderNumber}?placed=1&p=${encodeURIComponent(form.phone)}`);
+      router.push(`/order/${data.orderNumber}?placed=1${popup ? "" : "&wa=1"}&p=${encodeURIComponent(form.phone)}`);
     } catch (err) {
       popup?.close();
       setError(err instanceof Error ? err.message : "Something went wrong");
