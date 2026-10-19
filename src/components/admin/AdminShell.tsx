@@ -40,7 +40,7 @@ const NAV = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-export function AdminShell({ children, counts }: { children: React.ReactNode; counts: Counts }) {
+export function AdminShell({ children, counts, tempDb = false }: { children: React.ReactNode; counts: Counts; tempDb?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -123,6 +123,11 @@ export function AdminShell({ children, counts }: { children: React.ReactNode; co
           <span className="font-display text-lg font-semibold">Studio Admin</span>
         </header>
         <main className="pb-28 lg:ml-64 lg:pb-12">
+          {tempDb && (
+            <div className="bg-danger px-4 py-2.5 text-center text-sm text-white">
+              ⚠️ Database not connected — changes may be lost. In Vercel open your project → <b>Storage</b> → <b>Create Database</b> → <b>Turso</b> → connect, then redeploy.
+            </div>
+          )}
           <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-9">{children}</div>
         </main>
         <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-ink/10 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">

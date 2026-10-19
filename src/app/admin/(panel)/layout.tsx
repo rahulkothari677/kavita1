@@ -14,5 +14,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             (SELECT COUNT(*) FROM CustomRequest WHERE status = 'NEW') AS r,
             (SELECT COUNT(*) FROM Review WHERE isApproved = 0) AS v`,
   );
-  return <AdminShell counts={{ pendingOrders: Number(row?.o ?? 0), newRequests: Number(row?.r ?? 0), pendingReviews: Number(row?.v ?? 0) }}>{children}</AdminShell>;
+  // On Vercel without Turso the database lives in temporary storage — warn loudly so no real data is lost.
+  const tempDb = process.env.VERCEL === "1" && !process.env.DATABASE_URL && !process.env.TURSO_DATABASE_URL;
+  return (
+    <AdminShell tempDb={tempDb} counts={{ pendingOrders: Number(row?.o ?? 0), newRequests: Number(row?.r ?? 0), pendingReviews: Number(row?.v ?? 0) }}>
+      {children}
+    </AdminShell>
+  );
 }
