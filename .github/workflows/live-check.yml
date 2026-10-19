@@ -1,0 +1,41 @@
+name: Live site check
+
+# Opens the live website in a real browser after every successful Vercel deploy
+# (and on demand) and clicks through every page on desktop and phone.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Site URL"
+        default: "https://kavita1.vercel.app"
+  status:
+
+jobs:
+  check:
+    if: github.event_name == 'workflow_dispatch' || (github.event.context == 'Vercel' && github.event.state == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm i --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Wait for deployment to settle
+        if: github.event_name == 'status'
+        run: sleep 20
+      - name: Run live check
+        env:
+          SITE_URL: ${{ github.event.inputs.url || 'https://kavita1.vercel.app' }}
+        run: node scripts/live-check.mjs
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-check-screenshots
+          path: live-check/
+          retention-days: 7
