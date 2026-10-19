@@ -67,6 +67,7 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
         { href: "/policies/shipping", label: "Shipping" },
         { href: "/policies/returns", label: "Returns & damage" },
         { href: "/policies/care", label: "Care guide" },
+        { href: "/credits", label: "Photo credits" },
       ],
     },
     {

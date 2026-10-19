@@ -26,11 +26,18 @@ import type { Category, Product } from "@/lib/types";
 const BRAND_BOARD = "/brand/brand-board.jpg";
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
+const MAKING_IMAGES: Pick<MakingStep, "image" | "alt">[] = [
+  { image: "/stock/making-painting.webp", alt: "An artist drawing fine folk-art linework by hand" },
+  { image: "/stock/making-potter-hands.webp", alt: "Hands shaping clay on a potter's wheel" },
+  { image: "/stock/making-painting-ceramics.webp", alt: "A craftswoman hand-painting a ceramic piece" },
+  { image: "/stock/making-embroidery.webp", alt: "Artisans finishing hand embroidery together" },
+];
+
 const MAKING_COPY: Omit<MakingStep, "image" | "alt">[] = [
   { title: "Sketch", body: "Every design begins as a pencil drawing, sized to the wall or the story it is made for.", note: "Pencil on board" },
   { title: "Shape", body: "Clay is rolled and pressed by hand into borders, petals and dots, then left to set.", note: "Clay, by hand" },
   { title: "Set & paint", body: "Mirrors are pressed in one by one, and colour goes on in slow, careful layers.", note: "Mirrors & colour" },
-  { title: "Sign & pack", body: "The finished piece is signed, wrapped with care and packed for its journey to you.", note: "Signed · wrapped · sent" },
+  { title: "Finish & pack", body: "Final stitches, a last touch of colour and a signature — then each piece is wrapped with care for its journey to you.", note: "Finished · wrapped · sent" },
 ];
 
 /** First sentence of a story, plus whatever remains (split into paragraphs). */
@@ -114,31 +121,8 @@ export default async function HomePage() {
   const potw = potwPool.length ? potwPool[Math.floor(Date.now() / WEEK_MS) % potwPool.length] : (heroPiece ?? null);
   const potwLabel = potw ? [wallNo(potw), potw.categoryName, shortSize(potw.size)].filter(Boolean).join(" · ") : "";
 
-  /* ── 7. The Making — four distinct product photos stand in for process shots ── */
-  // Prefer pieces not already shown above (hero, piece of the week); reuse them only if needed.
-  const shownIds = new Set([heroPiece?.id, potw?.id]);
-  const usedImages = new Set<string>([heroImage, ...(potw?.images ?? [])]);
-  const making: { src: string; alt: string }[] = [];
-  for (const pass of [0, 1]) {
-    for (const p of [...featured, ...newest]) {
-      if (making.length >= 4) break;
-      if (pass === 0 && shownIds.has(p.id)) continue; // one photo per piece on the first pass
-      const order = pass === 0 ? [1, 0] : [0, 1, 2, 3];
-      for (const idx of order) {
-        const src = p.images[idx];
-        if (src && !usedImages.has(src)) {
-          usedImages.add(src);
-          making.push({ src, alt: idx === 0 ? p.name : `Detail of ${p.name}` });
-          shownIds.add(p.id);
-          break;
-        }
-      }
-    }
-  }
-  const makingSteps: MakingStep[] = MAKING_COPY.map((c, i) => {
-    const img = making.length ? making[i % making.length] : { src: BRAND_BOARD, alt: `${settings.storeName} Lippan mirror medallion` };
-    return { ...c, image: imgUrl(img.src, 1000), alt: img.alt };
-  });
+  /* ── 7. The Making — documentary photos of Indian craftspeople at work (see /credits) ── */
+  const makingSteps: MakingStep[] = MAKING_COPY.map((c, i) => ({ ...c, ...MAKING_IMAGES[i] }));
 
   /* ── 8. Commission image: a customisable piece, else the name-plate craft ── */
   const customPiece = withImage.find((p) => p.customizable);

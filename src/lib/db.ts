@@ -1,5 +1,5 @@
 import { createClient, type Client, type InValue } from "@libsql/client";
-import { SEED_CATEGORIES, seedDemoProducts } from "./seed";
+import { SEED_CATEGORIES, SEED_CATEGORIES_V2, seedCategoryStatements, seedDemoProducts, seedDemoProductsV2 } from "./seed";
 
 /**
  * Database: libSQL / SQLite.
@@ -172,6 +172,19 @@ async function init() {
     }));
     stmts.push(...seedDemoProducts(now));
     stmts.push({ sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('seeded', '"1"')`, args: [] });
+    await c.batch(stmts, "write");
+  }
+  // Demo catalogue v2 (real photos). Added once — but only while the shop is still showing demo
+  // products or has no products of its own, so it never re-appears after the owner removed demos.
+  const v2 = await c.execute({ sql: "SELECT value FROM Setting WHERE key = 'demoV2'", args: [] });
+  if (v2.rows.length === 0) {
+    const counts = await c.execute({ sql: "SELECT SUM(isDemo = 1) AS demo, SUM(isDemo = 0) AS own FROM Product", args: [] });
+    const demo = Number(counts.rows[0]?.demo ?? 0);
+    const own = Number(counts.rows[0]?.own ?? 0);
+    const now = new Date().toISOString();
+    const stmts: { sql: string; args: InValue[] }[] = [];
+    if (demo > 0 || own === 0) stmts.push(...seedCategoryStatements(SEED_CATEGORIES_V2, now, 20), ...seedDemoProductsV2(now));
+    stmts.push({ sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('demoV2', '"1"')`, args: [] });
     await c.batch(stmts, "write");
   }
 }
