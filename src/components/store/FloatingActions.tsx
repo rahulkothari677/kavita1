@@ -17,7 +17,7 @@ export function FloatingActions() {
   const showAi = settings.aiAssistantEnabled;
   return (
     <>
-      <div className="fixed bottom-[calc(76px+env(safe-area-inset-bottom))] right-4 z-[60] flex flex-col items-end gap-3 md:bottom-7 md:right-7">
+      <div className="wa-float fixed bottom-[calc(76px+env(safe-area-inset-bottom))] right-4 z-[60] flex flex-col items-end gap-3 md:bottom-7 md:right-7">
         {showAi && !assistantOpen && (
           <button
             onClick={() => setAssistantOpen(true)}

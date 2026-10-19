@@ -220,3 +220,10 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Lift the floating WhatsApp button above the mobile sticky buy bar */
+@media (max-width: 767px) {
+  body.has-buybar .wa-float {
+    bottom: calc(150px + env(safe-area-inset-bottom));
+  }
+}

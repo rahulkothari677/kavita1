@@ -11,8 +11,14 @@ export function StickyBuyBar({ name, price, image }: { name: string; price: numb
     if (!el) return;
     const io = new IntersectionObserver(([e]) => setShow(!e.isIntersecting && e.boundingClientRect.top < 0), { threshold: 0 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      document.body.classList.remove("has-buybar");
+    };
   }, []);
+  useEffect(() => {
+    document.body.classList.toggle("has-buybar", show);
+  }, [show]);
   if (!show) return null;
   return (
     <div className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[55] animate-fade-up border-t border-ink/10 bg-paper/95 px-4 py-3 shadow-[0_-10px_30px_-12px_rgba(22,36,74,0.3)] backdrop-blur md:hidden">
