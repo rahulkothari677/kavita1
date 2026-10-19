@@ -93,7 +93,7 @@ export function CustomOrderClient() {
 
   if (done)
     return (
-      <div role="status" className="mt-10 max-w-xl rounded-[2px] border border-line p-6 sm:p-10">
+      <div role="status" className="mt-10 max-w-xl rounded-img border border-line p-6 sm:p-10">
         <span aria-hidden className="grid size-12 place-items-center rounded-full border border-success text-success">
           <Check className="size-6" strokeWidth={1.5} />
         </span>
@@ -214,7 +214,7 @@ export function CustomOrderClient() {
 
       {/* ── Design brief helper ── */}
       <aside aria-labelledby={fid("brief-title")} className="lg:col-span-5 lg:col-start-8">
-        <div className="rounded-[2px] bg-plinth p-5 sm:p-8 lg:sticky lg:top-[96px]">
+        <div className="rounded-img bg-plinth p-5 sm:p-8 lg:sticky lg:top-[96px]">
           <p className="flex items-center gap-2 text-[13px] font-semibold text-ink">
             <Sparkles aria-hidden className="size-3.5 text-accent" strokeWidth={1.75} /> Design brief
           </p>
@@ -234,7 +234,7 @@ export function CustomOrderClient() {
           )}
           <FieldError>{aiErr}</FieldError>
           {concept && (
-            <div aria-live="polite" className="mt-6 animate-fade-up rounded-[2px] border border-line bg-surface p-5">
+            <div aria-live="polite" className="mt-6 animate-fade-up rounded-img border border-line bg-surface p-5">
               <p className="font-display text-[22px] leading-tight">{concept.title}</p>
               <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{concept.concept}</p>
               {concept.palette.length > 0 && (

@@ -17,7 +17,7 @@ export default function CreditsPage() {
       <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {PHOTO_CREDITS.map((c) => (
           <li key={c.image} className="flex gap-4">
-            <img src={c.image} alt="" loading="lazy" decoding="async" className="aspect-[4/5] w-20 shrink-0 rounded-[2px] bg-plinth object-cover" />
+            <img src={c.image} alt="" loading="lazy" decoding="async" className="aspect-[4/5] w-20 shrink-0 rounded-img bg-plinth object-cover" />
             <div className="min-w-0 text-[14px] leading-relaxed">
               <p className="font-medium text-ink">{c.title}</p>
               <p className="text-muted">by {c.creator}</p>

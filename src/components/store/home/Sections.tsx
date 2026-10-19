@@ -6,8 +6,8 @@ import type { Review } from "@/lib/types";
 import { TextLink } from "./TextLink";
 
 /** Top padding shared by canvas sections (the section rhythm from the spec). */
-export const SECTION_TOP = "pt-[clamp(4rem,2rem_+_6vw,8rem)]";
-export const SECTION_BOTTOM = "pb-[clamp(4rem,2rem_+_6vw,8rem)]";
+export const SECTION_TOP = "pt-[clamp(2.5rem,1.5rem_+_3vw,4.5rem)]";
+export const SECTION_BOTTOM = "pb-[clamp(2.5rem,1.5rem_+_3vw,4.5rem)]";
 
 /* ─── How ordering works ─────────────────────────────────────────────────── */
 
@@ -24,21 +24,21 @@ export function HowOrdering({ codAvailable, artistName }: { codAvailable: boolea
     },
   ];
   return (
-    <section aria-labelledby="how-title" className="py-16 lg:py-20">
+    <section aria-labelledby="how-title" className={SECTION_TOP}>
       <div className="container-x">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <h2 id="how-title" className="t-h3">
+          <h2 id="how-title" className="t-script">
             How ordering works
           </h2>
           <TextLink href="/faq">Read the FAQ</TextLink>
         </div>
         <ol className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:mt-10 lg:grid-cols-4 lg:gap-x-6">
           {steps.map((x, i) => (
-            <li key={x.t} className="border-t border-line pt-5">
-              <span aria-hidden className="font-display tabular block text-[40px] leading-none text-muted">
+            <li key={x.t} className="rounded-img bg-surface/70 p-5">
+              <span aria-hidden className="font-script tabular block text-[34px] leading-none text-accent">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-4 text-[16px] leading-snug font-semibold">{x.t}</h3>
+              <h3 className="mt-3 text-[15px] leading-snug font-semibold">{x.t}</h3>
               <p className="mt-1.5 max-w-[30ch] text-[14px] leading-relaxed text-muted">{x.s}</p>
             </li>
           ))}
@@ -62,7 +62,7 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
     <section className={SECTION_TOP}>
       <div className="container-x grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-6">
         <div className="grid gap-6 sm:grid-cols-7 sm:items-end lg:col-span-7">
-          <div className="reveal aspect-[4/5] overflow-hidden rounded-[2px] bg-plinth sm:col-span-4">
+          <div className="reveal aspect-[4/3] overflow-hidden rounded-img bg-plinth shadow-soft sm:col-span-4 sm:aspect-[4/5]">
             <img
               src={image.src}
               srcSet={image.srcSet}
@@ -75,9 +75,7 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
           </div>
           <div className="sm:col-span-3 sm:pb-2">
             <Eyebrow>Commissions</Eyebrow>
-            <h2 className="t-h3 mt-3">
-              Made for your home, <em>by name</em>
-            </h2>
+            <h2 className="font-script mt-2 text-[30px] leading-tight text-accent">Made for your home, by name</h2>
             <p className="mt-3 text-[15px] text-ink-2">Name plates, wedding and return gifts, or a piece in your colours. Share the idea and we’ll design it together.</p>
             <Link href="/custom-order" className="btn btn-primary mt-6 max-[400px]:w-full">
               Start a commission
@@ -85,8 +83,8 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
           </div>
         </div>
 
-        <div className="rounded-[2px] border border-line p-6 sm:p-8 lg:col-span-5">
-          <h2 className="t-h3 italic">Who are you gifting?</h2>
+        <div className="rounded-img bg-surface p-6 shadow-soft sm:p-8 lg:col-span-5">
+          <h2 className="font-script text-[28px] leading-tight text-accent">Who are you gifting?</h2>
           <p className="mt-2 text-[15px] text-muted">Pick an occasion and we’ll suggest handmade pieces that suit it.</p>
           <ul className="mt-6 flex flex-wrap gap-2">
             {GIFT_CHIPS.map((c) => (
@@ -106,86 +104,21 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
   );
 }
 
-/* ─── Meet the maker ─────────────────────────────────────────────────────── */
-
-export function MeetMaker({
-  portrait,
-  portraitAlt,
-  quote,
-  paragraphs,
-  artistName,
-  showLippanNote,
-}: {
-  portrait: { src: string; srcSet?: string };
-  portraitAlt: string;
-  quote: string | null;
-  paragraphs: string[];
-  artistName: string;
-  showLippanNote: boolean;
-}) {
-  return (
-    <section aria-labelledby="maker-title" className={SECTION_TOP}>
-      <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-6">
-        <div className="lg:col-span-5">
-          <div className="reveal arch aspect-[4/5] max-w-[26rem] bg-plinth lg:max-w-none">
-            <img
-              src={portrait.src}
-              srcSet={portrait.srcSet}
-              sizes="(min-width: 1024px) 34vw, (min-width: 640px) 26rem, 100vw"
-              alt={portraitAlt}
-              loading="lazy"
-              decoding="async"
-              className="size-full object-cover"
-            />
-          </div>
-        </div>
-        <div className="lg:col-span-6 lg:col-start-7 lg:pt-24">
-          <h2 id="maker-title" className="eyebrow">
-            Meet the maker
-          </h2>
-          {quote ? (
-            <blockquote className="t-quote mt-6 max-w-[26ch]">
-              <p>“{quote}”</p>
-            </blockquote>
-          ) : null}
-          {paragraphs.length > 0 && (
-            <div className="mt-6 max-w-[52ch] space-y-4 text-[16px] text-ink-2">
-              {paragraphs.map((t, i) => (
-                <p key={i}>{t}</p>
-              ))}
-            </div>
-          )}
-          <p className="font-display mt-7 text-[28px] leading-none italic">{artistName}</p>
-          <TextLink href="/about" className="mt-5">
-            Read our story
-          </TextLink>
-          {showLippanNote ? (
-            <aside className="mt-10 max-w-sm rounded-[2px] border border-line p-5">
-              <p className="text-[14px] font-semibold text-ink">What is Lippan art?</p>
-              <p className="mt-1 text-[14px] text-muted">Mud-and-mirror relief work from Kutch, Gujarat.</p>
-            </aside>
-          ) : null}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ─── From your homes (real, approved reviews only) ──────────────────────── */
 
 export function FromYourHomes({ reviews, total, average }: { reviews: Review[]; total: number; average: number }) {
   return (
     <section aria-label="Customer reviews" className={SECTION_TOP}>
       <div className="container-x">
-        <SectionHeader className="reveal" eyebrow="04 — Kind words" title={<>From <em>your</em> homes</>} />
+        <SectionHeader className="reveal" title="From your homes" />
         <p className="tabular mt-3 text-[14px] text-muted">
           {total} {total === 1 ? "review" : "reviews"} · {average.toFixed(1)} out of 5
         </p>
         <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:mt-12 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0">
           {reviews.map((r) => (
             <li key={r.id} className="w-[84vw] shrink-0 snap-start sm:w-[58vw] lg:w-auto">
-              <figure className="flex h-full flex-col border-t border-line pt-6">
-                <blockquote className="font-display line-clamp-6 text-[20px] leading-[1.4] italic">“{r.comment}”</blockquote>
+              <figure className="flex h-full flex-col rounded-img bg-surface p-6 shadow-soft">
+                <blockquote className="font-display line-clamp-6 text-[17px] leading-[1.45] italic">“{r.comment}”</blockquote>
                 <figcaption className="mt-auto pt-6">
                   <span className="block text-[13px] font-semibold text-ink">
                     {r.name}

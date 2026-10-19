@@ -259,7 +259,7 @@ export function CheckoutClient() {
       <form onSubmit={submit} noValidate className="mt-8 grid gap-10 lg:mt-12 lg:grid-cols-12 lg:gap-6">
         {/* ── Order summary: collapsible on mobile (top), sticky column on desktop ── */}
         <aside aria-label="Order summary" className="mx-auto w-full max-w-[560px] lg:order-2 lg:col-span-5 lg:col-start-8 lg:mx-0 lg:max-w-none">
-          <div className="rounded-[2px] bg-plinth lg:sticky lg:top-[96px]">
+          <div className="rounded-img bg-plinth lg:sticky lg:top-[96px]">
             <button
               type="button"
               onClick={() => setSummaryOpen((v) => !v)}

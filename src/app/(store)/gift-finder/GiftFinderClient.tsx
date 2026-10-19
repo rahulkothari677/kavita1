@@ -256,7 +256,7 @@ export function GiftFinderClient({ initialQ = "" }: { initialQ?: string }) {
           )}
 
           {result.personalTouch && (
-            <aside className="mt-12 max-w-2xl rounded-[2px] border border-line p-5 sm:p-6">
+            <aside className="mt-12 max-w-2xl rounded-img border border-line p-5 sm:p-6">
               <p className="flex items-center gap-2 text-[13px] font-semibold">
                 <Sparkles aria-hidden className="size-3.5 text-accent" strokeWidth={1.75} /> A personal touch
               </p>

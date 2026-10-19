@@ -120,7 +120,7 @@ export function AssistantPanel({ open, onClose }: { open: boolean; onClose: () =
                   {m.products.map((p) => (
                     <li key={p.id} className="w-32 shrink-0">
                       <Link href={`/product/${p.slug}`} onClick={() => setAssistantOpen(false)} className="group block">
-                        <span className="block aspect-[4/5] overflow-hidden rounded-[2px] bg-plinth">
+                        <span className="block aspect-[4/5] overflow-hidden rounded-img bg-plinth">
                           <img src={imgUrl(p.image, 300)} alt="" loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                         </span>
                         <span className="mt-2 line-clamp-2 font-display text-[15px] leading-snug">{p.name}</span>

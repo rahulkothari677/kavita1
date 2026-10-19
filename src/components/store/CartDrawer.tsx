@@ -156,7 +156,7 @@ export function CartDrawer() {
                   const craft = crafts[l.productId];
                   return (
                     <li key={l.productId} className="flex gap-4 border-b border-line py-5">
-                      <Link href={`/product/${l.slug}`} onClick={close} className="h-[90px] w-[72px] shrink-0 overflow-hidden rounded-[2px] bg-plinth" tabIndex={-1} aria-hidden>
+                      <Link href={`/product/${l.slug}`} onClick={close} className="h-[90px] w-[72px] shrink-0 overflow-hidden rounded-img bg-plinth" tabIndex={-1} aria-hidden>
                         <img src={imgUrl(l.image, 200)} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
                       </Link>
                       <div className="flex min-w-0 flex-1 flex-col">
@@ -203,7 +203,7 @@ export function CartDrawer() {
                   <ul className="mt-3">
                     {pairs.map((p) => (
                       <li key={p.id} className="flex items-center gap-3 border-b border-line py-3 last:border-b-0">
-                        <Link href={`/product/${p.slug}`} onClick={close} className="h-[60px] w-12 shrink-0 overflow-hidden rounded-[2px] bg-plinth" tabIndex={-1} aria-hidden>
+                        <Link href={`/product/${p.slug}`} onClick={close} className="h-[60px] w-12 shrink-0 overflow-hidden rounded-img bg-plinth" tabIndex={-1} aria-hidden>
                           <img src={imgUrl(p.images[0], 120)} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
                         </Link>
                         <div className="min-w-0 flex-1">

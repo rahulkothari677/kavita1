@@ -196,7 +196,7 @@ export function QuickView() {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         style={panelStyle}
-        className={`shadow-float relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[20px] bg-surface pb-[env(safe-area-inset-bottom)] transition-[translate,opacity,scale] ease-drawer md:grid md:h-[min(640px,calc(100dvh_-_48px))] md:max-h-none md:max-w-[960px] md:grid-cols-12 md:rounded-[2px] md:pb-0 md:ease-out ${
+        className={`shadow-float relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[20px] bg-surface pb-[env(safe-area-inset-bottom)] transition-[translate,opacity,scale] ease-drawer md:grid md:h-[min(640px,calc(100dvh_-_48px))] md:max-h-none md:max-w-[960px] md:grid-cols-12 md:rounded-img md:pb-0 md:ease-out ${
           shown
             ? "translate-y-0 duration-[420ms] md:scale-100 md:opacity-100 md:duration-[220ms]"
             : "translate-y-full duration-[260ms] md:translate-y-0 md:scale-[0.98] md:opacity-0 md:duration-[180ms]"
@@ -237,7 +237,7 @@ export function QuickView() {
                   {(p.images.length ? p.images : [null]).map((src, n) => {
                     const im = productImg(src, [600, 900, 1200]);
                     return (
-                      <div key={n} className="aspect-[4/5] w-[62vw] max-w-[320px] shrink-0 snap-start overflow-hidden rounded-[2px] bg-plinth md:aspect-auto md:h-full md:w-full md:max-w-none md:rounded-none">
+                      <div key={n} className="aspect-[4/5] w-[62vw] max-w-[320px] shrink-0 snap-start overflow-hidden rounded-img bg-plinth md:aspect-auto md:h-full md:w-full md:max-w-none md:rounded-none">
                         <img
                           src={im.src}
                           srcSet={im.srcSet}

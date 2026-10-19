@@ -123,7 +123,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
         </div>
 
         <aside aria-label="Order summary" className="lg:col-span-4 lg:col-start-9">
-          <div className="rounded-[2px] border border-line p-5 lg:sticky lg:top-[96px] lg:p-6">
+          <div className="rounded-img border border-line p-5 lg:sticky lg:top-[96px] lg:p-6">
             <p className="craft-line">Order</p>
             <p className="tabular mt-1 text-[20px] font-semibold tracking-[-0.01em]">{order.orderNumber}</p>
             <p className="tabular text-[13px] text-muted">{formatDate(order.createdAt)}</p>

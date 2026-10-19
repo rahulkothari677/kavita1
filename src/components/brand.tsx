@@ -7,45 +7,54 @@ export function Bindi({ className = "" }: { className?: string }) {
 }
 
 /**
- * Typeset wordmark — "Kavita’s Artistry" in Fraunces with a bindi full stop.
- * The medallion logo appears only as a small mark beside it (never sampled for colour).
+ * Wordmark — the medallion mark beside "Kavita’s Artistry" in maroon script.
+ * `tagline` adds the small "Handmade with love · Art • Creativity • Decor" lines (header on desktop).
  */
 export function Wordmark({
   withMark = true,
   onDark = false,
   className = "",
   size = "md",
+  tagline = false,
 }: {
   withMark?: boolean;
   onDark?: boolean;
   className?: string;
   size?: "sm" | "md" | "lg";
+  tagline?: boolean;
 }) {
-  const text = size === "sm" ? "text-[19px]" : size === "lg" ? "text-[28px]" : "text-[22px] lg:text-[24px]";
+  const text = size === "sm" ? "text-[24px]" : size === "lg" ? "text-[36px]" : "text-[28px] lg:text-[34px]";
+  const mark = size === "sm" ? "size-9" : "size-11 lg:size-14";
   return (
-    <span className={`inline-flex items-center gap-2 ${onDark ? "on-dark text-on-dark" : "text-ink"} ${className}`}>
+    <span className={`inline-flex items-center gap-2.5 ${onDark ? "on-dark text-on-dark" : "text-ink"} ${className}`}>
       {withMark && (
         <span className={`grid shrink-0 place-items-center rounded-full ${onDark ? "bg-canvas p-[3px]" : ""} max-[339px]:hidden`}>
-          <img src="/brand/medallion.webp" alt="" width={28} height={28} className="size-7 rounded-full" />
+          <img src="/brand/medallion.webp" alt="" width={56} height={56} className={`${mark} rounded-full`} />
         </span>
       )}
-      <span className={`font-display leading-none font-normal tracking-[-0.01em] whitespace-nowrap ${text}`}>
-        Kavita’s Artistry
-        <Bindi />
+      <span className="flex flex-col items-center">
+        <span className={`font-script leading-none whitespace-nowrap ${onDark ? "text-accent-on-dark" : "text-accent"} ${text}`}>Kavita’s Artistry</span>
+        {tagline && (
+          <>
+            <span className="mt-1 text-[10px] leading-none font-semibold tracking-[0.28em] whitespace-nowrap uppercase">Handmade with love</span>
+            <span className="mt-1 text-[9.5px] leading-none tracking-[0.22em] whitespace-nowrap text-muted">Art • Creativity • Decor</span>
+          </>
+        )}
       </span>
     </span>
   );
 }
 
-/** Giant edge-to-edge footer sign-off. Decorative: the real name is elsewhere. */
-export function GiantWordmark() {
+/** Leaf sprig ornament used beside script section titles. */
+export function Sprig({ className = "", flip = false }: { className?: string; flip?: boolean }) {
   return (
-    <div aria-hidden className="on-dark overflow-hidden select-none">
-      <p className="font-display -mb-[0.12em] text-[15.5vw] leading-[0.85] font-[340] tracking-[-0.04em] whitespace-nowrap text-on-dark">
-        Kavita’s <em>Artistry</em>
-        <Bindi />
-      </p>
-    </div>
+    <svg viewBox="0 0 40 24" width="40" height="24" aria-hidden className={`shrink-0 ${flip ? "-scale-x-100" : ""} ${className}`}>
+      <path d="M2 20C12 18 24 12 36 3" fill="none" stroke="var(--color-panel-a)" strokeWidth="1.3" strokeLinecap="round" />
+      <path d="M12 17c-1-4 1-7 5-8-0 4-2 7-5 8z" fill="var(--color-panel-a)" opacity=".85" />
+      <path d="M20 13c0-4 3-6 7-6-1 4-3 6-7 6z" fill="var(--color-accent)" opacity=".55" />
+      <path d="M27 9c1-3 4-5 7-4-1 3-4 5-7 4z" fill="var(--color-panel-a)" opacity=".7" />
+      <path d="M14 18c3-2 7-2 9 0-3 2-6 2-9 0z" fill="var(--color-accent)" opacity=".4" />
+    </svg>
   );
 }
 
@@ -54,7 +63,7 @@ export function Eyebrow({ children, className = "", dot = true }: { children: Re
   return <p className={`eyebrow ${dot ? "" : "no-dot"} ${className}`}>{children}</p>;
 }
 
-/** Section header: hairline on top, eyebrow + serif H2 left, "View all →" right. */
+/** Section header: script title between leaf sprigs, small "View all →" on the right. */
 export function SectionHeader({
   eyebrow,
   title,
@@ -69,18 +78,20 @@ export function SectionHeader({
   as?: "h1" | "h2";
 }) {
   return (
-    <div className={`hairline-t pt-6 ${className}`}>
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-          <As className={`${As === "h1" ? "t-h1" : "t-h2"} ${eyebrow ? "mt-3" : ""}`}>{title}</As>
+    <div className={`flex items-end justify-between gap-4 ${className}`}>
+      <div className="min-w-0">
+        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+        <div className={`flex items-center gap-2 ${eyebrow ? "mt-2" : ""}`}>
+          <Sprig className="max-sm:hidden" />
+          <As className="t-script">{title}</As>
+          <Sprig flip className="max-sm:hidden" />
         </div>
-        {link && (
-          <Link href={link.href} className="link self-start text-[15px] font-medium md:self-auto">
-            {link.label} <span className="arrow">→</span>
-          </Link>
-        )}
       </div>
+      {link && (
+        <Link href={link.href} className="group inline-flex shrink-0 items-center gap-1.5 pb-1 text-[14px] font-medium text-ink hover:text-accent">
+          {link.label} <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+        </Link>
+      )}
     </div>
   );
 }

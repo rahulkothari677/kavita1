@@ -2,7 +2,7 @@ import { query, run } from "./db";
 import type { StoreSettings } from "./types";
 
 export const DEFAULT_SETTINGS: StoreSettings = {
-  theme: "limewash",
+  theme: "atelier",
   storeName: "Kavita's Artistry",
   tagline: "Handmade with love",
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919999999999",
@@ -74,7 +74,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     "Handmade art & craft by Kavita's Artistry — Lippan art, wall decor, festive & pooja decor, name plates, gifts and custom creations. Order easily on WhatsApp.",
 };
 
-const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded"]);
+const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3"]);
 
 export async function getSettings(): Promise<StoreSettings> {
   const rows = await query<{ key: string; value: string }>("SELECT key, value FROM Setting");

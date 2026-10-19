@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { Eyebrow, GiantWordmark } from "@/components/brand";
+import { Eyebrow, Wordmark } from "@/components/brand";
 import { NewsletterForm } from "./NewsletterForm";
 import type { Category, StoreSettings } from "@/lib/types";
 import { waLink } from "@/lib/whatsapp";
@@ -101,14 +101,12 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
 
   return (
     <footer className="on-dark bg-ink-deep pb-[calc(64px+env(safe-area-inset-bottom))] text-on-dark lg:pb-0">
-      <div className="container-x pt-16 lg:pt-24">
+      <div className="container-x pt-12 lg:pt-16">
         {/* Newsletter */}
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-6">
           <div className="lg:col-span-6">
             <Eyebrow>From the studio</Eyebrow>
-            <h2 className="mt-4 max-w-[16ch] font-display text-[32px] leading-[1.1] font-[380] tracking-[-0.015em] lg:text-[40px]">
-              Letters from the <em>studio</em>, once a month
-            </h2>
+            <h2 className="font-script mt-3 text-[28px] leading-tight text-on-dark lg:text-[32px]">Letters from the studio, once a month</h2>
           </div>
           <div className="lg:col-span-5 lg:col-start-8">
             <p className="mb-2 text-[14px] text-muted-on-dark">New pieces, festive drops and notes from Kavita’s work table. No spam.</p>
@@ -117,12 +115,12 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
         </div>
 
         {/* Brand + link columns */}
-        <div className="mt-14 grid gap-10 border-t border-line-on-dark pt-10 lg:mt-20 lg:grid-cols-12 lg:gap-6 lg:pt-14">
+        <div className="mt-10 grid gap-10 border-t border-line-on-dark pt-10 lg:mt-12 lg:grid-cols-12 lg:gap-6 lg:pt-12">
           <div className="lg:col-span-4">
-            <span className="grid size-10 place-items-center rounded-full bg-canvas">
-              <img src="/brand/medallion.webp" alt="" width={32} height={32} loading="lazy" decoding="async" className="size-8 rounded-full" />
-            </span>
-            <p className="eyebrow no-dot mt-5">Handmade with love · India</p>
+            <div>
+              <Wordmark onDark size="sm" />
+            </div>
+            <p className="eyebrow no-dot mt-5 flex">Handmade with love · India</p>
             <p className="mt-3 max-w-[34ch] text-[14px] leading-relaxed text-muted-on-dark">
               Lippan mirror work, mandalas, festive and personalised pieces, made by hand in Kavita’s home studio. Every order is confirmed personally on WhatsApp.
             </p>
@@ -135,7 +133,7 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
         </div>
 
         {/* Payments, copyright, socials */}
-        <div className="mt-10 flex flex-col gap-5 border-t border-line-on-dark py-8 text-[13px] text-muted-on-dark lg:mt-16 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+        <div className="mt-10 flex flex-col gap-5 border-t border-line-on-dark py-8 text-[13px] text-muted-on-dark lg:mt-12 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <p>
             <span className="sr-only">We accept: </span>
             {payments.join(" · ")}
@@ -157,7 +155,6 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
           </ul>
         </div>
       </div>
-      <GiantWordmark />
     </footer>
   );
 }

@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 /*
- * Kavita's Artistry — "Limewash Gallery: Bindi edition"
+ * Kavita's Artistry — "Warm Atelier" (default theme; others in src/lib/themes.ts)
+ * Golden-beige walls, maroon script headings, olive + walnut category panels, rounded photography.
+ * Earlier spec: "Limewash Gallery: Bindi edition"
  * A contemporary Indian gallery: warm limewash walls, one stone plinth behind every piece,
  * warm near-black ink, and a single sindoor "bindi" accent (< 3% of any screen).
  * The products supply the colour. All text pairings below pass WCAG AA.
@@ -9,31 +11,34 @@
 
 @theme {
   /* ── Storefront surfaces ─────────────────────────────────────────── */
-  --color-canvas: #f7f4ef; /* limewash page background (ink 15.95:1, muted 5.92:1) */
-  --color-surface: #ffffff; /* floating layers: drawer, sheets, quick view, inputs */
-  --color-plinth: #efeae2; /* THE backdrop behind every product image, chips, the one tint band */
-  --color-plinth-strong: #e4ddd1; /* hover/pressed plinth, skeletons, disabled */
-  --color-line: #ddd5c8; /* decorative 1px hairlines */
-  --color-line-strong: #8c8279; /* interactive control outlines (never text) */
+  --color-canvas: #f6ede3; /* warm golden-beige page (ink 11.8:1, muted 6.0:1) */
+  --color-surface: #fffaf4; /* floating layers: drawer, sheets, quick view, inputs */
+  --color-plinth: #efe2d2; /* THE backdrop behind every product image, chips, the one tint band */
+  --color-plinth-strong: #e6d3be; /* hover/pressed plinth, skeletons, disabled */
+  --color-line: #e3d2be; /* decorative 1px hairlines */
+  --color-line-strong: #9a8068; /* interactive control outlines (never text) */
 
   /* ── Ink ─────────────────────────────────────────────────────────── */
-  --color-ink: #1c1916; /* text, primary buttons, icons */
-  --color-ink-soft: #3a352f; /* primary hover */
-  --color-ink-2: #4a443d; /* strong secondary text (story copy) */
-  --color-muted: #645d54; /* meta, captions, placeholders */
+  --color-ink: #3b2a20; /* text, primary buttons, icons */
+  --color-ink-soft: #5a4030; /* primary hover */
+  --color-ink-2: #4e3a2c; /* strong secondary text (story copy) */
+  --color-muted: #6b5546; /* meta, captions, placeholders */
 
   /* ── Sindoor bindi (the only storefront accent) ─────────────────── */
-  --color-accent: #b3361f;
-  --color-accent-hover: #962c19;
-  --color-accent-tint: #f5e3dd;
+  --color-accent: #9e2b3a;
+  --color-accent-hover: #84222f;
+  --color-accent-tint: #f6dedf;
+  --color-panel-a: #4f5a34; /* olive category panel (white 7.4:1) */
+  --color-panel-b: #7a4b2a; /* walnut category panel (white 7.3:1) */
+  --color-blush: #f4e1dd; /* About strip */
 
   /* ── Kajal (dark band, footer, announcement) ─────────────────────── */
-  --color-ink-deep: #161412;
-  --color-ink-deep-raised: #1f1c19;
-  --color-line-on-dark: #2e2a26;
-  --color-on-dark: #ede8df;
-  --color-muted-on-dark: #a39b8f;
-  --color-accent-on-dark: #e2603f;
+  --color-ink-deep: #3f2e22;
+  --color-ink-deep-raised: #4b382a;
+  --color-line-on-dark: #5e4836;
+  --color-on-dark: #f8ede0;
+  --color-muted-on-dark: #d9c3ac;
+  --color-accent-on-dark: #f0b7a4;
   --color-haldi: #d9a21b; /* festive highlight, on dark only */
 
   /* ── Functional ──────────────────────────────────────────────────── */
@@ -75,16 +80,18 @@
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-deva: var(--font-tiro), var(--font-fraunces), serif;
+  --font-script: var(--font-dancing), "Segoe Script", cursive;
 
   /* ── Radius ──────────────────────────────────────────────────────── */
-  --radius-img: 2px;
-  --radius-ctl: 4px;
+  --radius-img: 14px;
+  --radius-ctl: 12px;
   --radius-sheet: 20px;
   --radius-card-admin: 8px;
   --radius-ctl-admin: 6px;
 
   /* ── Elevation (floating layers only) ────────────────────────────── */
-  --shadow-float: 0 1px 2px rgb(28 25 22 / 0.04), 0 24px 60px -20px rgb(28 25 22 / 0.25);
+  --shadow-float: 0 1px 2px rgb(59 42 32 / 0.05), 0 24px 60px -20px rgb(59 42 32 / 0.28);
+  --shadow-soft: 0 1px 2px rgb(59 42 32 / 0.06), 0 10px 30px -14px rgb(59 42 32 / 0.3);
 
   /* ── Motion ──────────────────────────────────────────────────────── */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -230,28 +237,28 @@ p {
 .t-display {
   font-family: var(--font-display);
   font-weight: 340;
-  font-size: clamp(2.75rem, 1.6rem + 4.6vw, 6.25rem);
-  line-height: 0.98;
+  font-size: clamp(2rem, 1.5rem + 2.2vw, 3.5rem);
+  line-height: 1.08;
   letter-spacing: -0.025em;
 }
 .t-h1 {
   font-family: var(--font-display);
   font-weight: 360;
-  font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
-  line-height: 1.02;
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  line-height: 1.1;
   letter-spacing: -0.02em;
 }
 .t-h2 {
   font-family: var(--font-display);
   font-weight: 380;
-  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
-  line-height: 1.05;
+  font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2.25rem);
+  line-height: 1.15;
   letter-spacing: -0.02em;
 }
 .t-h3 {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: -0.01em;
 }
@@ -259,8 +266,8 @@ p {
   font-family: var(--font-display);
   font-weight: 340;
   font-style: italic;
-  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
-  line-height: 1.25;
+  font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.75rem);
+  line-height: 1.35;
   letter-spacing: -0.01em;
   hanging-punctuation: first;
 }
@@ -279,6 +286,20 @@ p {
 .t-h2 em,
 .t-h3 em {
   font-style: italic;
+}
+
+/* Script headings (Dancing Script) — section titles, tile names, the wordmark */
+.font-script {
+  font-family: var(--font-script);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.t-script {
+  font-family: var(--font-script);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 1.45rem + 1.2vw, 2.5rem);
+  line-height: 1.1;
+  color: var(--color-accent);
 }
 
 /* Eyebrow / wall label: ● 02 — SHOP BY CRAFT */
@@ -382,8 +403,8 @@ p {
   justify-content: center;
   gap: 0.5rem;
   height: 48px;
-  padding-inline: 24px;
-  border-radius: var(--radius-ctl);
+  padding-inline: 26px;
+  border-radius: 999px;
   font-family: var(--font-sans);
   font-weight: 500;
   font-size: 15px;
@@ -633,7 +654,7 @@ input[type="radio"] {
   overflow: hidden;
 }
 .arch {
-  border-radius: 999px 999px 2px 2px;
+  border-radius: 999px 999px var(--radius-img) var(--radius-img);
   overflow: hidden;
 }
 .shadow-float {
@@ -644,6 +665,15 @@ input[type="radio"] {
 }
 .hairline-b {
   border-bottom: 1px solid var(--color-line);
+}
+
+/* Homepage hero: a sunlit golden wash that adapts to every theme */
+.hero-wash {
+  --wash: color-mix(in srgb, var(--color-plinth-strong) 78%, #d6a565);
+  background: var(--wash);
+}
+.hero-fade {
+  background: linear-gradient(90deg, var(--wash) 0%, var(--wash) 4%, color-mix(in srgb, var(--wash) 55%, transparent) 24%, transparent 52%);
 }
 
 /* Container + section rhythm */
@@ -669,7 +699,7 @@ input[type="radio"] {
   }
 }
 .section-y {
-  padding-block: clamp(4rem, 2rem + 6vw, 8rem);
+  padding-block: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
 }
 
 /* Prose */

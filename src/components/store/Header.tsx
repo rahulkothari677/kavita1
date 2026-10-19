@@ -91,7 +91,7 @@ export function Header({ categories }: { categories: Category[] }) {
             : "border-transparent bg-canvas"
         } ${hide ? "max-lg:-translate-y-full" : ""}`}
       >
-        <div className="container-x flex h-[60px] items-center lg:grid lg:h-[72px] lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
+        <div className="container-x flex h-[64px] items-center lg:grid lg:h-[88px] lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
           {/* Desktop nav (left) */}
           <nav aria-label="Primary" className="hidden items-center gap-5 lg:flex xl:gap-7">
             <Link href="/shop" aria-current={isActive("/shop") ? "page" : undefined} className={NAV_LINK}>
@@ -116,7 +116,7 @@ export function Header({ categories }: { categories: Category[] }) {
               <Wordmark size="sm" />
             </span>
             <span className="hidden lg:inline">
-              <Wordmark />
+              <Wordmark tagline />
             </span>
           </Link>
 

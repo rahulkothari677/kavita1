@@ -51,7 +51,7 @@ export function TrackForm({ initialOrder }: { initialOrder: string }) {
   };
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-5 rounded-[2px] border border-line bg-surface p-5 sm:p-8">
+    <form onSubmit={submit} noValidate className="space-y-5 rounded-img border border-line bg-surface p-5 sm:p-8">
       <div>
         <label htmlFor={`${id}-order`} className="label">
           Order number

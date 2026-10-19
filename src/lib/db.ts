@@ -187,6 +187,18 @@ async function init() {
     stmts.push({ sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('demoV2', '"1"')`, args: [] });
     await c.batch(stmts, "write");
   }
+  // Warm Atelier redesign: move every shop onto the new default theme once (the owner can switch back
+  // in Admin → Settings → Appearance; this never runs again).
+  const v3 = await c.execute({ sql: "SELECT value FROM Setting WHERE key = 'themeV3'", args: [] });
+  if (v3.rows.length === 0) {
+    await c.batch(
+      [
+        { sql: `INSERT INTO Setting (key, value) VALUES ('theme', '"atelier"') ON CONFLICT(key) DO UPDATE SET value = excluded.value`, args: [] },
+        { sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('themeV3', '"1"')`, args: [] },
+      ],
+      "write",
+    );
+  }
 }
 
 export async function ensureDb() {

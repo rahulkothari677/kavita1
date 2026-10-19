@@ -67,7 +67,7 @@ export function StickyBuyBar({ name, price, image, product }: Props) {
       }`}
     >
       <div className="container-x flex h-16 items-center gap-3">
-        <img src={imgUrl(image, 120)} alt="" width={40} height={50} className="h-[50px] w-10 shrink-0 rounded-[2px] bg-plinth object-cover" />
+        <img src={imgUrl(image, 120)} alt="" width={40} height={50} className="h-[50px] w-10 shrink-0 rounded-img bg-plinth object-cover" />
         <div className="min-w-0 flex-1">
           <p className="font-display truncate text-[15px] leading-tight">{name}</p>
           <p className="mt-0.5 text-[15px] leading-tight">

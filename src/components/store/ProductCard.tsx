@@ -54,7 +54,7 @@ export function ProductCard({ p, priority = false }: { p: CardProduct; priority?
 
   return (
     <article className="group relative">
-      <div className={`img-well relative aspect-[4/5] ${glint ? "glint" : ""}`}>
+      <div className={`img-well relative aspect-square shadow-soft ${glint ? "glint" : ""}`}>
         <Link href={href} tabIndex={-1} aria-hidden className="absolute inset-0 block">
           <ViewTransition name={morphName(p.id)} share="morph" default="none">
             <img
@@ -97,7 +97,7 @@ export function ProductCard({ p, priority = false }: { p: CardProduct; priority?
           }}
           aria-label={wished ? `Remove ${p.name} from wishlist` : `Save ${p.name} to wishlist`}
           aria-pressed={wished}
-          className={`absolute top-2 right-2 grid size-9 place-items-center rounded-full bg-canvas/80 text-ink backdrop-blur-md transition-[opacity,background-color] duration-200 before:absolute before:-inset-1 before:content-[''] hover:bg-canvas focus-visible:opacity-100 ${
+          className={`absolute top-2 right-2 grid size-8 place-items-center rounded-full bg-canvas/80 text-ink backdrop-blur-md transition-[opacity,background-color] duration-200 before:absolute before:-inset-1 before:content-[''] hover:bg-canvas focus-visible:opacity-100 ${
             wished ? "" : `pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-within:opacity-100`
           }`}
         >
@@ -129,11 +129,11 @@ export function ProductCard({ p, priority = false }: { p: CardProduct; priority?
         )}
       </div>
 
-      <Link href={href} className="mt-3 block">
-        {p.categoryName && <p className="craft-line truncate">{p.categoryName}</p>}
-        <h3 className="font-display mt-1 line-clamp-2 text-[17px] leading-[1.3] tracking-[-0.005em] text-ink lg:text-[18px]">{p.name}</h3>
+      <Link href={href} className="mt-2.5 block px-0.5">
+        <h3 className="line-clamp-1 text-[14px] leading-snug font-medium text-ink lg:text-[15px]">{p.name}</h3>
+        {p.categoryName && <p className="mt-0.5 truncate text-[12px] text-muted">{p.categoryName}</p>}
         {!sold && (
-          <p className="mt-1.5 text-[15px] leading-snug">
+          <p className="mt-1 text-[14px] leading-snug font-semibold">
             <Price value={p.price} compareAt={p.compareAtPrice} />
             {meta && <span className="text-[13px] text-muted"> · {meta}</span>}
           </p>

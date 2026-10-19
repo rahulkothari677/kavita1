@@ -1,56 +1,44 @@
-import Link from "next/link";
 import { SectionHeader } from "@/components/brand";
 import { ProductCard } from "@/components/store/ProductCard";
-import { CraftIndex, type CraftRow } from "@/components/store/home/CraftIndex";
-import { DEFAULT_HERO_TITLE, Hero, type HeroLabel } from "@/components/store/home/Hero";
-import { MakingStory, type MakingStep } from "@/components/store/home/MakingStory";
-import { PieceOfTheWeek } from "@/components/store/home/PieceOfTheWeek";
-import {
-  CommissionAndGifts,
-  FromYourHomes,
-  HowOrdering,
-  InstagramLine,
-  MeetMaker,
-  SECTION_BOTTOM,
-  SECTION_TOP,
-  instagramLink,
-} from "@/components/store/home/Sections";
-import { SnapRail } from "@/components/store/home/SnapRail";
-import { TrustRow } from "@/components/store/home/TrustRow";
-import { labelNo, responsiveImg, shortSize } from "@/components/store/home/img";
-import { imgUrl } from "@/lib/format";
+import { AboutStrip, CategoryTiles, HeroBanner, type Tile } from "@/components/store/home/Atelier";
+import { CommissionAndGifts, FromYourHomes, HowOrdering, InstagramLine, SECTION_TOP, instagramLink } from "@/components/store/home/Sections";
+import { responsiveImg } from "@/components/store/home/img";
 import { categoryTree, listProducts, listReviews } from "@/lib/repo";
 import { getSettings } from "@/lib/settings";
 import type { Category, Product } from "@/lib/types";
 
 const BRAND_BOARD = "/brand/brand-board.jpg";
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const HERO_SCENE = "/home/hero-scene.webp";
+const DEFAULT_TITLE = "Handmade Art for a Happier Home";
+const DEFAULT_LINES = ["Unique pieces • Customised creations", "Art • Home Decor • More"];
+// Earlier defaults that may still be saved in settings — shown as the new copy instead.
+const OLD_TITLES = ["art that adds happiness to your space"];
+const OLD_SUBTITLE_START = "lippan art, wall decor, festive pieces";
 
-const MAKING_IMAGES: Pick<MakingStep, "image" | "alt">[] = [
-  { image: "/stock/making-painting.webp", alt: "An artist drawing fine folk-art linework by hand" },
-  { image: "/stock/making-potter-hands.webp", alt: "Hands shaping clay on a potter's wheel" },
-  { image: "/stock/making-painting-ceramics.webp", alt: "A craftswoman hand-painting a ceramic piece" },
-  { image: "/stock/making-embroidery.webp", alt: "Artisans finishing hand embroidery together" },
+/** Category tiles: a collection slug (falls back to /shop if the owner removed it) or a fixed link. */
+const TILES: (Omit<Tile, "href"> & { category?: string; href?: string })[] = [
+  { title: "Lippan Art", text: "Traditional art, modern homes", image: "/home/tile-lippan.webp", tone: "a", category: "lippan-art" },
+  { title: "Home Decor", text: "Add charm to your spaces", image: "/home/tile-decor.webp", tone: "b", category: "home-accents" },
+  { title: "Wall Hangings & Mirrors", text: "For walls that tell a story", image: "/home/tile-hangings.webp", tone: "a", category: "wall-decor" },
+  { title: "Customised Creations", text: "Your idea, my art", image: "/home/tile-custom.webp", tone: "b", href: "/custom-order" },
+  { title: "Bestsellers", text: "Loved by many, crafted with care", image: "/home/tile-bestsellers.webp", tone: "a", href: "/shop?sort=popular" },
+  { title: "New Arrivals", text: "Fresh designs, just for you", image: "/home/tile-new.webp", tone: "b", href: "/shop?sort=newest" },
 ];
 
-const MAKING_COPY: Omit<MakingStep, "image" | "alt">[] = [
-  { title: "Sketch", body: "Every design begins as a pencil drawing, sized to the wall or the story it is made for.", note: "Pencil on board" },
-  { title: "Shape", body: "Clay is rolled and pressed by hand into borders, petals and dots, then left to set.", note: "Clay, by hand" },
-  { title: "Set & paint", body: "Mirrors are pressed in one by one, and colour goes on in slow, careful layers.", note: "Mirrors & colour" },
-  { title: "Finish & pack", body: "Final stitches, a last touch of colour and a signature — then each piece is wrapped with care for its journey to you.", note: "Finished · wrapped · sent" },
+const MAKING = [
+  { image: "/stock/making-painting.webp", alt: "An artist drawing fine folk-art linework by hand", title: "Sketch", body: "Every design begins as a pencil drawing, sized to your wall." },
+  { image: "/stock/making-potter-hands.webp", alt: "Hands shaping clay on a potter's wheel", title: "Shape", body: "Clay is rolled and pressed by hand into borders, petals and dots." },
+  { image: "/stock/making-painting-ceramics.webp", alt: "A craftswoman hand-painting a ceramic piece", title: "Paint", body: "Mirrors are set one by one and colour goes on in slow layers." },
+  { image: "/stock/making-embroidery.webp", alt: "Artisans finishing hand embroidery together", title: "Finish & pack", body: "A last touch, a signature, then wrapped with care for you." },
 ];
 
-/** First sentence of a story, plus whatever remains (split into paragraphs). */
-function splitStory(story: string) {
-  const paras = story
-    .split(/\n+/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-  if (!paras.length) return { quote: null, rest: [] as string[] };
-  const m = paras[0].match(/^(.+?[.!?])(\s+|$)([\s\S]*)$/);
-  const quote = (m ? m[1] : paras[0]).trim();
-  const remainder = m ? m[3].trim() : "";
-  return { quote, rest: [remainder, ...paras.slice(1)].filter(Boolean) };
+function firstParagraph(story: string) {
+  return (
+    story
+      .split(/\n+/)
+      .map((p) => p.trim())
+      .find(Boolean) ?? ""
+  );
 }
 
 export default async function HomePage() {
@@ -62,188 +50,111 @@ export default async function HomePage() {
   ]);
 
   const withImage = products.filter((p) => p.images[0]);
-  const featured = withImage.filter((p) => p.isFeatured);
-  const newest = [...products].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   const flatCats: Category[] = categories.flatMap((c) => [c, ...(c.children ?? [])]);
+  const catSlugs = new Set(flatCats.map((c) => c.slug));
 
-  // Stable catalogue numbers for wall labels: N° 001 is the oldest piece still on sale.
-  const catalogueNo = new Map(
-    [...products].sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id)).map((p, i) => [p.id, i + 1]),
-  );
-  const wallNo = (p: Product) => labelNo(catalogueNo.get(p.id) ?? 1);
-
-  /* ── 1. Hero ─────────────────────────────────────────────────────────── */
+  /* Hero — the owner's slide copy and photo when set, else the studio scene */
   const slide = settings.heroSlides?.[0];
-  const slideImage = slide?.image?.trim() || "";
-  // The wall label only names a piece when the photo really is that piece.
-  const heroPiece: Product | null = slideImage
-    ? (products.find((p) => p.images.includes(slideImage)) ?? null)
-    : (featured[0] ?? withImage[0] ?? null);
-  const heroImage = slideImage || heroPiece?.images[0] || BRAND_BOARD;
-  const heroLabel: HeroLabel | null = heroPiece
-    ? { href: `/product/${heroPiece.slug}`, no: wallNo(heroPiece), craft: heroPiece.categoryName ?? null, name: heroPiece.name, price: heroPiece.price }
-    : null;
-  const heroAlt = heroPiece
-    ? `${heroPiece.name}${heroPiece.categoryName ? `, ${heroPiece.categoryName.toLowerCase()}` : ""}, handmade by ${settings.artistName || "Kavita"}`
-    : heroImage === BRAND_BOARD
-      ? `${settings.storeName} Lippan mirror medallion`
-      : `Handmade piece from ${settings.storeName}`;
+  const rawTitle = slide?.title?.trim() || "";
+  const title = !rawTitle || OLD_TITLES.includes(rawTitle.toLowerCase()) ? DEFAULT_TITLE : rawTitle;
+  const rawSub = slide?.subtitle?.trim() || "";
+  const lines = !rawSub || rawSub.toLowerCase().startsWith(OLD_SUBTITLE_START) ? DEFAULT_LINES : rawSub.split(/\n+/).filter(Boolean);
+  const heroImage = slide?.image?.trim() || HERO_SCENE;
+  const rawCta = slide?.ctaLabel?.trim() || "";
+  const ctaLabel = !rawCta || rawCta === "Explore the collection" ? "Explore our collection" : rawCta;
 
-  const reviewCount = approvedReviews.length;
-  const reviewAvg = reviewCount ? approvedReviews.reduce((s, r) => s + r.rating, 0) / reviewCount : 0;
-  const proofParts: string[] = [];
-  if (reviewCount > 0) proofParts.push(`${reviewAvg.toFixed(1)} average from ${reviewCount} ${reviewCount === 1 ? "review" : "reviews"}`);
-  if (settings.codAvailable) proofParts.push("Cash on delivery");
-  const proof = proofParts.length ? proofParts.join(" · ") : null;
+  /* Tiles */
+  const tiles: Tile[] = TILES.map(({ category, href, ...t }) => ({
+    ...t,
+    href: href ?? (category && catSlugs.has(category) ? `/shop?category=${category}` : "/shop"),
+  }));
 
-  /* ── 3. Crafts ───────────────────────────────────────────────────────── */
-  const crafts: CraftRow[] = categories
-    .filter((c) => (c.productCount ?? 0) > 0)
-    .map((c) => {
-      const slugs = new Set([c.slug, ...(c.children ?? []).map((ch) => ch.slug)]);
-      const fallback = withImage.find((p) => p.categorySlug && slugs.has(p.categorySlug))?.images[0];
-      const image = c.image || fallback || null;
-      return {
-        slug: c.slug,
-        name: c.name,
-        count: c.productCount ?? 0,
-        image: image ? imgUrl(image, 640) : null,
-        subs: (c.children ?? []).filter((ch) => (ch.productCount ?? 0) > 0).map((ch) => ch.name),
-      };
-    });
+  /* Featured: featured → bestsellers → the rest, 8 pieces */
+  const rank = (p: Product) => (p.isFeatured ? 0 : p.isBestseller ? 1 : 2);
+  const featured = [...withImage].sort((a, b) => rank(a) - rank(b)).slice(0, 8);
+  const shown = new Set(featured.map((p) => p.id));
+  const newest = [...withImage]
+    .filter((p) => !shown.has(p.id))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 4);
 
-  /* ── 4. New in the studio ────────────────────────────────────────────── */
-  const newIn = newest.slice(0, 8);
-
-  /* ── 5. Piece of the week — rotates weekly through featured pieces ───── */
-  const notHero = (p: Product) => p.id !== heroPiece?.id;
-  const potwPool = featured.filter(notHero).length ? featured.filter(notHero) : newest.filter((p) => notHero(p) && p.images[0]);
-  const potw = potwPool.length ? potwPool[Math.floor(Date.now() / WEEK_MS) % potwPool.length] : (heroPiece ?? null);
-  const potwLabel = potw ? [wallNo(potw), potw.categoryName, shortSize(potw.size)].filter(Boolean).join(" · ") : "";
-
-  /* ── 7. The Making — documentary photos of Indian craftspeople at work (see /credits) ── */
-  const makingSteps: MakingStep[] = MAKING_COPY.map((c, i) => ({ ...c, ...MAKING_IMAGES[i] }));
-
-  /* ── 8. Commission image: a customisable piece, else the name-plate craft ── */
+  /* Commission image: a customisable piece, else the name-plate craft */
   const customPiece = withImage.find((p) => p.customizable);
   const namePlateCat = flatCats.find((c) => c.image && /name/i.test(`${c.slug} ${c.name}`));
   const commissionSrc = customPiece?.images[0] ?? namePlateCat?.image ?? BRAND_BOARD;
   const commissionAlt = customPiece ? customPiece.name : namePlateCat ? namePlateCat.name : `${settings.storeName} Lippan mirror medallion`;
 
-  /* ── 9. Meet the maker ───────────────────────────────────────────────── */
-  const story = splitStory(settings.aboutStory || "");
   const artistName = settings.artistName || "Kavita";
-  const portraitSrc = settings.artistImage || BRAND_BOARD;
-  const portraitAlt = settings.artistImage ? `${artistName}, the maker behind ${settings.storeName}` : `${settings.storeName} Lippan mirror medallion`;
-  const sellsLippan = [...flatCats, ...products].some((x) => /lippan/i.test(x.name));
+  const intro = firstParagraph(settings.aboutStory || "") || `Hi, I’m ${artistName} — the artist behind ${settings.storeName}.`;
 
-  /* ── 10. Reviews: featured first, newest next ────────────────────────── */
+  const reviewCount = approvedReviews.length;
+  const reviewAvg = reviewCount ? approvedReviews.reduce((s, r) => s + r.rating, 0) / reviewCount : 0;
   const shownReviews = [...approvedReviews].sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured)).slice(0, 6);
-
   const insta = instagramLink(settings.instagram || "");
 
   return (
     <>
-      <Hero
-        title={slide?.title?.trim() || DEFAULT_HERO_TITLE}
-        subtitle={slide?.subtitle}
-        ctaLabel={slide?.ctaLabel?.trim() || "Explore the collection"}
+      <HeroBanner
+        title={title}
+        lines={lines}
+        ctaLabel={ctaLabel}
         ctaLink={slide?.ctaLink?.trim() || "/shop"}
         image={heroImage}
-        imageAlt={heroAlt}
-        label={heroLabel}
-        proof={proof}
+        imageAlt={`Handmade decor from ${settings.storeName} in a sunlit room`}
       />
 
-      <TrustRow settings={settings} />
+      <CategoryTiles tiles={tiles} />
 
-      {crafts.length > 0 && (
-        <section aria-labelledby="crafts-title" className={SECTION_TOP}>
-          <div className="container-x">
-            <SectionHeader
-              className="reveal"
-              eyebrow="01 — Shop by craft"
-              title={
-                <span id="crafts-title">
-                  Something for every <em>corner</em>
-                </span>
-              }
-              link={{ href: "/shop", label: "View all crafts" }}
-            />
-            <div className="reveal mt-12 hidden lg:block">
-              <CraftIndex rows={crafts} />
-            </div>
-            <SnapRail label="Crafts" className="mt-8 lg:hidden">
-              {crafts.map((c) => (
-                <Link key={c.slug} href={`/shop?category=${encodeURIComponent(c.slug)}`} className="hover-zoom group block w-[72vw] shrink-0 snap-start sm:w-[42vw]">
-                  <span className="block aspect-[3/4] overflow-hidden rounded-[2px] bg-plinth">
-                    {c.image ? <img src={c.image} alt="" loading="lazy" decoding="async" className="size-full object-cover" /> : null}
-                  </span>
-                  <span className="font-display mt-3 block text-[20px] leading-tight">{c.name}</span>
-                  <span className="craft-line tabular mt-1 block">
-                    {c.count} {c.count === 1 ? "piece" : "pieces"}
-                  </span>
-                </Link>
-              ))}
-            </SnapRail>
+      {featured.length > 0 && (
+        <section aria-labelledby="featured-title" className="container-x pt-10 lg:pt-14">
+          <SectionHeader title={<span id="featured-title">Featured Products</span>} link={{ href: "/shop", label: "View all" }} />
+          <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-4 lg:mt-6 xl:grid-cols-4 xl:gap-x-5 md:max-xl:[&>*:nth-child(n+7)]:hidden">
+            {featured.map((p, i) => (
+              <ProductCard key={p.id} p={p} priority={i < 2} />
+            ))}
           </div>
         </section>
       )}
 
-      {newIn.length > 0 && (
-        <section aria-labelledby="new-title" className={`${SECTION_TOP} ${SECTION_BOTTOM}`}>
-          <div className="container-x">
-            <SectionHeader
-              className="reveal"
-              eyebrow="02 — New in the studio"
-              title={
-                <span id="new-title">
-                  Fresh from the <em>work table</em>
-                </span>
-              }
-              link={{ href: "/shop?sort=newest", label: "View all" }}
-            />
-            <div className="reveal mt-8 grid grid-cols-2 gap-x-3 gap-y-7 md:mt-12 md:grid-cols-3 md:gap-x-5 md:gap-y-10 xl:grid-cols-4 xl:gap-x-6 xl:gap-y-12 md:max-xl:[&>*:nth-child(n+7)]:hidden">
-              {newIn.map((p) => (
-                <ProductCard key={p.id} p={p} />
-              ))}
-            </div>
+      <AboutStrip name={artistName} intro={intro} image={settings.artistImage || "/home/about-studio.webp"} />
+
+      {newest.length > 0 && (
+        <section aria-labelledby="new-title" className="container-x pt-10 lg:pt-14">
+          <SectionHeader title={<span id="new-title">New Arrivals</span>} link={{ href: "/shop?sort=newest", label: "View all" }} />
+          <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 md:gap-x-4 lg:mt-6 xl:grid-cols-4 xl:gap-x-5">
+            {newest.map((p) => (
+              <ProductCard key={p.id} p={p} />
+            ))}
           </div>
         </section>
       )}
 
-      {potw && potw.images[0] ? <PieceOfTheWeek p={potw} label={potwLabel} /> : null}
+      <section aria-labelledby="making-title" className={`container-x ${SECTION_TOP}`}>
+        <SectionHeader title={<span id="making-title">From Clay to Your Wall</span>} link={{ href: "/about", label: "Our story" }} />
+        <ol className="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:mt-6 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0">
+          {MAKING.map((m, i) => {
+            const img = responsiveImg(m.image, [480, 720]);
+            return (
+              <li key={m.title} className="w-[64vw] shrink-0 snap-start sm:w-[40vw] lg:w-auto">
+                <div className="aspect-[4/3] overflow-hidden rounded-img bg-plinth shadow-soft">
+                  <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 24vw, 64vw" alt={m.alt} loading="lazy" decoding="async" className="size-full object-cover" />
+                </div>
+                <p className="mt-3 flex items-baseline gap-2">
+                  <span className="font-script text-[22px] leading-none text-accent">{i + 1}.</span>
+                  <span className="text-[15px] font-semibold">{m.title}</span>
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-muted">{m.body}</p>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
 
       <HowOrdering codAvailable={settings.codAvailable} artistName={artistName} />
 
-      {/* The page's one kajal band — never adjacent to the footer */}
-      <section aria-labelledby="making-title" className="on-dark section-y bg-ink-deep text-on-dark">
-        <div className="container-x">
-          <div className="reveal border-t border-line-on-dark pt-6">
-            <p className="eyebrow">03 — The making</p>
-            <h2 id="making-title" className="t-h2 mt-3 text-on-dark">
-              From clay to <em>your wall</em>.
-            </h2>
-            <p className="mt-4 max-w-[48ch] text-[16px] text-muted-on-dark">How a piece comes together on the studio table, one stage at a time.</p>
-          </div>
-          <MakingStory steps={makingSteps} />
-        </div>
-      </section>
-
-      <div className={SECTION_BOTTOM}>
+      <div className="pb-[clamp(2.5rem,1.5rem_+_3vw,4.5rem)]">
         <CommissionAndGifts image={responsiveImg(commissionSrc, [640, 960])} imageAlt={commissionAlt} />
-
-        <MeetMaker
-          portrait={responsiveImg(portraitSrc, [640, 960])}
-          portraitAlt={portraitAlt}
-          quote={story.quote}
-          paragraphs={story.rest.slice(0, 2)}
-          artistName={artistName}
-          showLippanNote={sellsLippan}
-        />
-
         {shownReviews.length > 0 && <FromYourHomes reviews={shownReviews} total={reviewCount} average={reviewAvg} />}
-
         {insta && <InstagramLine href={insta.href} handle={insta.handle} />}
       </div>
     </>

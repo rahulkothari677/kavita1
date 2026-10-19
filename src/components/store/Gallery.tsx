@@ -106,7 +106,7 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
               onClick={() => scrollToSlide(n)}
               aria-label={`Show image ${n + 1}`}
               aria-current={n === active ? "true" : undefined}
-              className={`h-[60px] w-12 shrink-0 overflow-hidden rounded-[2px] bg-plinth transition-[outline-color,opacity] duration-150 ${
+              className={`h-[60px] w-12 shrink-0 overflow-hidden rounded-img bg-plinth transition-[outline-color,opacity] duration-150 ${
                 n === active ? "outline-1 outline-offset-1 outline-ink outline-solid" : "opacity-75"
               }`}
             >
@@ -258,7 +258,7 @@ function ZoomViewer({ images, name, start, onClose }: { images: string[]; name: 
           sizes={zoomed ? "200vw" : "100vw"}
           alt={`${name}, image ${i + 1} of ${n}`}
           draggable={false}
-          className={zoomed ? "max-w-none rounded-[2px] select-none" : "max-h-full max-w-full animate-fade-in rounded-[2px] object-contain select-none"}
+          className={zoomed ? "max-w-none rounded-img select-none" : "max-h-full max-w-full animate-fade-in rounded-img object-contain select-none"}
           style={zoomed ? { width: "max(200%, 1200px)" } : undefined}
         />
       </div>

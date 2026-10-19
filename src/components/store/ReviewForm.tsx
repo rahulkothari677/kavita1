@@ -46,7 +46,7 @@ export function ReviewForm({ productId, orderNumber }: { productId?: string; ord
   };
 
   return (
-    <form onSubmit={submit} className="space-y-5 rounded-[2px] border border-line bg-surface p-5 sm:p-6">
+    <form onSubmit={submit} className="space-y-5 rounded-img border border-line bg-surface p-5 sm:p-6">
       <fieldset>
         <legend className="label">Your rating</legend>
         <div className="-ml-2.5 flex items-center" role="radiogroup" aria-label="Rating">

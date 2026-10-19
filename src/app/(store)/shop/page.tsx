@@ -251,7 +251,7 @@ function Chip({ href, active, children, removable }: { href: string; active?: bo
 
 function CommissionTile({ artistName }: { artistName: string }) {
   return (
-    <div className="flex h-full flex-col justify-between gap-8 rounded-[2px] bg-plinth p-6 sm:p-8 lg:p-10">
+    <div className="flex h-full flex-col justify-between gap-8 rounded-img bg-plinth p-6 sm:p-8 lg:p-10">
       <div>
         <Eyebrow>Commissions</Eyebrow>
         <h2 className="t-h3 mt-4 max-w-[18ch]">
@@ -275,7 +275,7 @@ function CommissionTile({ artistName }: { artistName: string }) {
 
 function CraftTile() {
   return (
-    <div className="on-dark flex h-full flex-col justify-between gap-8 rounded-[2px] bg-ink-deep p-6 text-on-dark sm:p-8 lg:p-10">
+    <div className="on-dark flex h-full flex-col justify-between gap-8 rounded-img bg-ink-deep p-6 text-on-dark sm:p-8 lg:p-10">
       <div>
         <Eyebrow>The craft</Eyebrow>
         <h2 className="t-h3 mt-4 max-w-[18ch]">

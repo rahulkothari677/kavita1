@@ -28,7 +28,7 @@ export default function ShopLoading() {
       <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-7 md:grid-cols-3 md:gap-x-5 md:gap-y-10 lg:mt-10 xl:grid-cols-4 xl:gap-x-6 xl:gap-y-12">
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i}>
-            <div className="skeleton aspect-[4/5]" />
+            <div className="skeleton aspect-square" />
             <div className="skeleton mt-3 h-[11px] w-[40%]" />
             <div className="skeleton mt-2 h-[17px] w-[70%] lg:h-[18px]" />
             <div className="skeleton mt-2 h-[15px] w-[30%]" />

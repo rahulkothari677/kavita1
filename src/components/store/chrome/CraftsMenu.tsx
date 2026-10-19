@@ -197,7 +197,7 @@ export function CraftsMenu({ categories, navLinkClass }: { categories: Category[
             </div>
 
             <div className="col-span-4 col-start-9">
-              <div className="relative ml-auto aspect-[4/5] w-full max-w-[320px] overflow-hidden rounded-[2px] bg-plinth">
+              <div className="relative ml-auto aspect-[4/5] w-full max-w-[320px] overflow-hidden rounded-img bg-plinth">
                 {everOpened &&
                   categories.map((c, i) =>
                     c.image ? (

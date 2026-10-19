@@ -240,3 +240,13 @@ This is what makes or breaks 'premium', because the neutral UI exposes every inc
 - Keep `<img>` + `imgUrl()` (Cloudinary resizing) rather than next/image; use `loading='lazy'` / `decoding='async'` and `fetchPriority='high'` on the LCP image.
 - Kavita's handwritten signature is not available: use her name in Fraunces italic instead of an SVG signature.
 - Admin dark mode, command palette and pincode delivery-date promises are out of scope for now (no data to back a delivery date).
+
+## Warm Atelier (current default, Oct 2026)
+
+Redesign driven by the owner's reference mockup: product-first, rich and warm.
+
+- **Theme** `atelier` (src/lib/themes.ts): golden-beige canvas `#f6ede3`, maroon accent `#9e2b3a`, walnut ink, olive `panel-a` + walnut `panel-b` for category tiles, `blush` for the About strip. All text pairs pass WCAG AA.
+- **Type**: Dancing Script (`font-script`, `.t-script`) for the wordmark, section titles and tile names; Manrope for UI; Fraunces only for page titles. Display sizes were cut roughly in half — no headline may dominate the products.
+- **Shape**: 14px image radius, pill buttons, soft warm shadows (`shadow-soft`).
+- **Homepage**: rounded hero banner → 6 photo/colour category tiles → Featured Products → About strip with 4 promises → New Arrivals → The making → How ordering works → Commissions/gift finder → reviews.
+- The homepage photography in `public/home/` comes from the owner's own mockup.

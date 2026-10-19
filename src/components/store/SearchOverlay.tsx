@@ -191,7 +191,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
         aria-modal="true"
         aria-label="Search"
         style={{ "--search-top": `${top + 8}px` } as React.CSSProperties}
-        className={`absolute inset-0 flex flex-col bg-surface transition-[opacity,translate] duration-200 ease-out lg:inset-x-auto lg:bottom-auto lg:left-1/2 lg:top-[var(--search-top)] lg:max-h-[calc(100dvh-var(--search-top)-24px)] lg:w-[720px] lg:-translate-x-1/2 lg:rounded-[2px] lg:shadow-float ${
+        className={`absolute inset-0 flex flex-col bg-surface transition-[opacity,translate] duration-200 ease-out lg:inset-x-auto lg:bottom-auto lg:left-1/2 lg:top-[var(--search-top)] lg:max-h-[calc(100dvh-var(--search-top)-24px)] lg:w-[720px] lg:-translate-x-1/2 lg:rounded-img lg:shadow-float ${
           visible ? "translate-y-0 opacity-100" : "-translate-y-1.5 opacity-0"
         }`}
       >
@@ -291,7 +291,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
                     {categories.slice(0, 4).map((c) => (
                       <li key={c.id}>
                         <Link href={`/shop?category=${c.slug}`} onClick={onClose} className="group block">
-                          <span className="hover-zoom block aspect-[3/4] overflow-hidden rounded-[2px] bg-plinth">
+                          <span className="hover-zoom block aspect-[3/4] overflow-hidden rounded-img bg-plinth">
                             {c.image ? (
                               <img src={imgUrl(c.image, 400)} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
                             ) : (
@@ -374,7 +374,7 @@ export function SearchOverlay({ open, onClose, categories }: { open: boolean; on
                         if (!h) return null;
                         return (
                           <Link key={o.id} {...optionProps(o)} className="-mx-3 flex items-center gap-4 rounded-[4px] px-3 py-2 aria-selected:bg-plinth">
-                            <span className="h-[60px] w-12 shrink-0 overflow-hidden rounded-[2px] bg-plinth">
+                            <span className="h-[60px] w-12 shrink-0 overflow-hidden rounded-img bg-plinth">
                               <img src={imgUrl(h.images[0], 120)} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
                             </span>
                             <span className="min-w-0 flex-1">
