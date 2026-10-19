@@ -1,6 +1,6 @@
 name: Fetch stock image candidates
 
-# Downloads openly-licensed (commercial-use) photo candidates from Openverse
+# Downloads openly-licensed (commercial-use) photo candidates from Wikimedia Commons
 # into stock-candidates/ so they can be reviewed and curated for the website.
 on:
   workflow_dispatch:
@@ -26,36 +26,46 @@ jobs:
           PER: ${{ github.event.inputs.per_query }}
         run: |
           python3 - <<'PY'
-          import json, os, re, urllib.request, urllib.parse
+          import json, os, re, time, urllib.request, urllib.parse
+          UA = {"User-Agent": "KavitasArtistrySite/1.0 (https://kavita1.vercel.app; stock image curation)"}
+          OK = ("cc0", "cc-by", "cc by", "public domain", "pd")
           out = "stock-candidates"; os.makedirs(out, exist_ok=True)
           credits = []
           for q in os.environ["QUERIES"].split("|"):
               q = q.strip()
               if not q: continue
               slug = re.sub(r"[^a-z0-9]+", "-", q.lower()).strip("-")
-              url = "https://api.openverse.org/v1/images/?" + urllib.parse.urlencode({"q": q, "license_type": "commercial", "page_size": 40, "mature": "false"})
-              req = urllib.request.Request(url, headers={"User-Agent": "kavitas-artistry-site/1.0"})
+              params = {"action": "query", "format": "json", "generator": "search", "gsrsearch": q + " filetype:bitmap", "gsrnamespace": 6, "gsrlimit": 30,
+                        "prop": "imageinfo", "iiprop": "url|size|extmetadata|mime", "iiurlwidth": 1600}
               try:
-                  results = json.load(urllib.request.urlopen(req, timeout=30)).get("results", [])
+                  data = json.load(urllib.request.urlopen(urllib.request.Request("https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode(params), headers=UA), timeout=30))
               except Exception as e:
                   print("search failed", q, e); continue
+              pages = sorted((data.get("query") or {}).get("pages", {}).values(), key=lambda p: p.get("index", 99))
               n = 0
-              for r in results:
+              for pg in pages:
                   if n >= int(os.environ.get("PER", "6")): break
-                  if (r.get("width") or 0) < 900: continue
-                  src = r.get("url")
-                  ext = (r.get("filetype") or "jpg").lower()
-                  if ext not in ("jpg", "jpeg", "png", "webp"): continue
-                  name = f"{slug}-{n+1}.{ext}"
+                  ii = (pg.get("imageinfo") or [{}])[0]
+                  meta = ii.get("extmetadata") or {}
+                  lic = (meta.get("LicenseShortName", {}).get("value") or "").lower()
+                  if not any(k in lic for k in OK) or "nc" in lic.split("-") or "nd" in lic.split("-"): continue
+                  if (ii.get("width") or 0) < 1000 or ii.get("mime") not in ("image/jpeg", "image/png", "image/webp"): continue
+                  src = ii.get("thumburl") or ii.get("url")
+                  name = f"{slug}-{n+1}.jpg"
                   try:
-                      data = urllib.request.urlopen(urllib.request.Request(src, headers={"User-Agent": "kavitas-artistry-site/1.0"}), timeout=60).read()
-                      if len(data) > 12_000_000 or len(data) < 30_000: continue
-                      open(f"{out}/{name}", "wb").write(data)
+                      blob = urllib.request.urlopen(urllib.request.Request(src, headers=UA), timeout=60).read()
+                      if len(blob) < 40_000: continue
+                      open(f"{out}/{name}", "wb").write(blob)
                   except Exception as e:
                       print("download failed", src, e); continue
-                  credits.append({"file": name, "query": q, "title": r.get("title"), "creator": r.get("creator"), "license": r.get("license"), "license_version": r.get("license_version"), "license_url": r.get("license_url"), "source": r.get("foreign_landing_url"), "provider": r.get("provider")})
+                  strip = lambda v: re.sub(r"<[^>]+>", "", v or "").strip()
+                  credits.append({"file": name, "query": q, "title": pg.get("title"), "creator": strip(meta.get("Artist", {}).get("value")),
+                                  "license": meta.get("LicenseShortName", {}).get("value"), "license_url": meta.get("LicenseUrl", {}).get("value"),
+                                  "source": ii.get("descriptionurl"), "description": strip(meta.get("ImageDescription", {}).get("value"))[:300]})
                   n += 1
+                  time.sleep(0.5)
               print(q, "->", n)
+              time.sleep(1)
           json.dump(credits, open(f"{out}/credits.json", "w"), indent=1)
           PY
       - name: Commit candidates
