@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { categoryTree, listProducts } from "@/lib/repo";
+import { categoryTree, listProducts } from "@/lib/cached";
 import { siteUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";

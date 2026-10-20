@@ -3,8 +3,8 @@ import { ProductCard } from "@/components/store/ProductCard";
 import { AboutStrip, CategoryTiles, HeroBanner, type Tile } from "@/components/store/home/Atelier";
 import { CommissionAndGifts, FromYourHomes, HowOrdering, InstagramLine, SECTION_TOP, instagramLink } from "@/components/store/home/Sections";
 import { responsiveImg } from "@/components/store/home/img";
-import { categoryTree, listProducts, listReviews } from "@/lib/repo";
-import { getSettings } from "@/lib/settings";
+import { categoryTree, listProducts, listReviews } from "@/lib/cached";
+import { getSettings } from "@/lib/cached";
 import type { Category, Product } from "@/lib/types";
 
 const BRAND_BOARD = "/brand/brand-board.jpg";

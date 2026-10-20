@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Dancing_Script, Fraunces, Manrope, Tiro_Devanagari_Hindi } from "next/font/google";
+import { ServiceWorker } from "@/components/ServiceWorker";
 import "./globals.css";
 
 // Display serif: variable with optical sizing (no weight array → full variable range)
@@ -22,6 +23,8 @@ export const metadata: Metadata = {
   openGraph: { type: "website", siteName: "Kavita’s Artistry", images: ["/brand/brand-board.jpg"] },
   manifest: "/manifest.webmanifest",
   icons: { apple: "/apple-touch-icon.png" },
+  // iPhone: open the home-screen app full screen, without Safari's address bar
+  appleWebApp: { capable: true, title: "Kavita's", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = { themeColor: "#f6ede3", width: "device-width", initialScale: 1, viewportFit: "cover" };
@@ -29,7 +32,10 @@ export const viewport: Viewport = { themeColor: "#f6ede3", width: "device-width"
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-IN" className={`${fraunces.variable} ${manrope.variable} ${tiro.variable} ${dancing.variable}`}>
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen">
+        {children}
+        <ServiceWorker />
+      </body>
     </html>
   );
 }

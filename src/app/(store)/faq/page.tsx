@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { getSettings } from "@/lib/settings";
+import { getSettings } from "@/lib/cached";
 import { waLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/Motifs";
 import { PageIntro } from "@/components/store/pages/ui";

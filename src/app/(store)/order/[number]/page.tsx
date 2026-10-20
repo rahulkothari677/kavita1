@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, Gift, Package } from "lucide-react";
 import { getOrder } from "@/lib/repo";
-import { getSettings } from "@/lib/settings";
+import { getSettings } from "@/lib/cached";
 import { OrderTimeline } from "@/components/store/OrderTimeline";
 import { formatDate, formatINR, imgUrl } from "@/lib/format";
 import { orderMessageForShop, waLink } from "@/lib/whatsapp";

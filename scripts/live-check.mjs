@@ -111,6 +111,30 @@ for (const [path, check] of [
   else ok(`API ${path} ${res.status}`);
 }
 
+// 9. Speed: where the server and database run, and warm response times
+try {
+  for (let i = 0; i < 2; i++) {
+    const h = await (await fetch(BASE + "/api/health")).json();
+    ok(`speed: server ${h.serverRegion}, database ${h.dbRegion}, db start ${h.initMs}ms, round trips ${h.roundTripMs.join("/")}ms`);
+  }
+} catch (e) {
+  fail(`/api/health failed: ${e.message}`);
+}
+for (const path of ["/", "/shop", "/faq", "/admin/login"]) {
+  const times = [];
+  for (let i = 0; i < 3; i++) {
+    const t = Date.now();
+    await (await fetch(BASE + path)).text();
+    times.push(Date.now() - t);
+  }
+  ok(`speed: ${path} server response ${times.join("/")}ms`);
+}
+for (const path of ["/admin.webmanifest", "/sw.js"]) {
+  const res = await fetch(BASE + path);
+  if (!res.ok) fail(`${path} returned ${res.status}`);
+  else ok(`${path} ${res.status} ${res.headers.get("content-type")}`);
+}
+
 await browser.close();
 const report = `LIVE CHECK ${BASE}\n\nPASSED (${passed.length}):\n${passed.map((p) => "  ✓ " + p).join("\n")}\n\nPROBLEMS (${problems.length}):\n${problems.map((p) => "  ✗ " + p).join("\n") || "  none"}\n`;
 writeFileSync(`${OUT}/report.txt`, report);

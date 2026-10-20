@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getSettings } from "@/lib/settings";
+import { getSettings } from "@/lib/cached";
 import { imgUrl } from "@/lib/format";
 import { Eyebrow } from "@/components/brand";
 import { ArrowLink } from "@/components/store/pages/ui";

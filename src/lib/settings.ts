@@ -74,7 +74,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     "Handmade art & craft by Kavita's Artistry — Lippan art, wall decor, festive & pooja decor, name plates, gifts and custom creations. Order easily on WhatsApp.",
 };
 
-const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3"]);
+const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3", "dbVersion"]);
 
 export async function getSettings(): Promise<StoreSettings> {
   const rows = await query<{ key: string; value: string }>("SELECT key, value FROM Setting");

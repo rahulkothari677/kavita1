@@ -1,4 +1,5 @@
 import { createClient, type Client, type InValue } from "@libsql/client";
+import { revalidateTag } from "next/cache";
 import { SEED_CATEGORIES, SEED_CATEGORIES_V2, seedCategoryStatements, seedDemoProducts, seedDemoProductsV2 } from "./seed";
 
 /**
@@ -160,8 +161,18 @@ const SCHEMA = [
   )`,
 ];
 
+/** Bump when a new one-time migration is added below; the fast path checks this single flag. */
+const DB_VERSION = "3";
+
 async function init() {
   const c = getClient();
+  // Fast path (every warm database): one round trip instead of schema + three flag checks.
+  try {
+    const v = await c.execute({ sql: "SELECT value FROM Setting WHERE key = 'dbVersion'", args: [] });
+    if (v.rows[0]?.value === JSON.stringify(DB_VERSION)) return;
+  } catch {
+    // No Setting table yet — fresh database.
+  }
   await c.batch(SCHEMA.map((sql) => ({ sql, args: [] })), "write");
   const seeded = await c.execute({ sql: "SELECT value FROM Setting WHERE key = 'seeded'", args: [] });
   if (seeded.rows.length === 0) {
@@ -199,6 +210,7 @@ async function init() {
       "write",
     );
   }
+  await c.execute({ sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('dbVersion', ?)`, args: [JSON.stringify(DB_VERSION)] });
 }
 
 export async function ensureDb() {
@@ -224,14 +236,31 @@ export async function queryOne<T = Row>(sql: string, args: InValue[] = []): Prom
   return rows[0] ?? null;
 }
 
+// View / WhatsApp-click counters change on every visit and are not shown in the shop.
+const COUNTER_WRITE = /^UPDATE Product SET (views|whatsappClicks) = /;
+
+/** Any data change clears the cached storefront reads (lib/cached.ts) so it shows immediately. */
+function storeChanged(sqls: string[]) {
+  if (sqls.every((s) => COUNTER_WRITE.test(s))) return;
+  try {
+    revalidateTag("store", { expire: 0 });
+  } catch {
+    // Outside a route handler / server action (e.g. during render) there is nothing to clear.
+  }
+}
+
 export async function run(sql: string, args: InValue[] = []) {
   await ensureDb();
-  return getClient().execute({ sql, args });
+  const res = await getClient().execute({ sql, args });
+  storeChanged([sql]);
+  return res;
 }
 
 export async function batch(stmts: { sql: string; args: InValue[] }[]) {
   await ensureDb();
-  return getClient().batch(stmts, "write");
+  const res = await getClient().batch(stmts, "write");
+  storeChanged(stmts.map((s) => s.sql));
+  return res;
 }
 
 export function newId(prefix = "") {

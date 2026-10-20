@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { listProducts } from "@/lib/repo";
-import { getSettings } from "@/lib/settings";
+import { listProducts } from "@/lib/cached";
+import { getSettings } from "@/lib/cached";
 import { imgUrl } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/Motifs";
