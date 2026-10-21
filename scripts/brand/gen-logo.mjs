@@ -39,7 +39,7 @@ function textPath(fnt, str, size, x, y, { anchor = "middle", spacing = 0 } = {})
     if (i < glyphs.length - 1) w += fnt.getKerningValue(g, glyphs[i + 1]) * scale;
   });
   const x0 = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
-  const d = glyphs.map((g, i) => g.getPath(x0 + xs[i], y, size).toPathData(2)).join("");
+  const d = glyphs.map((g, i) => g.getPath(x0 + xs[i], y, size).toPathData(1)).join("");
   return { d, width: w, x0 };
 }
 
@@ -120,10 +120,17 @@ function markLogo() {
 </svg>`;
 }
 
+/** Lettering only (lotus, name, rules, tagline) on a transparent 512 canvas, for the splash. */
+function textLayer() {
+  const keep = (l) => !/<circle|rotate\(|<defs|Gradient|<stop|<\/defs>/.test(l);
+  return fullLogo().split("\n").filter(keep).join("\n");
+}
+
 const full = fullLogo();
 const mark = markLogo();
 fs.writeFileSync(path.join(out, "logo.svg"), full);
 fs.writeFileSync(path.join(out, "logo-mark.svg"), mark);
+fs.writeFileSync(path.join(out, "logo-text.svg"), textLayer());
 
 // Square app icon: medallion on navy, inside the maskable safe zone (80% circle).
 const iconSvg = (inner, { badge, safe = false } = {}) => {

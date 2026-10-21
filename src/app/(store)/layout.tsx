@@ -11,6 +11,7 @@ import { categoryTree } from "@/lib/cached";
 import { aiProvider } from "@/lib/ai";
 import { ThemePreview } from "@/components/store/chrome/ThemePreview";
 import { themeCss } from "@/lib/themes";
+import { Splash } from "@/components/Splash";
 
 // Shop pages are prerendered and served from the CDN. Every database write clears the "store"
 // cache tag (see `run`/`batch` in db.ts), which also refreshes these pages on the next visit.
@@ -34,6 +35,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   return (
     <StoreProvider settings={pub}>
       <style dangerouslySetInnerHTML={{ __html: themeCss(settings.theme) }} />
+      <Splash />
       <div className="flex min-h-screen flex-col">
         <ThemePreview />
         <a

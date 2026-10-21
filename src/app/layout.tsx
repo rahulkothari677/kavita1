@@ -31,7 +31,7 @@ export const viewport: Viewport = { themeColor: "#f6ede3", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${fraunces.variable} ${manrope.variable} ${tiro.variable} ${dancing.variable}`}>
+    <html lang="en-IN" suppressHydrationWarning className={`${fraunces.variable} ${manrope.variable} ${tiro.variable} ${dancing.variable}`}>
       <body className="min-h-screen">
         {children}
         <ServiceWorker />

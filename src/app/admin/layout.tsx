@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Splash } from "@/components/Splash";
 
 /**
  * Everything under /admin is its own installable app ("Studio Admin"): its own manifest
@@ -14,5 +15,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#f4f2ee" };
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <Splash />
+      {children}
+    </>
+  );
 }
