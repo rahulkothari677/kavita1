@@ -15,7 +15,7 @@ type Counts = { pendingOrders: number; newRequests: number; pendingReviews: numb
 const SW = 1.75; // admin icon stroke
 
 function Medallion({ size = 24 }: { size?: number }) {
-  return <img src="/brand/medallion.webp" alt="" width={size} height={size} style={{ width: size, height: size }} className="shrink-0 rounded-full" />;
+  return <img src="/brand/logo-mark.svg" alt="" width={size} height={size} style={{ width: size, height: size }} className="shrink-0" />;
 }
 
 function StudioMark() {

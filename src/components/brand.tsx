@@ -28,9 +28,7 @@ export function Wordmark({
   return (
     <span className={`inline-flex items-center gap-2.5 ${onDark ? "on-dark text-on-dark" : "text-ink"} ${className}`}>
       {withMark && (
-        <span className={`grid shrink-0 place-items-center rounded-full ${onDark ? "bg-canvas p-[3px]" : ""} max-[339px]:hidden`}>
-          <img src="/brand/medallion.webp" alt="" width={56} height={56} className={`${mark} rounded-full`} />
-        </span>
+        <img src="/brand/logo-mark.svg" alt="" width={56} height={56} className={`${mark} shrink-0 max-[339px]:hidden`} />
       )}
       <span className="flex flex-col items-center">
         <span className={`font-script leading-none whitespace-nowrap ${onDark ? "text-accent-on-dark" : "text-accent"} ${text}`}>Kavita’s Artistry</span>
