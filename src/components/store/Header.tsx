@@ -146,7 +146,7 @@ export function Header({ categories }: { categories: Category[] }) {
               aria-haspopup="dialog"
               onClick={() => setCartOpen(true)}
             >
-              <span className="relative">
+              <span className="relative" data-bag-target>
                 <ShoppingBag className="size-5" strokeWidth={1.5} />
                 <CountBadge count={cartCount} bumpKey={addedTick} />
               </span>

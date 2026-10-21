@@ -76,7 +76,7 @@ export function SectionHeader({
   as?: "h1" | "h2";
 }) {
   return (
-    <div className={`flex items-end justify-between gap-4 ${className}`}>
+    <div className={`reveal flex items-end justify-between gap-4 ${className}`}>
       <div className="min-w-0">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         <div className={`flex items-center gap-2 ${eyebrow ? "mt-2" : ""}`}>

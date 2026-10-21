@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ViewTransition } from "react";
 import { Heart, Plus } from "lucide-react";
 import { useStore } from "./StoreProvider";
+import { flyToBag } from "./fly";
 import { Price } from "@/components/brand";
 import type { Product } from "@/lib/types";
 import { CARD_SIZES, isMirrorWork, morphName, productImg } from "./catalogue/util";
@@ -49,11 +50,12 @@ export function ProductCard({ p, priority = false }: { p: CardProduct; priority?
 
   const quickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
+    flyToBag(e.currentTarget.closest(".img-well"));
     addToCart({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0] ?? null, price: p.price, maxQty: p.madeToOrder ? 20 : p.stock });
   };
 
   return (
-    <article className="group relative">
+    <article className="group reveal relative">
       <div className={`img-well relative aspect-square shadow-soft ${glint ? "glint" : ""}`}>
         <Link href={href} tabIndex={-1} aria-hidden className="absolute inset-0 block">
           <ViewTransition name={morphName(p.id)} share="morph" default="none">

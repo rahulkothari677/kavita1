@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { useStore } from "./StoreProvider";
+import { flyToBag } from "./fly";
 import { Price } from "@/components/brand";
 import { imgUrl } from "@/lib/format";
 
@@ -52,6 +53,7 @@ export function StickyBuyBar({ name, price, image, product }: Props) {
   const direct = product && !product.customizable;
   const onAdd = () => {
     if (!product || !direct) return toBuyBox();
+    flyToBag(document.querySelector("[data-pdp-hero]"));
     addToCart({ productId: product.id, slug: product.slug, name, image, price, maxQty: product.madeToOrder ? 20 : product.stock });
     setAdded(true);
     if (timer.current) clearTimeout(timer.current);

@@ -63,6 +63,7 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
                 height={1500}
                 loading={n === 0 ? "eager" : "lazy"}
                 fetchPriority={n === 0 ? "high" : undefined}
+                data-pdp-hero={n === 0 ? "" : undefined}
                 decoding={n === 0 ? "sync" : "async"}
                 className="size-full object-cover"
               />

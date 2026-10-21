@@ -49,7 +49,7 @@ export function MobileTabBar() {
           const tone = isActive ? "text-ink" : "text-muted";
           const content = (
             <>
-              <span className={iconBox}>
+              <span className={iconBox} data-bag-target={t.key === "bag" ? "" : undefined}>
                 <Icon className="size-[22px]" strokeWidth={1.5} aria-hidden />
                 {t.key === "bag" && cartCount > 0 && (
                   <span

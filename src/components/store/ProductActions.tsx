@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Heart, Minus, Plus, Share2 } from "lucide-react";
 import { useStore } from "./StoreProvider";
+import { flyToBag } from "./fly";
 import { WhatsAppIcon } from "../Motifs";
 import { productEnquiryMessage, waLink } from "@/lib/whatsapp";
 
@@ -47,6 +48,7 @@ export function ProductActions({ p }: { p: P }) {
   const line = { productId: p.id, slug: p.slug, name: p.name, image: p.image, price: p.price, maxQty: max, note: note.trim() || undefined };
 
   const add = () => {
+    flyToBag(document.querySelector("[data-pdp-hero]"));
     addToCart(line, qty);
     setAdded(true);
     if (addedTimer.current) clearTimeout(addedTimer.current);

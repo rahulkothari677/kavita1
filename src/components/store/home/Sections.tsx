@@ -34,7 +34,7 @@ export function HowOrdering({ codAvailable, artistName }: { codAvailable: boolea
         </div>
         <ol className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:mt-10 lg:grid-cols-4 lg:gap-x-6">
           {steps.map((x, i) => (
-            <li key={x.t} className="rounded-img bg-surface/70 p-5">
+            <li key={x.t} className="reveal rounded-img bg-surface/70 p-5">
               <span aria-hidden className="font-script tabular block text-[34px] leading-none text-accent">
                 {String(i + 1).padStart(2, "0")}
               </span>

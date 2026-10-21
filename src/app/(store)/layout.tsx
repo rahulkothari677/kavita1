@@ -12,6 +12,7 @@ import { aiProvider } from "@/lib/ai";
 import { ThemePreview } from "@/components/store/chrome/ThemePreview";
 import { themeCss } from "@/lib/themes";
 import { Splash } from "@/components/Splash";
+import { ViewTransition } from "react";
 
 // Shop pages are prerendered and served from the CDN. Every database write clears the "store"
 // cache tag (see `run`/`batch` in db.ts), which also refreshes these pages on the next visit.
@@ -56,7 +57,8 @@ export default async function StoreLayout({ children }: { children: React.ReactN
         )}
         {/* Below lg the tab bar (64px + safe area) floats over the page bottom */}
         <main id="main" tabIndex={-1} className="flex-1 pb-[calc(64px+env(safe-area-inset-bottom)+16px)] outline-none lg:pb-16">
-          {children}
+          {/* Route changes fade the page content (globals.css ".page"); the header stays put. */}
+          <ViewTransition default="page">{children}</ViewTransition>
         </main>
         <Footer settings={settings} categories={categories} />
       </div>

@@ -75,7 +75,7 @@ export function CategoryTiles({ tiles }: { tiles: Tile[] }) {
     <section aria-label="Shop by collection" className="container-x pt-4 lg:pt-5">
       <ul className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
         {tiles.map((t, i) => (
-          <li key={t.title}>
+          <li key={t.title} className="reveal">
             <Link
               href={t.href}
               className={`group relative flex h-full flex-col overflow-hidden rounded-[16px] text-white shadow-soft sm:h-[170px] sm:flex-row sm:rounded-[18px] lg:h-[200px] ${
