@@ -135,6 +135,36 @@ for (const path of ["/admin.webmanifest", "/sw.js"]) {
   else ok(`${path} ${res.status} ${res.headers.get("content-type")}`);
 }
 
+// 10. Installable apps: what Chrome itself says about each address
+const ADMIN_BASE = process.env.ADMIN_URL || BASE.replace("://kavita1.", "://kavita1-admin.");
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  for (const url of [BASE + "/", BASE + "/admin/login", ADMIN_BASE + "/"]) {
+    const page = await ctx.newPage();
+    try {
+      await page.goto(url, { waitUntil: "networkidle" });
+      await page.waitForTimeout(2500); // let the service worker register
+      const cdp = await ctx.newCDPSession(page);
+      const man = await cdp.send("Page.getAppManifest");
+      const inst = await cdp.send("Page.getInstallabilityErrors");
+      const sw = await page.evaluate(async () => Boolean(await navigator.serviceWorker?.getRegistration()));
+      let m = {};
+      try {
+        m = JSON.parse(man.data || "{}");
+      } catch {}
+      const errors = (inst.installabilityErrors || []).map((e) => e.errorId + (e.errorArguments?.length ? `(${e.errorArguments.map((a) => a.value).join(",")})` : ""));
+      const parseErrors = (man.errors || []).map((e) => e.message);
+      const line = `install ${url} → ${page.url()} | manifest ${man.url || "none"} id=${m.id} start=${m.start_url} scope=${m.scope} | sw=${sw} | errors=${JSON.stringify([...errors, ...parseErrors])}`;
+      if (errors.length || parseErrors.length || !man.url) fail(line);
+      else ok(line);
+    } catch (e) {
+      fail(`install check ${url}: ${e.message}`);
+    }
+    await page.close();
+  }
+  await ctx.close();
+}
+
 await browser.close();
 const report = `LIVE CHECK ${BASE}\n\nPASSED (${passed.length}):\n${passed.map((p) => "  ✓ " + p).join("\n")}\n\nPROBLEMS (${problems.length}):\n${problems.map((p) => "  ✗ " + p).join("\n") || "  none"}\n`;
 writeFileSync(`${OUT}/report.txt`, report);
