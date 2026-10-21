@@ -10,22 +10,23 @@ import { PhotoSlot, type Shape } from "@/components/admin/PhotoSlot";
 import type { Category, HomeTile, MakingStep } from "@/lib/types";
 
 /* The shapes each photo is shown in on the website (width / height). Keep in sync with the store markup. */
+// First shape = the main crop; `px` = the size to make a new photo (about 2× the on-screen size, sharp on phones).
 const HERO: Shape[] = [
+  { label: "Computers", ratio: 2, px: [1920, 960] },
   { label: "Phones", ratio: 16 / 10 },
-  { label: "Computers (left side fades into the text)", ratio: 2 },
 ];
 const TILE: Shape[] = [
-  { label: "Phones", ratio: 1.4 },
+  { label: "Phones", ratio: 1.4, px: [1120, 800] },
   { label: "Computers", ratio: 1.3 },
 ];
-const ROUND: Shape[] = [{ label: "Round photo", ratio: 1, round: true }];
-const STEP: Shape[] = [{ label: "Step photo", ratio: 4 / 3 }];
+const ROUND: Shape[] = [{ label: "Round photo", ratio: 1, round: true, px: [800, 800] }];
+const STEP: Shape[] = [{ label: "Step photo", ratio: 4 / 3, px: [1200, 900] }];
 const COMMISSION: Shape[] = [
+  { label: "Tablets and computers", ratio: 4 / 5, px: [1200, 1500] },
   { label: "Phones", ratio: 4 / 3 },
-  { label: "Tablets and computers", ratio: 4 / 5 },
 ];
-const PORTRAIT: Shape[] = [{ label: "About page", ratio: 4 / 5 }];
-const SHARE: Shape[] = [{ label: "Link preview", ratio: 1.91 }];
+const PORTRAIT: Shape[] = [{ label: "About page", ratio: 4 / 5, px: [1200, 1500] }];
+const SHARE: Shape[] = [{ label: "Link preview", ratio: 1.91, px: [1200, 630] }];
 
 const FIXED_LINKS = [
   { href: "/shop", label: "All products" },
