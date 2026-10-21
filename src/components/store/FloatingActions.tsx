@@ -7,9 +7,9 @@ import { waLink } from "@/lib/whatsapp";
 import { useStore } from "./StoreProvider";
 import { AssistantPanel } from "./chrome/AssistantPanel";
 
-// One launcher only: bottom-right, clear of the tab bar on phones (globals.css keeps it clear of the buy bar).
+// Desktop only: on phones the helper (or Custom orders) is the raised centre button of the tab dock.
 const LAUNCHER =
-  "chat-launcher fixed right-4 bottom-[calc(80px+env(safe-area-inset-bottom))] z-[44] grid size-[52px] place-items-center rounded-full shadow-float transition-[scale,background-color,opacity,bottom] duration-200 ease-out active:scale-[0.92] lg:right-6 lg:bottom-6";
+  "chat-launcher max-lg:hidden! fixed right-4 bottom-[calc(80px+env(safe-area-inset-bottom))] z-[44] grid size-[52px] place-items-center rounded-full shadow-float transition-[scale,background-color,opacity,bottom] duration-200 ease-out active:scale-[0.92] lg:right-6 lg:bottom-6";
 
 /**
  * Single floating chat launcher. With the AI assistant on: an ink circle with a canvas

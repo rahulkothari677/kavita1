@@ -11,8 +11,8 @@ The splash is rebuilt in code (not the video file): ~2 s, sharp at any size, no 
 | 1 | Speed: prerendered shop pages, resized photos | done, commit cb7232f (local) |
 | 2 | Perfect vector logo + app icons | done |
 | 3 | Splash animation + motion across the app | done |
-| 4 | Bottom tab bar, AI button placement, footer | next |
-| 5 | Themes that differ in fonts/shapes/backgrounds, richer section backgrounds | |
+| 4 | Bottom tab bar, AI button placement, footer | done |
+| 5 | Themes that differ in fonts/shapes/backgrounds, richer section backgrounds | next |
 | 6 | Written "best artwork app" improvement plan | |
 
 ## Notes
