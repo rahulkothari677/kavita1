@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { StoreProvider, type PublicSettings } from "@/components/store/StoreProvider";
 import { Header } from "@/components/store/Header";
 import { Footer } from "@/components/store/Footer";
@@ -11,11 +12,19 @@ import { categoryTree } from "@/lib/cached";
 import { aiProvider } from "@/lib/ai";
 import { ThemePreview } from "@/components/store/chrome/ThemePreview";
 import { themeCss } from "@/lib/themes";
+import { imgUrl } from "@/lib/format";
 import { Splash } from "@/components/Splash";
 import { ViewTransition } from "react";
 
 // Shop pages are prerendered and served from the CDN. Every database write clears the "store"
 // cache tag (see `run`/`batch` in db.ts), which also refreshes these pages on the next visit.
+
+/** The picture link previews show (Admin → Site photos → Sharing picture). Product pages set their own. */
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSettings();
+  if (!s.shareImage) return {};
+  return { openGraph: { type: "website", siteName: "Kavita’s Artistry", images: [imgUrl(s.shareImage, 1200)] } };
+}
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
   const [settings, categories] = await Promise.all([getSettings(), categoryTree({ activeOnly: true })]);

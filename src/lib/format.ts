@@ -32,6 +32,8 @@ const LOCAL_WIDTHS = [256, 384, 640, 828, 1080, 1200, 1920];
 /** Sized URL for Cloudinary-hosted and built-in photos; other URLs are returned untouched. */
 
 export function imgUrl(url: string | null | undefined, width = 800) {
+  // Drop the admin's framing fragment (lib/frame.ts); it is applied as CSS, not by the server.
+  url = url?.split("#")[0];
   if (!url) return "/demo/placeholder.svg";
   // Photos shipped with the site are resized (and cached near the visitor) by Next's image resizer.
   if (/^\/(home|stock|demo|brand)\/[^?]+\.(webp|jpe?g|png)$/i.test(url)) {

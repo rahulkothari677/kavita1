@@ -27,3 +27,12 @@ Every push deploys to the live shop, so wait for the owner's "push". Before push
 `node scripts/check-theme-contrast.mjs`. After pushing, check the "Live site check" GitHub Action and
 `curl -I https://kavita1.vercel.app/` for `x-vercel-cache: HIT` on the home page.
 Not checked locally: the admin theme cards (needs an admin login) and real-phone feel of the motion.
+
+## Site photos (21 Oct, later)
+Admin → Site photos (`/admin/photos`) lists every website photo by page (banner, 6 category tiles with
+title/line/link, About strip, 4 making steps, commissions, About page, sharing picture) in the shape it
+appears, with Change / Adjust (drag, pinch, slider, wheel) / Use default. Framing is stored as a URL
+fragment `#f=x,y,zoom` (lib/frame.ts), applied with `frameStyle()`; `imgUrl()` strips it. New settings
+default to the old hard-coded photos. `lib/cached.ts` merges DEFAULT_SETTINGS over the cached copy so a
+new setting can never crash a page (a stale local cache broke the build once).
+Local admin testing: `.env.local` (git-ignored) holds a test ADMIN_PASSWORD for the practice database only.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSettings } from "@/lib/cached";
 import { imgUrl } from "@/lib/format";
+import { frameStyle } from "@/lib/frame";
 import { Eyebrow } from "@/components/brand";
 import { ArrowLink } from "@/components/store/pages/ui";
 
@@ -44,8 +45,9 @@ export default async function AboutPage() {
   const s = await getSettings();
   const artist = s.artistName || "Kavita";
   const { quote, rest } = splitStory(s.aboutStory || "");
-  const portrait = s.artistImage ? imgUrl(s.artistImage, 960) : "/brand/brand-board.jpg";
-  const portraitAlt = s.artistImage ? `${artist}, the maker behind ${s.storeName}` : `${s.storeName} Lippan mirror medallion`;
+  const portraitSrc = s.aboutPageImage || s.artistImage;
+  const portrait = portraitSrc ? imgUrl(portraitSrc, 960) : "/brand/brand-board.jpg";
+  const portraitAlt = portraitSrc ? `${artist}, the maker behind ${s.storeName}` : `${s.storeName} Lippan mirror medallion`;
 
   return (
     <div>
@@ -54,7 +56,7 @@ export default async function AboutPage() {
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-5">
             <div className="arch aspect-[4/5] max-w-[26rem] bg-plinth lg:sticky lg:top-[96px] lg:max-w-none">
-              <img src={portrait} alt={portraitAlt} fetchPriority="high" decoding="async" className="size-full object-cover" />
+              <img src={portrait} alt={portraitAlt} fetchPriority="high" decoding="async" className="size-full object-cover" style={frameStyle(portraitSrc)} />
             </div>
           </div>
           <div className="lg:col-span-6 lg:col-start-7 lg:pt-24">

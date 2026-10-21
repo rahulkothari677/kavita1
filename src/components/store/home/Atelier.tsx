@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Gift, Heart, Package, Palette } from "lucide-react";
 import { responsiveImg } from "./img";
+import { frameStyle } from "@/lib/frame";
 
 /* ─── Hero banner ────────────────────────────────────────────────────────── */
 
@@ -36,6 +37,7 @@ export function HeroBanner({
             fetchPriority="high"
             loading="eager"
             className="size-full object-cover"
+            style={frameStyle(image)}
           />
           <span aria-hidden className="hero-fade absolute inset-0 max-lg:hidden" />
         </div>
@@ -89,7 +91,8 @@ export function CategoryTiles({ tiles }: { tiles: Tile[] }) {
                   alt=""
                   loading={i < 2 ? "eager" : "lazy"}
                   decoding="async"
-                  className="size-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                  className="size-full object-cover transition-[scale] duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                  style={frameStyle(t.image)}
                 />
                 <span aria-hidden className={`absolute inset-y-0 right-0 w-1/3 bg-linear-to-l to-transparent max-sm:hidden ${t.tone === "a" ? "from-panel-a" : "from-panel-b"}`} />
               </span>
@@ -122,7 +125,9 @@ export function AboutStrip({ name, intro, image }: { name: string; intro: string
     <section aria-labelledby="about-title" className="container-x pt-10 lg:pt-14">
       <div className="relative overflow-hidden rounded-[calc(var(--radius-img)+8px)] bg-blush px-6 py-7 sm:px-9 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10 lg:px-12 lg:py-8">
         <div className="flex items-center gap-5 lg:contents">
-          <img src={responsiveImg(image, [256]).src} alt="" loading="lazy" decoding="async" className="size-24 shrink-0 rounded-full object-cover shadow-soft ring-4 ring-surface lg:size-32" />
+          <span className="size-24 shrink-0 overflow-hidden rounded-full shadow-soft ring-4 ring-surface lg:size-32">
+            <img src={responsiveImg(image, [256]).src} alt="" loading="lazy" decoding="async" className="size-full object-cover" style={frameStyle(image)} />
+          </span>
           <div className="min-w-0">
             <h2 id="about-title" className="font-script text-[26px] leading-tight text-ink lg:text-[30px]">
               About {name}

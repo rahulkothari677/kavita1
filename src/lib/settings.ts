@@ -40,6 +40,23 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     "What started as a weekend hobby on our dining table became Kavita's Artistry — a small home studio where every piece is shaped, pressed and painted by hand.\n\nI love working with my hands — clay, mirrors, colours, threads and wood. From traditional Lippan art from Kutch to festive decor and personalised gifts, every piece is something I would happily hang in my own home.\n\nEvery order is made with patience, packed with care and sent with a little handwritten note. Thank you for supporting handmade.",
   artistName: "Kavita",
   artistImage: "",
+  aboutPageImage: "",
+  homeTiles: [
+    { title: "Lippan Art", text: "Traditional art, modern homes", image: "/home/tile-lippan.webp", link: "/shop?category=lippan-art" },
+    { title: "Home Decor", text: "Add charm to your spaces", image: "/home/tile-decor.webp", link: "/shop?category=home-accents" },
+    { title: "Wall Hangings & Mirrors", text: "For walls that tell a story", image: "/home/tile-hangings.webp", link: "/shop?category=wall-decor" },
+    { title: "Customised Creations", text: "Your idea, my art", image: "/home/tile-custom.webp", link: "/custom-order" },
+    { title: "Bestsellers", text: "Loved by many, crafted with care", image: "/home/tile-bestsellers.webp", link: "/shop?sort=popular" },
+    { title: "New Arrivals", text: "Fresh designs, just for you", image: "/home/tile-new.webp", link: "/shop?sort=newest" },
+  ],
+  makingSteps: [
+    { title: "Sketch", body: "Every design begins as a pencil drawing, sized to your wall.", image: "/stock/making-painting.webp" },
+    { title: "Shape", body: "Clay is rolled and pressed by hand into borders, petals and dots.", image: "/stock/making-potter-hands.webp" },
+    { title: "Paint", body: "Mirrors are set one by one and colour goes on in slow layers.", image: "/stock/making-painting-ceramics.webp" },
+    { title: "Finish & pack", body: "A last touch, a signature, then wrapped with care for you.", image: "/stock/making-embroidery.webp" },
+  ],
+  commissionImage: "",
+  shareImage: "",
   faqs: [
     {
       q: "How do I place an order?",

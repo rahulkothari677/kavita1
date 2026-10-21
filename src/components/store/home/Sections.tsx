@@ -57,7 +57,7 @@ const GIFT_CHIPS = [
   { label: "Under ₹2,000", q: "Under 2000" },
 ];
 
-export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; srcSet?: string }; imageAlt: string }) {
+export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; srcSet?: string; style?: React.CSSProperties }; imageAlt: string }) {
   return (
     <section className={SECTION_TOP}>
       <div className="container-x grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-6">
@@ -71,6 +71,7 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
               loading="lazy"
               decoding="async"
               className="size-full object-cover"
+              style={image.style}
             />
           </div>
           <div className="sm:col-span-3 sm:pb-2">

@@ -156,6 +156,11 @@ export type HeroSlide = {
 
 export type FaqItem = { q: string; a: string };
 
+/** A home-page category tile: photo, script title, one line and where it links. */
+export type HomeTile = { title: string; text: string; image: string; link: string };
+/** One step of "From Clay to Your Wall" on the home page. */
+export type MakingStep = { title: string; body: string; image: string };
+
 export type StoreSettings = {
   theme: string;
   storeName: string;
@@ -183,6 +188,14 @@ export type StoreSettings = {
   aboutStory: string;
   artistName: string;
   artistImage: string;
+  /** Big portrait on the About page; empty = the artist photo, then the brand board */
+  aboutPageImage: string;
+  homeTiles: HomeTile[];
+  makingSteps: MakingStep[];
+  /** "Made for your home, by name" photo; empty = a customisable product's photo */
+  commissionImage: string;
+  /** Picture shown when the site is shared on WhatsApp/Facebook (1200×630 works best) */
+  shareImage: string;
   faqs: FaqItem[];
   shippingPolicy: string;
   returnPolicy: string;

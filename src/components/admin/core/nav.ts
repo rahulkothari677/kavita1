@@ -2,6 +2,7 @@ import {
   Camera,
   FolderTree,
   Home,
+  Images,
   LayoutTemplate,
   Megaphone,
   MessageSquareQuote,
@@ -60,6 +61,7 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Store",
     items: [
       { href: "/admin/content", label: "Website content", short: "Content", icon: LayoutTemplate },
+      { href: "/admin/photos", label: "Site photos", short: "Photos", icon: Images },
       { href: "/admin/settings", label: "Settings", icon: Settings },
     ],
   },

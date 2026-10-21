@@ -69,7 +69,7 @@ export default function ContentPage() {
           </div>
         </Section>
 
-        <Section title="Homepage hero" text="The first slide is what customers see at the top of your homepage. Keep spare versions below and move one up to swap." icon={<LayoutTemplate />}>
+        <Section title="Homepage hero" text="The first slide is what customers see at the top of your homepage. Keep spare versions below and move one up to swap. To frame the photo (drag and zoom), use Site photos." icon={<LayoutTemplate />}>
           <ol className="space-y-4">
             {slides.map((sl, i) => (
               <li key={sl.id} className={`rounded-[8px] border p-4 ${i === 0 ? "border-ink" : "border-admin-line bg-admin-inset"}`}>
@@ -107,7 +107,7 @@ export default function ContentPage() {
                       ) : (
                         <span className="flex flex-col items-center gap-1 px-3 text-center text-[12px] leading-4 text-muted">
                           <ImagePlus className="size-5" strokeWidth={SW} aria-hidden /> Add photo
-                          <span>(uses a featured piece if empty)</span>
+                          <span>{i === 0 ? "(the studio photo shows if empty)" : "(optional)"}</span>
                         </span>
                       )}
                       <input type="file" accept="image/*" className="sr-only" aria-label="Upload hero photo" onChange={(e) => upload(e.target.files, (url) => setSlide(i, { image: url }), sl.id)} />

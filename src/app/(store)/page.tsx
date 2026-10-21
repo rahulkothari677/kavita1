@@ -6,6 +6,7 @@ import { responsiveImg } from "@/components/store/home/img";
 import { categoryTree, listProducts, listReviews } from "@/lib/cached";
 import { getSettings } from "@/lib/cached";
 import type { Category, Product } from "@/lib/types";
+import { frameStyle } from "@/lib/frame";
 
 const BRAND_BOARD = "/brand/brand-board.jpg";
 const HERO_SCENE = "/home/hero-scene.webp";
@@ -14,23 +15,6 @@ const DEFAULT_LINES = ["Unique pieces • Customised creations", "Art • Home D
 // Earlier defaults that may still be saved in settings — shown as the new copy instead.
 const OLD_TITLES = ["art that adds happiness to your space"];
 const OLD_SUBTITLE_START = "lippan art, wall decor, festive pieces";
-
-/** Category tiles: a collection slug (falls back to /shop if the owner removed it) or a fixed link. */
-const TILES: (Omit<Tile, "href"> & { category?: string; href?: string })[] = [
-  { title: "Lippan Art", text: "Traditional art, modern homes", image: "/home/tile-lippan.webp", tone: "a", category: "lippan-art" },
-  { title: "Home Decor", text: "Add charm to your spaces", image: "/home/tile-decor.webp", tone: "b", category: "home-accents" },
-  { title: "Wall Hangings & Mirrors", text: "For walls that tell a story", image: "/home/tile-hangings.webp", tone: "a", category: "wall-decor" },
-  { title: "Customised Creations", text: "Your idea, my art", image: "/home/tile-custom.webp", tone: "b", href: "/custom-order" },
-  { title: "Bestsellers", text: "Loved by many, crafted with care", image: "/home/tile-bestsellers.webp", tone: "a", href: "/shop?sort=popular" },
-  { title: "New Arrivals", text: "Fresh designs, just for you", image: "/home/tile-new.webp", tone: "b", href: "/shop?sort=newest" },
-];
-
-const MAKING = [
-  { image: "/stock/making-painting.webp", alt: "An artist drawing fine folk-art linework by hand", title: "Sketch", body: "Every design begins as a pencil drawing, sized to your wall." },
-  { image: "/stock/making-potter-hands.webp", alt: "Hands shaping clay on a potter's wheel", title: "Shape", body: "Clay is rolled and pressed by hand into borders, petals and dots." },
-  { image: "/stock/making-painting-ceramics.webp", alt: "A craftswoman hand-painting a ceramic piece", title: "Paint", body: "Mirrors are set one by one and colour goes on in slow layers." },
-  { image: "/stock/making-embroidery.webp", alt: "Artisans finishing hand embroidery together", title: "Finish & pack", body: "A last touch, a signature, then wrapped with care for you." },
-];
 
 function firstParagraph(story: string) {
   return (
@@ -63,11 +47,13 @@ export default async function HomePage() {
   const rawCta = slide?.ctaLabel?.trim() || "";
   const ctaLabel = !rawCta || rawCta === "Explore the collection" ? "Explore our collection" : rawCta;
 
-  /* Tiles */
-  const tiles: Tile[] = TILES.map(({ category, href, ...t }) => ({
-    ...t,
-    href: href ?? (category && catSlugs.has(category) ? `/shop?category=${category}` : "/shop"),
-  }));
+  /* Tiles (Admin → Site photos). A link to a collection that no longer exists falls back to /shop. */
+  const tiles: Tile[] = settings.homeTiles
+    .filter((t) => t.title.trim() || t.image)
+    .map((t, i) => {
+      const cat = t.link.match(/^\/shop\?category=([^&]+)/)?.[1];
+      return { title: t.title, text: t.text, image: t.image, tone: i % 2 ? "b" : "a", href: cat && !catSlugs.has(cat) ? "/shop" : t.link || "/shop" };
+    });
 
   /* Featured: featured → bestsellers → the rest, 8 pieces */
   const rank = (p: Product) => (p.isFeatured ? 0 : p.isBestseller ? 1 : 2);
@@ -81,8 +67,14 @@ export default async function HomePage() {
   /* Commission image: a customisable piece, else the name-plate craft */
   const customPiece = withImage.find((p) => p.customizable);
   const namePlateCat = flatCats.find((c) => c.image && /name/i.test(`${c.slug} ${c.name}`));
-  const commissionSrc = customPiece?.images[0] ?? namePlateCat?.image ?? BRAND_BOARD;
-  const commissionAlt = customPiece ? customPiece.name : namePlateCat ? namePlateCat.name : `${settings.storeName} Lippan mirror medallion`;
+  const commissionSrc = settings.commissionImage || customPiece?.images[0] || namePlateCat?.image || BRAND_BOARD;
+  const commissionAlt = settings.commissionImage
+    ? `A personalised piece from ${settings.storeName}`
+    : customPiece
+      ? customPiece.name
+      : namePlateCat
+        ? namePlateCat.name
+        : `${settings.storeName} Lippan mirror medallion`;
 
   const artistName = settings.artistName || "Kavita";
   const intro = firstParagraph(settings.aboutStory || "") || `Hi, I’m ${artistName} — the artist behind ${settings.storeName}.`;
@@ -134,12 +126,12 @@ export default async function HomePage() {
         <section aria-labelledby="making-title" className={`container-x ${SECTION_TOP}`}>
           <SectionHeader title={<span id="making-title">From Clay to Your Wall</span>} link={{ href: "/about", label: "Our story" }} />
           <ol className="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:mt-6 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0">
-            {MAKING.map((m, i) => {
+            {settings.makingSteps.map((m, i) => {
               const img = responsiveImg(m.image, [480, 720]);
               return (
-                <li key={m.title} className="w-[64vw] shrink-0 snap-start sm:w-[40vw] lg:w-auto">
+                <li key={i} className="w-[64vw] shrink-0 snap-start sm:w-[40vw] lg:w-auto">
                   <div className="aspect-[4/3] overflow-hidden rounded-img bg-plinth shadow-soft">
-                    <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 24vw, 64vw" alt={m.alt} loading="lazy" decoding="async" className="size-full object-cover" />
+                    <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 24vw, 64vw" alt={m.title} loading="lazy" decoding="async" className="size-full object-cover" style={frameStyle(m.image)} />
                   </div>
                   <p className="mt-3 flex items-baseline gap-2">
                     <span className="font-script text-[22px] leading-none text-accent">{i + 1}.</span>
@@ -156,7 +148,7 @@ export default async function HomePage() {
       <HowOrdering codAvailable={settings.codAvailable} artistName={artistName} />
 
       <div className="pb-[clamp(2.5rem,1.5rem_+_3vw,4.5rem)]">
-        <CommissionAndGifts image={responsiveImg(commissionSrc, [640, 960])} imageAlt={commissionAlt} />
+        <CommissionAndGifts image={{ ...responsiveImg(commissionSrc, [640, 960]), style: frameStyle(commissionSrc) }} imageAlt={commissionAlt} />
         {shownReviews.length > 0 && <FromYourHomes reviews={shownReviews} total={reviewCount} average={reviewAvg} />}
         {insta && <InstagramLine href={insta.href} handle={insta.handle} />}
       </div>
