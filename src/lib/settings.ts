@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   upiId: "",
   orderNote: "Every piece is handmade, so please allow 3–7 days for dispatch.",
   announcement: "✨ Free shipping on orders above ₹1999 · Custom orders open — message us on WhatsApp",
-  announcementActive: true,
+  announcementActive: false,
   acceptingOrders: true,
   vacationMessage: "We're taking a short creative break. Orders placed now will be dispatched once we're back!",
   heroSlides: [
@@ -74,7 +74,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     "Handmade art & craft by Kavita's Artistry — Lippan art, wall decor, festive & pooja decor, name plates, gifts and custom creations. Order easily on WhatsApp.",
 };
 
-const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3", "dbVersion"]);
+const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3", "dbVersion", "announcementOffV4"]);
 
 export async function getSettings(): Promise<StoreSettings> {
   const rows = await query<{ key: string; value: string }>("SELECT key, value FROM Setting");

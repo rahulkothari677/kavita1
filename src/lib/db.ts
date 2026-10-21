@@ -162,7 +162,7 @@ const SCHEMA = [
 ];
 
 /** Bump when a new one-time migration is added below; the fast path checks this single flag. */
-const DB_VERSION = "3";
+const DB_VERSION = "4";
 
 async function init() {
   const c = getClient();
@@ -206,6 +206,18 @@ async function init() {
       [
         { sql: `INSERT INTO Setting (key, value) VALUES ('theme', '"atelier"') ON CONFLICT(key) DO UPDATE SET value = excluded.value`, args: [] },
         { sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('themeV3', '"1"')`, args: [] },
+      ],
+      "write",
+    );
+  }
+  // v4: the owner asked to remove the announcement strip at the top (can be switched back on in
+  // Admin → Content). Runs once.
+  const v4 = await c.execute({ sql: "SELECT value FROM Setting WHERE key = 'announcementOffV4'", args: [] });
+  if (v4.rows.length === 0) {
+    await c.batch(
+      [
+        { sql: `INSERT INTO Setting (key, value) VALUES ('announcementActive', 'false') ON CONFLICT(key) DO UPDATE SET value = excluded.value`, args: [] },
+        { sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('announcementOffV4', '"1"')`, args: [] },
       ],
       "write",
     );

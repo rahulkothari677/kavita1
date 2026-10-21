@@ -97,7 +97,7 @@ export function AdminShell({ children, counts, tempDb = false }: { children: Rea
               ))}
             </nav>
             <div className="space-y-0.5 border-t border-admin-line p-3">
-              <a href="/" target="_blank" rel="noreferrer" className="flex h-[34px] items-center gap-2.5 rounded-[6px] px-2.5 text-[14px] font-medium text-ink hover:bg-admin-sidebar-hover">
+              <a href="/?shop" target="_blank" rel="noreferrer" className="flex h-[34px] items-center gap-2.5 rounded-[6px] px-2.5 text-[14px] font-medium text-ink hover:bg-admin-sidebar-hover">
                 <ArrowUpRight className="size-[18px] text-muted" strokeWidth={SW} aria-hidden />
                 View website
                 <span className="sr-only">(opens in a new tab)</span>
@@ -124,7 +124,7 @@ export function AdminShell({ children, counts, tempDb = false }: { children: Rea
               ))}
             </nav>
             <div className="flex flex-col items-center gap-1 border-t border-admin-line py-3">
-              <a href="/" target="_blank" rel="noreferrer" className="group relative grid size-11 place-items-center rounded-[6px] text-muted hover:bg-admin-sidebar-hover hover:text-ink" aria-label="View website (opens in a new tab)">
+              <a href="/?shop" target="_blank" rel="noreferrer" className="group relative grid size-11 place-items-center rounded-[6px] text-muted hover:bg-admin-sidebar-hover hover:text-ink" aria-label="View website (opens in a new tab)">
                 <ArrowUpRight className="size-5" strokeWidth={SW} aria-hidden />
               </a>
               <button onClick={logout} className="grid size-11 place-items-center rounded-[6px] text-muted hover:bg-admin-sidebar-hover hover:text-ink" aria-label="Log out">
@@ -139,7 +139,7 @@ export function AdminShell({ children, counts, tempDb = false }: { children: Rea
               <Medallion />
               <StudioMark />
             </Link>
-            <a href="/" target="_blank" rel="noreferrer" className="icon-btn -mr-2 text-ink" aria-label="View website (opens in a new tab)">
+            <a href="/?shop" target="_blank" rel="noreferrer" className="icon-btn -mr-2 text-ink" aria-label="View website (opens in a new tab)">
               <ArrowUpRight className="size-5" strokeWidth={SW} />
             </a>
           </header>
@@ -244,7 +244,7 @@ export function AdminShell({ children, counts, tempDb = false }: { children: Rea
               })}
             </ul>
             <div className="mt-4 grid grid-cols-2 gap-2 border-t border-admin-line pt-4">
-              <a href="/" target="_blank" rel="noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[6px] border border-admin-line text-[15px] font-medium">
+              <a href="/?shop" target="_blank" rel="noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[6px] border border-admin-line text-[15px] font-medium">
                 <ArrowUpRight className="size-4" strokeWidth={SW} aria-hidden /> View website
               </a>
               <button onClick={logout} className="flex h-12 items-center justify-center gap-2 rounded-[6px] border border-admin-line text-[15px] font-medium">

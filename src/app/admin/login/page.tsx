@@ -31,7 +31,7 @@ export default async function LoginPage() {
         </p>
         <LoginForm setup={setup} />
       </div>
-      <a href="/" className="link mt-6 text-[14px] text-muted">
+      <a href="/?shop" className="link mt-6 text-[14px] text-muted">
         <span className="arrow">←</span> Back to the shop
       </a>
     </main>

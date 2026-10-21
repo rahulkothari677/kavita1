@@ -50,7 +50,7 @@ export default function ContentPage() {
         title="Website content"
         subtitle="Change what customers see. No coding needed."
         actions={
-          <a href="/" target="_blank" rel="noreferrer" className={adminBtn.secondary}>
+          <a href="/?shop" target="_blank" rel="noreferrer" className={adminBtn.secondary}>
             Preview website <span aria-hidden>↗</span>
           </a>
         }
