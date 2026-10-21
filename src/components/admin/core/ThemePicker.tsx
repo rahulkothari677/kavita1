@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ExternalLink } from "lucide-react";
-import { THEMES } from "@/lib/themes";
+import { THEMES, themeLook } from "@/lib/themes";
 
 /** Visual theme chooser: each card is a tiny mock of the storefront in that theme. */
 export function ThemePicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
@@ -9,15 +9,17 @@ export function ThemePicker({ value, onChange }: { value: string; onChange: (id:
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {THEMES.map((t) => {
         const c = t.colors;
-        const active = (value || "limewash") === t.id;
+        const look = themeLook(t);
+        const r = Math.min(look.radius, 16) / 2;
+        const active = (value || "atelier") === t.id;
         return (
           <div key={t.id} className={`overflow-hidden rounded-[8px] border bg-white transition ${active ? "border-ink ring-1 ring-ink" : "border-admin-line hover:border-line-strong"}`}>
             <button type="button" onClick={() => onChange(t.id)} aria-pressed={active} className="block w-full text-left">
               {/* mini storefront */}
-              <div style={{ background: c.canvas }} className="p-3">
+              <div style={{ backgroundColor: c.canvas, backgroundImage: look.pattern, backgroundSize: look.patternSize, fontFamily: look.sans }} className="p-3">
                 <div className="flex items-center justify-between">
-                  <span style={{ color: c.ink }} className="font-display text-[13px]">
-                    Kavita’s Artistry<span style={{ background: c.accent }} className="ml-0.5 inline-block size-[3px] rounded-full align-baseline" />
+                  <span style={{ color: c.accent, fontFamily: look.script, fontStyle: look.scriptStyle, fontWeight: look.scriptWeight }} className="text-[15px] leading-none">
+                    Kavita’s Artistry
                   </span>
                   <span className="flex gap-1">
                     {[0, 1, 2].map((i) => (
@@ -27,18 +29,18 @@ export function ThemePicker({ value, onChange }: { value: string; onChange: (id:
                 </div>
                 <div className="mt-3 grid grid-cols-[1.2fr_1fr] gap-2">
                   <div>
-                    <p style={{ color: c.ink }} className="font-display text-[17px] leading-tight">
-                      Art made <em>slowly</em>
+                    <p style={{ color: c.ink, fontFamily: look.script, fontStyle: look.scriptStyle, fontWeight: look.scriptWeight }} className="text-[19px] leading-tight">
+                      Handmade Art
                     </p>
-                    <span style={{ background: c.ink, color: c.canvas }} className="mt-2 inline-block rounded-[3px] px-2 py-1 text-[9px] font-medium">
+                    <span style={{ background: c.ink, color: c.canvas, borderRadius: Math.min(t.style.ctl, 99) / 3 }} className="mt-2 inline-block px-2 py-1 text-[9px] font-medium">
                       Explore
                     </span>
                   </div>
-                  <div style={{ background: c.plinth }} className="aspect-[4/5] rounded-t-full" />
+                  <div style={{ background: c.hero, borderRadius: r * 1.5 }} className="aspect-[4/5]" />
                 </div>
                 <div className="mt-2 grid grid-cols-3 gap-1.5">
                   {[0, 1, 2].map((i) => (
-                    <div key={i} style={{ background: c.plinth }} className="aspect-square rounded-[2px]" />
+                    <div key={i} style={{ background: i === 1 ? c["panel-b"] : c["panel-a"], borderRadius: r }} className="aspect-square" />
                   ))}
                 </div>
               </div>

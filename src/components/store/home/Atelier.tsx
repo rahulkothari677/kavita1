@@ -26,7 +26,7 @@ export function HeroBanner({
   const img = responsiveImg(image, [640, 960, 1400]);
   return (
     <section aria-labelledby="hero-title" className="container-x pt-2 lg:pt-3">
-      <div className="hero-wash relative overflow-hidden rounded-[22px] shadow-soft max-lg:flex max-lg:flex-col">
+      <div className="hero-wash relative overflow-hidden rounded-[calc(var(--radius-img)+8px)] shadow-soft max-lg:flex max-lg:flex-col">
         <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[68%]">
           <img
             src={img.src}
@@ -78,7 +78,7 @@ export function CategoryTiles({ tiles }: { tiles: Tile[] }) {
           <li key={t.title} className="reveal">
             <Link
               href={t.href}
-              className={`group relative flex h-full flex-col overflow-hidden rounded-[16px] text-white shadow-soft sm:h-[170px] sm:flex-row sm:rounded-[18px] lg:h-[200px] ${
+              className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-tile,16px)] text-white shadow-soft sm:h-[170px] sm:flex-row lg:h-[200px] ${
                 t.tone === "a" ? "bg-panel-a" : "bg-panel-b"
               }`}
             >
@@ -120,7 +120,7 @@ const PROMISES = [
 export function AboutStrip({ name, intro, image }: { name: string; intro: string; image: string }) {
   return (
     <section aria-labelledby="about-title" className="container-x pt-10 lg:pt-14">
-      <div className="relative overflow-hidden rounded-[22px] bg-blush px-6 py-7 sm:px-9 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10 lg:px-12 lg:py-8">
+      <div className="relative overflow-hidden rounded-[calc(var(--radius-img)+8px)] bg-blush px-6 py-7 sm:px-9 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10 lg:px-12 lg:py-8">
         <div className="flex items-center gap-5 lg:contents">
           <img src={responsiveImg(image, [256]).src} alt="" loading="lazy" decoding="async" className="size-24 shrink-0 rounded-full object-cover shadow-soft ring-4 ring-surface lg:size-32" />
           <div className="min-w-0">

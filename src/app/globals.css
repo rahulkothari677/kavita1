@@ -180,7 +180,12 @@ html {
 }
 
 body {
-  background: var(--color-canvas);
+  background-color: var(--color-canvas);
+  /* Theme surface (lib/themes.ts): a soft light glow at the top and a faint printed pattern.
+     Outside the shop (admin) these variables are unset, so the page stays plain. */
+  background-image: radial-gradient(130% 60% at 50% -8%, color-mix(in oklab, var(--color-glow) 70%, transparent), transparent 62%), var(--theme-pattern);
+  background-size: 100% 1400px, var(--theme-pattern-size);
+  background-repeat: no-repeat, repeat;
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -291,12 +296,14 @@ p {
 /* Script headings (Dancing Script) — section titles, tile names, the wordmark */
 .font-script {
   font-family: var(--font-script);
-  font-weight: 600;
+  font-weight: var(--script-weight, 600);
+  font-style: var(--script-style, normal);
   letter-spacing: 0;
 }
 .t-script {
   font-family: var(--font-script);
-  font-weight: 600;
+  font-weight: var(--script-weight, 600);
+  font-style: var(--script-style, normal);
   font-size: clamp(1.75rem, 1.45rem + 1.2vw, 2.5rem);
   line-height: 1.1;
   color: var(--color-accent);
@@ -660,6 +667,23 @@ input[type="radio"] {
 .shadow-float {
   box-shadow: var(--shadow-float);
 }
+/* Theme card finish: soft shadow, a fine frame (gallery/royal/festive) or a glow (midnight) */
+.img-well.shadow-soft {
+  box-shadow: var(--card-ring, 0 0 0 0 transparent), var(--card-glow, var(--shadow-soft));
+}
+/* A full-width tinted band that sets a section apart from the page */
+.band {
+  position: relative;
+  margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  padding-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  background:
+    linear-gradient(180deg, transparent, color-mix(in oklab, var(--color-band, var(--color-plinth)) 92%, transparent) 64px, var(--color-band, var(--color-plinth)) calc(100% - 64px), transparent),
+    var(--theme-pattern, none);
+  background-size: 100% 100%, var(--theme-pattern-size, auto);
+}
+.band > section:first-child {
+  padding-top: 0;
+}
 .shadow-dock {
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 14px 34px -12px rgb(0 0 0 / 0.28);
 }
@@ -672,7 +696,7 @@ input[type="radio"] {
 
 /* Homepage hero: a sunlit golden wash that adapts to every theme */
 .hero-wash {
-  --wash: color-mix(in srgb, var(--color-plinth-strong) 78%, #d6a565);
+  --wash: var(--color-hero, color-mix(in srgb, var(--color-plinth-strong) 78%, #d6a565));
   background: var(--wash);
 }
 .hero-fade {

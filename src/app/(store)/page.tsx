@@ -118,37 +118,40 @@ export default async function HomePage() {
 
       <AboutStrip name={artistName} intro={intro} image={settings.artistImage || "/home/about-studio.webp"} />
 
-      {newest.length > 0 && (
-        <section aria-labelledby="new-title" className="container-x pt-10 lg:pt-14">
-          <SectionHeader title={<span id="new-title">New Arrivals</span>} link={{ href: "/shop?sort=newest", label: "View all" }} />
-          <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 md:gap-x-4 lg:mt-6 xl:grid-cols-4 xl:gap-x-5">
-            {newest.map((p) => (
-              <ProductCard key={p.id} p={p} />
-            ))}
-          </div>
-        </section>
-      )}
+      {/* New arrivals and the making story sit on a tinted band (globals.css .band) */}
+      <div className="band">
+        {newest.length > 0 && (
+          <section aria-labelledby="new-title" className="container-x pt-10 lg:pt-14">
+            <SectionHeader title={<span id="new-title">New Arrivals</span>} link={{ href: "/shop?sort=newest", label: "View all" }} />
+            <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 md:gap-x-4 lg:mt-6 xl:grid-cols-4 xl:gap-x-5">
+              {newest.map((p) => (
+                <ProductCard key={p.id} p={p} />
+              ))}
+            </div>
+          </section>
+        )}
 
-      <section aria-labelledby="making-title" className={`container-x ${SECTION_TOP}`}>
-        <SectionHeader title={<span id="making-title">From Clay to Your Wall</span>} link={{ href: "/about", label: "Our story" }} />
-        <ol className="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:mt-6 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0">
-          {MAKING.map((m, i) => {
-            const img = responsiveImg(m.image, [480, 720]);
-            return (
-              <li key={m.title} className="w-[64vw] shrink-0 snap-start sm:w-[40vw] lg:w-auto">
-                <div className="aspect-[4/3] overflow-hidden rounded-img bg-plinth shadow-soft">
-                  <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 24vw, 64vw" alt={m.alt} loading="lazy" decoding="async" className="size-full object-cover" />
-                </div>
-                <p className="mt-3 flex items-baseline gap-2">
-                  <span className="font-script text-[22px] leading-none text-accent">{i + 1}.</span>
-                  <span className="text-[15px] font-semibold">{m.title}</span>
-                </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-muted">{m.body}</p>
-              </li>
-            );
-          })}
-        </ol>
-      </section>
+        <section aria-labelledby="making-title" className={`container-x ${SECTION_TOP}`}>
+          <SectionHeader title={<span id="making-title">From Clay to Your Wall</span>} link={{ href: "/about", label: "Our story" }} />
+          <ol className="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:mt-6 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0">
+            {MAKING.map((m, i) => {
+              const img = responsiveImg(m.image, [480, 720]);
+              return (
+                <li key={m.title} className="w-[64vw] shrink-0 snap-start sm:w-[40vw] lg:w-auto">
+                  <div className="aspect-[4/3] overflow-hidden rounded-img bg-plinth shadow-soft">
+                    <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 24vw, 64vw" alt={m.alt} loading="lazy" decoding="async" className="size-full object-cover" />
+                  </div>
+                  <p className="mt-3 flex items-baseline gap-2">
+                    <span className="font-script text-[22px] leading-none text-accent">{i + 1}.</span>
+                    <span className="text-[15px] font-semibold">{m.title}</span>
+                  </p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-muted">{m.body}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      </div>
 
       <HowOrdering codAvailable={settings.codAvailable} artistName={artistName} />
 

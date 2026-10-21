@@ -12,8 +12,8 @@ The splash is rebuilt in code (not the video file): ~2 s, sharp at any size, no 
 | 2 | Perfect vector logo + app icons | done |
 | 3 | Splash animation + motion across the app | done |
 | 4 | Bottom tab bar, AI button placement, footer | done |
-| 5 | Themes that differ in fonts/shapes/backgrounds, richer section backgrounds | next |
-| 6 | Written "best artwork app" improvement plan | |
+| 5 | Themes that differ in fonts/shapes/backgrounds, richer section backgrounds | done |
+| 6 | Written "best artwork app" improvement plan | next |
 
 ## Notes
 - /shop and /gift-finder stay server-rendered (they read the address bar's filters); they skip the

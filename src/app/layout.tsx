@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Dancing_Script, Fraunces, Manrope, Tiro_Devanagari_Hindi } from "next/font/google";
+import { Cormorant_Garamond, Dancing_Script, Fraunces, Great_Vibes, Jost, Kalam, Manrope, Playfair_Display, Tiro_Devanagari_Hindi, Yatra_One } from "next/font/google";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import "./globals.css";
 
@@ -11,6 +11,14 @@ const manrope = Manrope({ subsets: ["latin", "latin-ext"], variable: "--font-man
 const dancing = Dancing_Script({ subsets: ["latin"], variable: "--font-dancing", display: "swap" });
 // One Hindi word per page at most — only downloaded where Devanagari text appears
 const tiro = Tiro_Devanagari_Hindi({ weight: "400", subsets: ["devanagari"], preload: false, variable: "--font-tiro", display: "swap" });
+// Theme fonts (src/lib/themes.ts). Not preloaded: a browser only downloads the ones the chosen theme uses.
+const playfair = Playfair_Display({ subsets: ["latin"], style: ["normal", "italic"], preload: false, variable: "--font-playfair", display: "swap" });
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600"], style: ["normal", "italic"], preload: false, variable: "--font-cormorant", display: "swap" });
+const greatVibes = Great_Vibes({ weight: "400", subsets: ["latin"], preload: false, variable: "--font-greatvibes", display: "swap" });
+const yatra = Yatra_One({ weight: "400", subsets: ["latin"], preload: false, variable: "--font-yatra", display: "swap" });
+const kalam = Kalam({ weight: ["400", "700"], subsets: ["latin"], preload: false, variable: "--font-kalam", display: "swap" });
+const jost = Jost({ subsets: ["latin"], preload: false, variable: "--font-jost", display: "swap" });
+const themeFonts = [playfair, cormorant, greatVibes, yatra, kalam, jost].map((f) => f.variable).join(" ");
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -31,7 +39,7 @@ export const viewport: Viewport = { themeColor: "#f6ede3", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" suppressHydrationWarning className={`${fraunces.variable} ${manrope.variable} ${tiro.variable} ${dancing.variable}`}>
+    <html lang="en-IN" suppressHydrationWarning className={`${fraunces.variable} ${manrope.variable} ${tiro.variable} ${dancing.variable} ${themeFonts}`}>
       <body className="min-h-screen">
         {children}
         <ServiceWorker />
