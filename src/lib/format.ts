@@ -26,9 +26,18 @@ export function discountPercent(price: number, compareAt: number | null | undefi
   return Math.round(((compareAt - price) / compareAt) * 100);
 }
 
-/** Resize hint for Cloudinary-hosted images; other URLs are returned untouched. */
+// Widths Next's image resizer serves (next.config.ts `images`); requests snap up to the next one.
+const LOCAL_WIDTHS = [256, 384, 640, 828, 1080, 1200, 1920];
+
+/** Sized URL for Cloudinary-hosted and built-in photos; other URLs are returned untouched. */
+
 export function imgUrl(url: string | null | undefined, width = 800) {
   if (!url) return "/demo/placeholder.svg";
+  // Photos shipped with the site are resized (and cached near the visitor) by Next's image resizer.
+  if (/^\/(home|stock|demo|brand)\/[^?]+\.(webp|jpe?g|png)$/i.test(url)) {
+    const w = LOCAL_WIDTHS.find((x) => x >= width) ?? LOCAL_WIDTHS[LOCAL_WIDTHS.length - 1];
+    return `/_next/image?url=${encodeURIComponent(url)}&w=${w}&q=75`;
+  }
   if (url.includes("res.cloudinary.com") && url.includes("/upload/") && !url.includes("/upload/f_auto")) {
     return url.replace("/upload/", `/upload/f_auto,q_auto,c_limit,w_${width}/`);
   }

@@ -84,7 +84,8 @@ export function CategoryTiles({ tiles }: { tiles: Tile[] }) {
             >
               <span className="relative h-[118px] w-full shrink-0 overflow-hidden sm:h-auto sm:w-[58%]">
                 <img
-                  src={t.image}
+                  {...responsiveImg(t.image, [384, 640])}
+                  sizes="(min-width: 640px) 30vw, 50vw"
                   alt=""
                   loading={i < 2 ? "eager" : "lazy"}
                   decoding="async"
@@ -121,7 +122,7 @@ export function AboutStrip({ name, intro, image }: { name: string; intro: string
     <section aria-labelledby="about-title" className="container-x pt-10 lg:pt-14">
       <div className="relative overflow-hidden rounded-[22px] bg-blush px-6 py-7 sm:px-9 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10 lg:px-12 lg:py-8">
         <div className="flex items-center gap-5 lg:contents">
-          <img src={image} alt="" loading="lazy" decoding="async" className="size-24 shrink-0 rounded-full object-cover shadow-soft ring-4 ring-surface lg:size-32" />
+          <img src={responsiveImg(image, [256]).src} alt="" loading="lazy" decoding="async" className="size-24 shrink-0 rounded-full object-cover shadow-soft ring-4 ring-surface lg:size-32" />
           <div className="min-w-0">
             <h2 id="about-title" className="font-script text-[26px] leading-tight text-ink lg:text-[30px]">
               About {name}

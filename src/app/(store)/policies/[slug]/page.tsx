@@ -12,6 +12,10 @@ const MAP = {
   care: { title: "Care guide", lead: "Caring for", em: "handmade", key: "careGuide" },
 } as const;
 
+export function generateStaticParams() {
+  return Object.keys(MAP).map((slug) => ({ slug }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   return { title: MAP[slug as keyof typeof MAP]?.title ?? "Policy" };

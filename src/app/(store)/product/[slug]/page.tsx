@@ -13,9 +13,14 @@ import { ReviewForm } from "@/components/store/ReviewForm";
 import { RecentlyViewed } from "@/components/store/RecentlyViewed";
 import { StickyBuyBar } from "@/components/store/StickyBuyBar";
 import { leadTimeLabel, productImg } from "@/components/store/catalogue/util";
-import { siteUrl } from "@/lib/site";
+import { staticSiteUrl } from "@/lib/site";
 
 type Params = Promise<{ slug: string }>;
+
+// Each product page is built on its first visit, then served from the CDN until the next database write.
+export async function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
@@ -51,7 +56,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     getSettings(),
     listProducts({ activeOnly: true, category: p.categorySlug ?? undefined, excludeId: p.id, limit: 4 }),
     listReviews({ productId: p.id, approvedOnly: true }),
-    siteUrl(),
+    staticSiteUrl(),
   ]);
   const more = related.length < 4 ? await listProducts({ activeOnly: true, excludeId: p.id, sort: "popular", limit: 8 }) : [];
   const relatedAll = [...related, ...more.filter((m) => !related.some((r) => r.id === m.id))].slice(0, 4);

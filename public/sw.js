@@ -4,7 +4,7 @@
  * - Caches build files and photos so repeat visits and page switches load instantly.
  * Pages and /api are always fetched fresh (orders, stock and admin data must never be stale).
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC = `static-${VERSION}`;
 const MEDIA = `media-${VERSION}`;
 
@@ -60,7 +60,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(cacheFirst(request));
     return;
   }
-  if (/^\/(home|stock|demo|brand)\//.test(url.pathname) || /^\/api\/img\//.test(url.pathname) || /\.(png|webp|jpg|jpeg|svg|woff2)$/.test(url.pathname)) {
+  if (/^\/(home|stock|demo|brand)\//.test(url.pathname) || url.pathname === "/_next/image" || /^\/api\/img\//.test(url.pathname) || /\.(png|webp|jpg|jpeg|svg|woff2)$/.test(url.pathname)) {
     event.respondWith(staleWhileRevalidate(request));
   }
 });
