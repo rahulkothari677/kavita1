@@ -7,7 +7,7 @@ import { WhatsAppIcon } from "@/components/Motifs";
 import { formatINR, imgUrl } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 import { useStore } from "../StoreProvider";
-import { useFocusTrap, useMediaQuery, usePresence, useScrollLock, useSwipeDismiss } from "./hooks";
+import { useFocusTrap, useKeyboardInset, useMediaQuery, usePresence, useScrollLock, useSwipeDismiss } from "./hooks";
 
 type Product = { id: string; slug: string; name: string; price: number; image: string | null };
 type Msg = { role: "user" | "assistant"; content: string; products?: Product[] };
@@ -35,7 +35,9 @@ export function AssistantPanel({ open, onClose }: { open: boolean; onClose: () =
   const [busy, setBusy] = useState(false);
   const swipe = useSwipeDismiss(panelRef, onClose);
 
-  useFocusTrap(panelRef, open, { onEscape: onClose, initialFocus: inputRef, trap: isPhone });
+  // Phones: don't pop the keyboard on open (it would hide the suggestions); desktop types straight away.
+  useFocusTrap(panelRef, open, { onEscape: onClose, initialFocus: isPhone ? undefined : inputRef, trap: isPhone });
+  const keyboard = useKeyboardInset(open && isPhone);
   useScrollLock(open && isPhone);
   useEffect(() => {
     if (open) endRef.current?.scrollIntoView({ block: "end" });
@@ -79,7 +81,8 @@ export function AssistantPanel({ open, onClose }: { open: boolean; onClose: () =
         aria-modal={isPhone ? "true" : undefined}
         aria-labelledby="assistant-title"
         tabIndex={-1}
-        style={swipe.style}
+        // With the keyboard up, the sheet sits on top of it and shrinks to the space left.
+        style={keyboard > 0 ? { ...swipe.style, bottom: keyboard, minHeight: 0, maxHeight: `calc(100dvh - ${keyboard}px - 12px)` } : swipe.style}
         className={`pointer-events-auto absolute inset-x-0 bottom-0 flex max-h-[88dvh] min-h-[60dvh] flex-col overflow-hidden rounded-t-[20px] bg-surface shadow-float outline-none transition-[translate,opacity] ease-drawer lg:inset-x-auto lg:right-6 lg:bottom-6 lg:h-[min(640px,calc(100dvh-120px))] lg:max-h-none lg:min-h-0 lg:w-[400px] lg:rounded-[4px] lg:ease-out ${
           visible
             ? "translate-y-0 opacity-100 duration-[420ms] lg:duration-200"

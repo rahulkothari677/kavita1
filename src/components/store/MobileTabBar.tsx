@@ -81,8 +81,8 @@ export function MobileTabBar() {
   };
 
   const centreCls =
-    "relative z-[1] -mt-7 grid size-[58px] place-items-center justify-self-center rounded-full bg-ink text-canvas shadow-float ring-4 ring-surface transition-transform duration-200 active:scale-[0.92]";
-  const centreLabel = "absolute top-[calc(100%+7px)] text-[10.5px] leading-none font-semibold whitespace-nowrap text-muted";
+    "relative z-[1] -mt-10 grid size-[58px] place-items-center justify-self-center rounded-full bg-ink text-canvas shadow-float ring-4 ring-surface transition-transform duration-200 active:scale-[0.92]";
+  const centreLabel = "absolute top-[calc(100%+1px)] text-[10.5px] leading-none font-semibold whitespace-nowrap text-muted";
 
   return (
     <nav

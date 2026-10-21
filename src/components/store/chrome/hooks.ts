@@ -167,3 +167,27 @@ export function useSwipeDismiss(sheetRef: RefObject<HTMLElement | null>, onDismi
     handlers: { onPointerDown, onPointerMove, onPointerUp: end, onPointerCancel: end },
   };
 }
+
+/**
+ * Height of the on-screen keyboard (0 when closed). Phones put the keyboard over fixed bottom
+ * sheets without resizing the page; the visual viewport tells us how much of the screen it covers.
+ */
+export function useKeyboardInset(active: boolean) {
+  const [inset, setInset] = useState(0);
+  useEffect(() => {
+    const vv = typeof window !== "undefined" ? window.visualViewport : null;
+    if (!active || !vv) {
+      setInset(0);
+      return;
+    }
+    const update = () => setInset(Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)));
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, [active]);
+  return inset;
+}

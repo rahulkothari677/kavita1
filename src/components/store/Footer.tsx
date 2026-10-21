@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Gift, Heart, Package, Palette, Plus } from "lucide-react";
-import { Eyebrow } from "@/components/brand";
 import { InstagramIcon, WhatsAppIcon } from "@/components/Motifs";
 import { InstallApp } from "@/components/InstallApp";
 import { NewsletterForm } from "./NewsletterForm";
@@ -23,7 +22,7 @@ function FooterAnchor({ l, className = "" }: { l: FooterLink; className?: string
   );
 }
 
-/** Desktop: a plain column. Phones: a 52px accordion row (native <details>, no JS). */
+/** Desktop: a plain column. Phones: a 48px accordion row (native <details>, no JS). */
 function FooterColumn({ col }: { col: Column }) {
   const list = (
     <ul className="space-y-1 text-[14px] lg:space-y-2.5">
@@ -37,7 +36,7 @@ function FooterColumn({ col }: { col: Column }) {
   return (
     <>
       <details className="group border-b border-line-on-dark lg:hidden">
-        <summary className="flex h-[52px] cursor-pointer list-none items-center justify-between text-[11px] font-semibold tracking-[0.14em] text-muted-on-dark uppercase [&::-webkit-details-marker]:hidden">
+        <summary className="flex h-12 cursor-pointer list-none items-center justify-between text-[11px] font-semibold tracking-[0.14em] text-muted-on-dark uppercase [&::-webkit-details-marker]:hidden">
           {col.title}
           <Plus aria-hidden className="size-4 text-on-dark transition-transform duration-[220ms] group-open:rotate-45" strokeWidth={1.5} />
         </summary>
@@ -95,7 +94,6 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
     settings.instagram ? { href: settings.instagram, label: "Instagram", external: true } : null,
     settings.facebook ? { href: settings.facebook, label: "Facebook", external: true } : null,
     settings.youtube ? { href: settings.youtube, label: "YouTube", external: true } : null,
-    { href: wa, label: "WhatsApp", external: true },
   ] as (FooterLink | null)[]).filter((x): x is FooterLink => x !== null);
 
   // Only the methods actually offered (FAQ: UPI or bank transfer once confirmed on WhatsApp).
@@ -105,7 +103,7 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
     <footer className="on-dark relative mt-6 overflow-x-clip bg-ink-deep pb-[calc(84px+env(safe-area-inset-bottom))] text-on-dark lg:mt-10 lg:pb-0">
       <MirrorEdge />
       {/* Faint mandala watermark */}
-      <svg aria-hidden viewBox="0 0 200 200" className="pointer-events-none absolute -right-16 bottom-24 size-[320px] text-on-dark opacity-[0.05] lg:bottom-10 lg:size-[440px]">
+      <svg aria-hidden viewBox="0 0 200 200" className="pointer-events-none absolute -right-20 -bottom-10 size-[260px] text-on-dark opacity-[0.05] lg:-right-16 lg:bottom-6 lg:size-[400px]">
         <g fill="none" stroke="currentColor" strokeWidth="1.2">
           <circle cx="100" cy="100" r="96" />
           <circle cx="100" cy="100" r="60" />
@@ -118,83 +116,86 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
         </g>
       </svg>
 
-      <div className="container-x relative pt-12 lg:pt-16">
-        {/* Sign-off: the studio, and the two ways to reach it */}
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-10">
-          <div className="lg:col-span-7">
-            <div className="flex items-center gap-4">
-              <img src="/brand/logo-mark.svg" alt="" width={64} height={64} className="size-14 shrink-0 lg:size-16" />
+      <div className="container-x relative pt-9 lg:pt-14">
+        <div className="grid gap-7 lg:grid-cols-12 lg:gap-6">
+          {/* Sign-off: the studio, the two ways to reach it, and what it promises */}
+          <div className="lg:col-span-4">
+            <div className="flex items-center gap-3">
+              <img src="/brand/logo-mark.svg" alt="" width={48} height={48} className="size-11 shrink-0 lg:size-12" />
               <div>
-                <p className="font-script text-[30px] leading-none text-accent-on-dark lg:text-[36px]">Kavita’s Artistry</p>
-                <p className="mt-1.5 text-[11px] font-semibold tracking-[0.22em] text-muted-on-dark uppercase">Handmade with love · India</p>
+                <p className="font-script text-[26px] leading-none text-accent-on-dark lg:text-[30px]">Kavita’s Artistry</p>
+                <p className="mt-1 text-[10.5px] font-semibold tracking-[0.2em] text-muted-on-dark uppercase">Handmade with love · India</p>
               </div>
             </div>
-            <p className="mt-5 max-w-[46ch] text-[15px] leading-relaxed text-muted-on-dark">
-              Lippan mirror work, mandalas, festive and personalised pieces, made by hand in Kavita’s home studio. Every order is confirmed personally on WhatsApp.
+            <p className="mt-3.5 max-w-[42ch] text-[14px] leading-relaxed text-muted-on-dark">
+              Lippan mirror work and personalised decor, made by hand in Kavita’s home studio. Every order is confirmed on WhatsApp.
             </p>
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row lg:col-span-5 lg:flex-col xl:flex-row">
-            <a
-              href={wa}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-12 flex-1 items-center justify-center gap-2.5 rounded-full bg-wa px-5 text-[15px] font-semibold text-white transition-colors hover:bg-wa-hover"
-            >
-              <WhatsAppIcon className="size-5" /> Chat on WhatsApp
-            </a>
-            {settings.instagram && (
+            <div className="mt-4 flex gap-2.5">
               <a
-                href={settings.instagram}
+                href={wa}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-12 flex-1 items-center justify-center gap-2.5 rounded-full border border-line-on-dark px-5 text-[15px] font-semibold text-on-dark transition-colors hover:bg-ink-deep-raised"
+                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-wa px-4 text-[14.5px] font-semibold text-white transition-colors hover:bg-wa-hover lg:flex-none"
               >
-                <InstagramIcon className="size-5" /> Follow on Instagram
+                <WhatsAppIcon className="size-[18px]" /> Chat on WhatsApp
               </a>
-            )}
+              {settings.instagram && (
+                <a
+                  href={settings.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Kavita’s Artistry on Instagram"
+                  className="grid size-11 shrink-0 place-items-center rounded-full border border-line-on-dark text-on-dark transition-colors hover:bg-ink-deep-raised"
+                >
+                  <InstagramIcon className="size-5" />
+                </a>
+              )}
+            </div>
+            <ul className="mt-5 grid grid-cols-4 gap-1 text-center">
+              {PROMISES.map(({ icon: Icon, label }) => (
+                <li key={label} className="flex flex-col items-center gap-1.5">
+                  <span className="grid size-9 place-items-center rounded-full text-accent-on-dark ring-1 ring-line-on-dark">
+                    <Icon aria-hidden className="size-4" strokeWidth={1.6} />
+                  </span>
+                  <span className="text-[11px] leading-tight text-muted-on-dark">{label}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
 
-        {/* Promises */}
-        <ul className="mt-10 grid grid-cols-2 gap-3 lg:mt-12 lg:grid-cols-4 lg:gap-4">
-          {PROMISES.map(({ icon: Icon, label, note }) => (
-            <li key={label} className="reveal flex items-center gap-3 rounded-[16px] bg-ink-deep-raised/70 px-3.5 py-3.5 ring-1 ring-line-on-dark lg:px-5 lg:py-4">
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink-deep text-accent-on-dark ring-1 ring-line-on-dark">
-                <Icon aria-hidden className="size-[18px]" strokeWidth={1.6} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-[13.5px] leading-tight font-semibold text-on-dark">{label}</span>
-                <span className="mt-0.5 block text-[12px] leading-snug text-muted-on-dark max-sm:hidden">{note}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        {/* Newsletter + links */}
-        <div className="mt-10 grid gap-10 border-t border-line-on-dark pt-10 lg:mt-12 lg:grid-cols-12 lg:gap-6 lg:pt-12">
-          <div className="lg:col-span-4">
-            <Eyebrow>From the studio</Eyebrow>
-            <h2 className="font-script mt-3 text-[26px] leading-tight text-on-dark lg:text-[28px]">Letters from the studio, once a month</h2>
-            <p className="mt-2 mb-3 text-[14px] text-muted-on-dark">New pieces, festive drops and notes from Kavita’s work table. No spam.</p>
-            <NewsletterForm />
-            <InstallApp
-              app="shop"
-              className="mt-5 inline-flex h-10 items-center gap-2 rounded-full border border-line-on-dark px-4 text-[14px] font-medium text-on-dark transition-colors hover:bg-ink-deep-raised"
-              helpClassName="mt-2 max-w-[34ch] text-[13px] leading-snug text-muted-on-dark"
-            />
-          </div>
-          <div className="border-t border-line-on-dark lg:col-span-8 lg:grid lg:grid-cols-4 lg:gap-6 lg:border-t-0">
+          {/* Link columns: accordions on phones */}
+          <div className="border-t border-line-on-dark lg:col-span-5 lg:grid lg:grid-cols-4 lg:gap-5 lg:border-t-0">
             {columns.map((c) => (
               <FooterColumn key={c.title} col={c} />
             ))}
           </div>
+
+          {/* Newsletter */}
+          <div className="lg:col-span-3">
+            <p className="text-[14px] font-semibold text-on-dark">Letters from the studio, once a month</p>
+            <p className="mt-0.5 mb-1 text-[13px] text-muted-on-dark">New pieces and festive drops. No spam.</p>
+            <NewsletterForm />
+            <InstallApp
+              app="shop"
+              className="mt-4 inline-flex h-10 items-center gap-2 rounded-full border border-line-on-dark px-4 text-[14px] font-medium text-on-dark transition-colors hover:bg-ink-deep-raised"
+              helpClassName="mt-2 max-w-[34ch] text-[13px] leading-snug text-muted-on-dark"
+            />
+          </div>
         </div>
 
         {/* Payments, copyright, socials */}
-        <div className="mt-10 flex flex-col gap-5 border-t border-line-on-dark py-8 text-[13px] text-muted-on-dark lg:mt-12 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+        <div className="mt-7 flex flex-col gap-2 border-t border-line-on-dark py-5 text-[12.5px] text-muted-on-dark lg:mt-12 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:py-7">
           <p>
             <span className="sr-only">We accept: </span>
             {payments.join(" · ")}
+            {socials.map((s) => (
+              <span key={s.label}>
+                {" · "}
+                <a href={s.href} target="_blank" rel="noreferrer" className="link text-on-dark">
+                  {s.label}
+                </a>
+              </span>
+            ))}
           </p>
           <p>
             © {new Date().getFullYear()} Kavita’s Artistry · Handmade in India ·{" "}
@@ -202,15 +203,6 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
               हस्तनिर्मित
             </span>
           </p>
-          <ul className="flex flex-wrap items-center gap-x-5 gap-y-2" aria-label="Social links">
-            {socials.map((s) => (
-              <li key={s.label}>
-                <a href={s.href} target="_blank" rel="noreferrer" className="group inline-flex min-h-11 items-center text-on-dark lg:min-h-0">
-                  <span className="link">{s.label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </footer>
@@ -233,8 +225,8 @@ function MirrorEdge() {
 }
 
 const PROMISES = [
-  { icon: Heart, label: "Handmade with love", note: "Every piece shaped and painted by hand" },
-  { icon: Palette, label: "Premium quality", note: "Real mirrors, lasting colours, careful finish" },
-  { icon: Gift, label: "Custom orders welcome", note: "Your colours, names and sizes" },
-  { icon: Package, label: "Secure packaging", note: "Wrapped with care for the journey" },
+  { icon: Heart, label: "Handmade" },
+  { icon: Palette, label: "Premium quality" },
+  { icon: Gift, label: "Custom orders" },
+  { icon: Package, label: "Packed with care" },
 ];

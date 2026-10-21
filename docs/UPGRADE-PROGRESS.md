@@ -22,8 +22,8 @@ The splash is rebuilt in code (not the video file): ~2 s, sharp at any size, no 
   is "kavita-shop" (C:\Users\rahul4\.claude\launch.json).
 
 ## Status at end of 21 Oct session
-All six phases are committed locally on `claude/awesome-johnson-bnzerf`, **not pushed**. Pushing
-deploys to the live shop; wait for the owner's "push". Before pushing: `npm run lint`, `npm run build`,
+All six phases were pushed and went live on 21 Oct 2026 (9965f31); the Live site check passed.
+Every push deploys to the live shop, so wait for the owner's "push". Before pushing: `npm run lint`, `npm run build`,
 `node scripts/check-theme-contrast.mjs`. After pushing, check the "Live site check" GitHub Action and
 `curl -I https://kavita1.vercel.app/` for `x-vercel-cache: HIT` on the home page.
 Not checked locally: the admin theme cards (needs an admin login) and real-phone feel of the motion.
