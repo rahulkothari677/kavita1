@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Eyebrow, Wordmark } from "@/components/brand";
+import { InstallApp } from "@/components/InstallApp";
 import { NewsletterForm } from "./NewsletterForm";
 import type { Category, StoreSettings } from "@/lib/types";
 import { waLink } from "@/lib/whatsapp";
@@ -124,6 +125,11 @@ export function Footer({ settings, categories }: { settings: StoreSettings; cate
             <p className="mt-3 max-w-[34ch] text-[14px] leading-relaxed text-muted-on-dark">
               Lippan mirror work, mandalas, festive and personalised pieces, made by hand in Kavita’s home studio. Every order is confirmed personally on WhatsApp.
             </p>
+            <InstallApp
+              app="shop"
+              className="mt-5 inline-flex h-10 items-center gap-2 rounded-full border border-line-on-dark px-4 text-[14px] font-medium text-on-dark transition-colors hover:bg-ink-deep-raised"
+              helpClassName="mt-2 max-w-[34ch] text-[13px] leading-snug text-muted-on-dark"
+            />
           </div>
           <div className="border-t border-line-on-dark lg:col-span-8 lg:grid lg:grid-cols-4 lg:gap-6 lg:border-t-0">
             {columns.map((c) => (

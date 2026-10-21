@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowUpRight, Camera, ChevronRight, Home, LogOut, Megaphone, MoreHorizontal, Package, PenLine, Plus, ShoppingBag } from "lucide-react";
+import { InstallApp } from "@/components/InstallApp";
 import { WhatsAppIcon } from "@/components/Motifs";
 import { Modal, ToastProvider } from "./ui";
 import { AdminChromeContext } from "./core/chrome";
@@ -102,6 +103,11 @@ export function AdminShell({ children, counts, tempDb = false }: { children: Rea
                 View website
                 <span className="sr-only">(opens in a new tab)</span>
               </a>
+              <InstallApp
+                app="admin"
+                className="flex h-[34px] w-full items-center gap-2.5 rounded-[6px] px-2.5 text-[14px] font-medium text-ink hover:bg-admin-sidebar-hover"
+                helpClassName="px-2.5 pb-1 text-[12px] leading-snug text-muted"
+              />
               <button onClick={logout} className="flex h-[34px] w-full items-center gap-2.5 rounded-[6px] px-2.5 text-[14px] font-medium text-ink hover:bg-admin-sidebar-hover">
                 <LogOut className="size-[18px] text-muted" strokeWidth={SW} aria-hidden />
                 Log out
@@ -243,7 +249,14 @@ export function AdminShell({ children, counts, tempDb = false }: { children: Rea
                 );
               })}
             </ul>
-            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-admin-line pt-4">
+            <div className="mt-4 border-t border-admin-line pt-4">
+              <InstallApp
+                app="admin"
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-[6px] border border-admin-line bg-white text-[15px] font-medium"
+                helpClassName="mt-2 text-center text-[13px] leading-snug text-muted"
+              />
+            </div>
+            <div className="mt-2 grid grid-cols-2 gap-2">
               <a href="/?shop" target="_blank" rel="noreferrer" className="flex h-12 items-center justify-center gap-2 rounded-[6px] border border-admin-line text-[15px] font-medium">
                 <ArrowUpRight className="size-4" strokeWidth={SW} aria-hidden /> View website
               </a>

@@ -43,19 +43,23 @@ Written for the owner and for any Claude Code session continuing the work (on a 
 4. Optional: full-resolution versions of the mockup photos in `public/home/` (current ones are cropped
    from the mockup and slightly soft on large screens).
 
-## Installing both apps on Android
-Chrome treats every page of the site as part of the shop app once that is installed, so install in this order:
-1. Uninstall any existing Kavita's app.
-2. Open `kavita1.vercel.app/admin` in Chrome → ⋮ → **Install app** (Studio Admin).
-3. Open `kavita1.vercel.app` in Chrome → ⋮ → **Install app** (shop).
+## Installing both apps
+- Admin web address `kavita1-admin.vercel.app` is added in Vercel (Oct 21). Its home page opens the admin.
+- The live check confirms Chrome finds both apps installable (shop on kavita1.vercel.app, admin on
+  kavita1-admin.vercel.app) with no errors.
+- Each app has an **Install** button: shop → footer "Install our app"; admin → sidebar / More menu
+  "Install admin app". If the browser doesn't offer installation, the button explains why.
+- Chrome says "already installed" when an older Kavita's app is still on the device: remove it first
+  (Windows: open the app → ⋮ menu → Uninstall, or chrome://apps → right-click → Remove; Android: long-press
+  the icon → Uninstall), then reload the page and tap Install again.
+- Install the admin from `kavita1-admin.vercel.app`, never from `kavita1.vercel.app/admin`.
 
-If Chrome still refuses, give the admin its own web address (the code already supports it):
-Vercel → project kavita1 → Settings → Domains → Add `kavita1-admin.vercel.app` (any free name containing
-"admin") → then install the admin app from `https://kavita1-admin.vercel.app`. Its home page opens the admin.
-
-iPhone: Safari → Share → **Add to Home Screen** on each address; both always work.
-
-## Move to Mumbai (faster for India)
+## Move to Mumbai (faster for India) — optional
+Not urgent: the server answers in ~0.05–0.1 s; what's left is the India ↔ USA distance (~0.2 s per page).
+If the owner wants it, the Claude Code session does the technical steps (step 4: run the copy command
+for them; step 7: or push `"regions": ["bom1"]` in vercel.json). The owner only creates the database,
+copies two values from Turso, and adds two settings in Vercel. Turso's free plan may limit locations;
+check in the Turso dashboard before starting.
 Do the database and the server together, so they stay next to each other.
 
 1. **Create the new database.** Vercel → **Storage** → your Turso database → **Open in Turso** (this logs you
