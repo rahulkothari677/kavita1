@@ -3,6 +3,11 @@
  * of light sweeps round it, the mirrors set one by one, the cream centre fills, the lotus blooms
  * and the name is written in. About 2 seconds; a tap skips it.
  *
+ * Installed app: Chrome's launch screen has just shown the full logo (160px, centred), so a second,
+ * finished copy of the medallion (".la-*") starts exactly there and bursts apart (mirrors fly out,
+ * sparkles scatter) before the full build-up plays at full size: one logo that explodes and
+ * rebuilds, as in the owner's reference video, instead of a second logo appearing.
+ *
  * Shown on every launch of the installed app, and only on the very first visit in a browser.
  * Pure server markup + CSS (globals.css "Splash"), hidden by default. When it plays and how long
  * it stays is decided in <head> by components/SplashGate.tsx.
@@ -66,68 +71,81 @@ export function Splash() {
               />
             ))}
 
-            <g className="sp-band">
-              <circle r={R_OUT} fill="url(#sp-band)" />
-            </g>
-            <circle className="sp-rim" r={R_OUT - 3.5} fill="none" stroke={RIM} strokeWidth="7" pathLength={100} />
-
-            {Array.from({ length: N }, (_, i) => {
-              const a = (i * 360) / N;
-              const g = ((i + 0.5) * 360) / N;
-              const rad = ((g - 90) * Math.PI) / 180;
-              const ro = R_OUT - 18;
-              const st = { "--i": i } as React.CSSProperties;
-              return (
-                <g key={i}>
-                  <g transform={`rotate(${a}) translate(0 -207)`}>
-                    <use href="#sp-petal" className="sp-petal" style={st} fill="url(#sp-mirror)" stroke={RIM} strokeWidth="5" strokeLinejoin="round" />
-                  </g>
-                  <g transform={`rotate(${g}) translate(0 ${-(R_IN + (R_OUT - R_IN) * 0.36)}) scale(0.8)`}>
-                    <use href="#sp-gap" className="sp-gap" style={st} fill="none" stroke={RIM} strokeWidth="4" strokeLinejoin="round" />
-                  </g>
-                  <circle className="sp-dot" style={st} cx={r2(ro * Math.cos(rad))} cy={r2(ro * Math.sin(rad))} r="7" fill={RIM} />
-                </g>
-              );
-            })}
-
-            <circle className="sp-centre" r={R_IN} fill="url(#sp-centre)" stroke={RIM} strokeWidth="7" />
-
+            <Medallion p="sp" />
             {/* The light streak that sweeps round the ring */}
             <g className="sp-streak">
               <circle r={R_OUT - 22} fill="none" stroke="url(#sp-streak)" strokeWidth="5" strokeLinecap="round" pathLength={100} strokeDasharray="22 78" />
             </g>
 
-            <g transform="translate(0 -56) scale(1.2)">
-              <g className="sp-lotus" fill="#1d2b52">
-              {[
-                [0, 30, 9],
-                [-30, 26, 8],
-                [30, 26, 8],
-                [-62, 21, 7],
-                [62, 21, 7],
-              ].map(([rot, len, wid]) => (
-                <path
-                  key={rot}
-                  transform={`rotate(${rot})`}
-                  d={`M0,0 C${wid},-${len * 0.35} ${wid * 0.7},-${len * 0.8} 0,-${len} C-${wid * 0.7},-${len * 0.8} -${wid},-${len * 0.35} 0,0 Z`}
-                />
-              ))}
-              </g>
-            </g>
-
-            <image className="sp-words" href="/brand/logo-text.svg" x="-256" y="-256" width="512" height="512" />
-
-            <g transform="translate(0 100) scale(0.9)">
-              <g className="sp-flower" fill="#1d2b52">
-              {[0, 90, 180, 270].map((r) => (
-                <path key={r} transform={`rotate(${r})`} d="M0,0 C3,-3 3,-7 0,-10 C-3,-7 -3,-3 0,0 Z" />
-              ))}
-              </g>
-            </g>
+          </svg>
+          {/* Installed app only: the finished logo, exactly where Chrome's launch screen left it */}
+          <svg viewBox="-256 -256 512 512" className="splash-launch">
+            <Medallion p="la" />
           </svg>
           <p className="splash-tag">Art that adds happiness to your space</p>
         </div>
       </div>
+    </>
+  );
+}
+
+/** The medallion's parts. `p` prefixes the class names: "sp" builds up, "la" is the finished launch logo. */
+function Medallion({ p }: { p: "sp" | "la" }) {
+  return (
+    <>
+        <g className={`${p}-band`}>
+          <circle r={R_OUT} fill="url(#sp-band)" />
+        </g>
+        <circle className={`${p}-rim`} r={R_OUT - 3.5} fill="none" stroke={RIM} strokeWidth="7" pathLength={100} />
+
+        {Array.from({ length: N }, (_, i) => {
+          const a = (i * 360) / N;
+          const g = ((i + 0.5) * 360) / N;
+          const rad = ((g - 90) * Math.PI) / 180;
+          const ro = R_OUT - 18;
+          const st = { "--i": i } as React.CSSProperties;
+          return (
+            <g key={i}>
+              <g transform={`rotate(${a}) translate(0 -207)`}>
+                <use href="#sp-petal" className={`${p}-petal`} style={st} fill="url(#sp-mirror)" stroke={RIM} strokeWidth="5" strokeLinejoin="round" />
+              </g>
+              <g transform={`rotate(${g}) translate(0 ${-(R_IN + (R_OUT - R_IN) * 0.36)}) scale(0.8)`}>
+                <use href="#sp-gap" className={`${p}-gap`} style={st} fill="none" stroke={RIM} strokeWidth="4" strokeLinejoin="round" />
+              </g>
+              <circle className={`${p}-dot`} style={st} cx={r2(ro * Math.cos(rad))} cy={r2(ro * Math.sin(rad))} r="7" fill={RIM} />
+            </g>
+          );
+        })}
+
+        <circle className={`${p}-centre`} r={R_IN} fill="url(#sp-centre)" stroke={RIM} strokeWidth="7" />
+
+        <g transform="translate(0 -56) scale(1.2)">
+          <g className={`${p}-lotus`} fill="#1d2b52">
+          {[
+            [0, 30, 9],
+            [-30, 26, 8],
+            [30, 26, 8],
+            [-62, 21, 7],
+            [62, 21, 7],
+          ].map(([rot, len, wid]) => (
+            <path
+              key={rot}
+              transform={`rotate(${rot})`}
+              d={`M0,0 C${wid},-${len * 0.35} ${wid * 0.7},-${len * 0.8} 0,-${len} C-${wid * 0.7},-${len * 0.8} -${wid},-${len * 0.35} 0,0 Z`}
+            />
+          ))}
+          </g>
+        </g>
+
+        <image className={`${p}-words`} href="/brand/logo-text.svg" x="-256" y="-256" width="512" height="512" />
+
+        <g transform="translate(0 100) scale(0.9)">
+          <g className={`${p}-flower`} fill="#1d2b52">
+          {[0, 90, 180, 270].map((r) => (
+            <path key={r} transform={`rotate(${r})`} d="M0,0 C3,-3 3,-7 0,-10 C-3,-7 -3,-3 0,0 Z" />
+          ))}
+          </g>
+        </g>
     </>
   );
 }
