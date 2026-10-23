@@ -4,8 +4,8 @@
  * and the name is written in. About 2 seconds; a tap skips it.
  *
  * Shown on every launch of the installed app, and only on the very first visit in a browser.
- * Pure server markup + CSS (globals.css "Splash"), hidden by default; a tiny inline script
- * switches it on before the first paint when it should play.
+ * Pure server markup + CSS (globals.css "Splash"), hidden by default. When it plays and how long
+ * it stays is decided in <head> by components/SplashGate.tsx.
  */
 
 import { preload } from "react-dom";
@@ -25,13 +25,6 @@ const SPARKS = Array.from({ length: 18 }, (_, i) => {
   const far = 330 + ((i * 37) % 90);
   return { x: r2(Math.cos(a) * far), y: r2(Math.sin(a) * far), size: 2 + (i % 3), d: (i % 6) * 40 };
 });
-
-// Runs as soon as the splash markup is parsed. It only flips <html data-splash>; it never removes
-// nodes, so React's hydration still finds exactly the markup the server sent.
-const GATE = `try{var h=document.documentElement,app=matchMedia('(display-mode: standalone)').matches||navigator.standalone,k=app?sessionStorage:localStorage;
-if(!k.getItem('ka_splash')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){k.setItem('ka_splash','1');h.dataset.splash='play';
-document.addEventListener('click',function(e){var s=e.target.closest&&e.target.closest('#ka-splash');if(s)s.classList.add('splash-skip')});
-setTimeout(function(){h.dataset.splash='done'},2600)}}catch(e){}`;
 
 export function Splash() {
   preload("/brand/logo-text.svg", { as: "image", fetchPriority: "high" });
@@ -135,7 +128,6 @@ export function Splash() {
           <p className="splash-tag">Art that adds happiness to your space</p>
         </div>
       </div>
-      <script dangerouslySetInnerHTML={{ __html: GATE }} />
     </>
   );
 }

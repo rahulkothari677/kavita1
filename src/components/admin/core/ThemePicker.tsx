@@ -4,7 +4,7 @@ import { Check, ExternalLink } from "lucide-react";
 import { THEMES, themeLook } from "@/lib/themes";
 
 /** Visual theme chooser: each card is a tiny mock of the storefront in that theme. */
-export function ThemePicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+export function ThemePicker({ value, onChange, pattern = false }: { value: string; onChange: (id: string) => void; pattern?: boolean }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {THEMES.map((t) => {
@@ -16,7 +16,7 @@ export function ThemePicker({ value, onChange }: { value: string; onChange: (id:
           <div key={t.id} className={`overflow-hidden rounded-[8px] border bg-white transition ${active ? "border-ink ring-1 ring-ink" : "border-admin-line hover:border-line-strong"}`}>
             <button type="button" onClick={() => onChange(t.id)} aria-pressed={active} className="block w-full text-left">
               {/* mini storefront */}
-              <div style={{ backgroundColor: c.canvas, backgroundImage: look.pattern, backgroundSize: look.patternSize, fontFamily: look.sans }} className="p-3">
+              <div style={{ backgroundColor: c.canvas, backgroundImage: pattern ? look.pattern : undefined, backgroundSize: look.patternSize, fontFamily: look.sans }} className="p-3">
                 <div className="flex items-center justify-between">
                   <span style={{ color: c.accent, fontFamily: look.script, fontStyle: look.scriptStyle, fontWeight: look.scriptWeight }} className="text-[15px] leading-none">
                     Kavita’s Artistry

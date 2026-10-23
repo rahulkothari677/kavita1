@@ -163,6 +163,10 @@ export type MakingStep = { title: string; body: string; image: string };
 
 export type StoreSettings = {
   theme: string;
+  /** Owner's fonts ("" = the theme's own) and whether the faint background print shows */
+  titleFont: string;
+  bodyFont: string;
+  backgroundPattern: boolean;
   storeName: string;
   tagline: string;
   whatsappNumber: string;

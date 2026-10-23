@@ -15,7 +15,8 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     display_override: ["standalone"],
     orientation: "portrait",
-    background_color: "#f6ede3",
+    // Android paints its launch screen in this colour: navy, so it flows into the navy splash.
+    background_color: "#14213f",
     theme_color: "#f6ede3",
     categories: ["shopping", "lifestyle"],
     icons: [

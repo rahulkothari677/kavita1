@@ -8,6 +8,7 @@ import { SaveBar } from "@/components/admin/SaveBar";
 import { Field, LoadError, Section, SwitchRow } from "@/components/admin/core/form";
 import { WhatsAppIcon } from "@/components/Motifs";
 import { ThemePicker } from "@/components/admin/core/ThemePicker";
+import { FontPicker } from "@/components/admin/core/FontPicker";
 import { Palette } from "lucide-react";
 import { waLink } from "@/lib/whatsapp";
 
@@ -69,8 +70,18 @@ export default function SettingsPage() {
       <PageHeader title="Settings" subtitle="Your shop details, ordering and integrations." />
 
       <div className="space-y-6">
-        <Section id="appearance" title="Appearance" text="Choose your website's colour theme. Preview any theme on your live site first; customers see the change after you save." icon={<Palette />}>
-          <ThemePicker value={s.theme} onChange={(id) => set("theme", id)} />
+        <Section id="appearance" title="Appearance" text="Choose your website's theme and fonts. Preview any theme on your live site first; customers see the change after you save." icon={<Palette />}>
+          <ThemePicker value={s.theme} onChange={(id) => set("theme", id)} pattern={s.backgroundPattern} />
+          <div className="mt-6 border-t border-admin-line pt-5">
+            <FontPicker theme={s.theme} title={s.titleFont} body={s.bodyFont} onTitle={(v) => set("titleFont", v)} onBody={(v) => set("bodyFont", v)} />
+          </div>
+          <SwitchRow
+            className="mt-5"
+            title="Background print"
+            text="A faint pattern from the theme (mandala dots, mirrors, leaves…) and a soft glow behind your pages. Off = a plain background."
+            checked={s.backgroundPattern}
+            onChange={(v) => set("backgroundPattern", v)}
+          />
         </Section>
 
         <Section title="WhatsApp ordering" text="Where orders arrive and how customers pay you." icon={<WhatsAppIcon className="size-4" />}>

@@ -162,6 +162,32 @@ const FONT_VAR: Record<Font, string> = {
   jost: "var(--font-jost), ui-sans-serif, system-ui, sans-serif",
 };
 
+/* ── Owner's font choice (Admin → Settings → Appearance) ─────────────── */
+
+export type FontChoice = { id: string; label: string; font: Font; italic?: boolean; weight: number };
+
+/** Title fonts: script headings, tile names and the wordmark. "" = the theme's own. */
+export const TITLE_FONTS: FontChoice[] = [
+  { id: "dancing", label: "Dancing Script", font: "dancing", weight: 600 },
+  { id: "greatvibes", label: "Great Vibes", font: "greatvibes", weight: 400 },
+  { id: "playfair", label: "Playfair (elegant serif)", font: "playfair", italic: true, weight: 500 },
+  { id: "cormorant", label: "Cormorant (gallery serif)", font: "cormorant", italic: true, weight: 600 },
+  { id: "fraunces", label: "Fraunces (soft serif)", font: "fraunces", italic: true, weight: 500 },
+  { id: "kalam", label: "Kalam (handwritten)", font: "kalam", weight: 700 },
+  { id: "yatra", label: "Yatra One (festive)", font: "yatra", weight: 400 },
+];
+/** Body fonts: all other text. "" = the theme's own. */
+export const BODY_FONTS: FontChoice[] = [
+  { id: "manrope", label: "Manrope (clear, modern)", font: "manrope", weight: 400 },
+  { id: "jost", label: "Jost (clean, geometric)", font: "jost", weight: 400 },
+];
+
+export function fontFamily(f: FontChoice) {
+  return FONT_VAR[f.font];
+}
+
+export type ThemeOptions = { pattern?: boolean; titleFont?: string; bodyFont?: string };
+
 /** The look of a theme as plain values, for the admin's theme cards. */
 export function themeLook(t: Theme) {
   const pat = patternCss(t.style.pattern, t.colors, t.dark);
@@ -176,12 +202,22 @@ export function themeLook(t: Theme) {
   };
 }
 
-/** CSS that overrides the design tokens for the chosen theme (colours, fonts, shape, surface). */
-export function themeCss(id: string | null | undefined) {
+/**
+ * CSS that overrides the design tokens for the chosen theme (colours, fonts, shape, surface).
+ * The background is plain unless the owner switches the printed pattern on; the owner's own title
+ * and body fonts, when chosen, replace the theme's.
+ */
+export function themeCss(id: string | null | undefined, opts: ThemeOptions = {}) {
   const t = getTheme(id);
   const c = t.colors;
-  const s = t.style;
-  const pat = patternCss(s.pattern, c, t.dark);
+  const title = TITLE_FONTS.find((f) => f.id === opts.titleFont);
+  const body = BODY_FONTS.find((f) => f.id === opts.bodyFont);
+  const s: ThemeStyle = {
+    ...t.style,
+    ...(title ? { script: title.font, scriptItalic: !!title.italic, scriptWeight: title.weight } : {}),
+    ...(body ? { sans: body.font } : {}),
+  };
+  const pat = opts.pattern ? patternCss(s.pattern, c, t.dark) : { image: "none", size: "auto" };
   const vars: Record<string, string> = {
     ...Object.fromEntries(Object.entries(c).map(([k, v]) => [`--color-${k}`, v])),
     "--font-script": FONT_VAR[s.script],
@@ -193,6 +229,8 @@ export function themeCss(id: string | null | undefined) {
     "--radius-ctl": `${Math.min(s.ctl, 999)}px`,
     "--radius-tile": `${Math.max(s.radius, 2) + 2}px`,
     "--theme-pattern": pat.image,
+    // The soft top glow belongs to the patterned look; a plain background has none.
+    ...(opts.pattern ? {} : { "--color-glow": "transparent" }),
     "--theme-pattern-size": pat.size,
     "--card-ring": s.card === "frame" ? `0 0 0 1px ${c["line-strong"]}33` : "0 0 0 0 transparent",
     "--card-glow": s.card === "glow" ? `0 0 0 1px ${c["line"]}, 0 18px 40px -18px ${c["accent"]}66` : "var(--shadow-soft)",

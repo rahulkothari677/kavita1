@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Dancing_Script, Fraunces, Great_Vibes, Jost, Kalam, Manrope, Playfair_Display, Tiro_Devanagari_Hindi, Yatra_One } from "next/font/google";
 import { ServiceWorker } from "@/components/ServiceWorker";
+import { SplashGate } from "@/components/SplashGate";
 import "./globals.css";
 
 // Display serif: variable with optical sizing (no weight array → full variable range)
@@ -40,6 +41,9 @@ export const viewport: Viewport = { themeColor: "#f6ede3", width: "device-width"
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-IN" suppressHydrationWarning className={`${fraunces.variable} ${manrope.variable} ${tiro.variable} ${dancing.variable} ${themeFonts}`}>
+      <head>
+        <SplashGate />
+      </head>
       <body className="min-h-screen">
         {children}
         <ServiceWorker />

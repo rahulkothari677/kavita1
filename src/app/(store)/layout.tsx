@@ -28,6 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
   const [settings, categories] = await Promise.all([getSettings(), categoryTree({ activeOnly: true })]);
+  const look = { pattern: settings.backgroundPattern, titleFont: settings.titleFont, bodyFont: settings.bodyFont };
   const pub: PublicSettings = {
     storeName: settings.storeName,
     whatsappNumber: settings.whatsappNumber,
@@ -44,10 +45,10 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   };
   return (
     <StoreProvider settings={pub}>
-      <style dangerouslySetInnerHTML={{ __html: themeCss(settings.theme) }} />
+      <style dangerouslySetInnerHTML={{ __html: themeCss(settings.theme, look) }} />
       <Splash />
       <div className="flex min-h-screen flex-col">
-        <ThemePreview />
+        <ThemePreview look={look} />
         <a
           href="#main"
           className="sr-only z-[90] rounded-[4px] bg-ink px-4 py-3 text-[14px] font-medium text-canvas focus:not-sr-only focus:fixed focus:top-3 focus:left-3"

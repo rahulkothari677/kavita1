@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Heart, House, LayoutGrid, PenTool, ShoppingBag, Sparkles, type LucideIcon } from "lucide-react";
 import { useStore } from "./StoreProvider";
 
@@ -26,7 +27,10 @@ export function MobileTabBar() {
   const ai = settings.aiAssistantEnabled;
 
   // Slots 0,1 | centre (2) | 3,4
-  const routeIndex = SIDE_TABS.findIndex((t) => t.match?.(pathname));
+  // The tapped tab lights up at once (before the next page arrives), then the route takes over.
+  const [tapped, setTapped] = useState<{ index: number; from: string } | null>(null);
+  useEffect(() => setTapped(null), [pathname]);
+  const routeIndex = tapped && tapped.from === pathname ? tapped.index : SIDE_TABS.findIndex((t) => t.match?.(pathname));
   const customActive = !ai && pathname.startsWith("/custom-order");
   const sideActive = cartOpen ? 3 : routeIndex;
   const slot = customActive || (ai && assistantOpen) ? 2 : sideActive < 0 ? -1 : sideActive < 2 ? sideActive : sideActive + 1;
@@ -63,7 +67,7 @@ export function MobileTabBar() {
       </>
     );
     return t.href ? (
-      <Link key={t.key} href={t.href} aria-current={isActive ? "page" : undefined} className={`${item} ${tone}`}>
+      <Link key={t.key} href={t.href} onClick={() => setTapped({ index: i, from: pathname })} aria-current={isActive ? "page" : undefined} className={`${item} ${tone}`}>
         {content}
       </Link>
     ) : (
@@ -87,6 +91,7 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label="Shortcuts"
+      style={{ viewTransitionName: "tab-dock" }}
       className="tabbar pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] transition-transform duration-300 ease-out lg:hidden"
     >
       <div className="pointer-events-auto relative mx-auto grid max-w-md grid-cols-5 items-center rounded-[26px] border border-line/70 bg-surface/90 px-1 shadow-dock backdrop-blur-xl backdrop-saturate-150">
