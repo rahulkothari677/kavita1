@@ -140,11 +140,11 @@ export default async function ProductPage({ params }: { params: Params }) {
         </nav>
 
         <div className="mt-4 grid gap-8 lg:mt-8 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <Gallery images={p.images} name={p.name} productId={p.id} />
           </div>
 
-          <div className="lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
+          <div className="min-w-0 lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
             {wallLabel && <Eyebrow>{wallLabel}</Eyebrow>}
             <h1 className="font-display mt-3 text-[clamp(1.75rem,1.3rem_+_1.6vw,2.5rem)] leading-[1.1] tracking-[-0.015em]">{p.name}</h1>
 

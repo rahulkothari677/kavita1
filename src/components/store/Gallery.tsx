@@ -25,7 +25,7 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
     const row = rowRef.current;
     const first = row?.firstElementChild as HTMLElement | null;
     if (!row || !first) return;
-    const step = first.offsetWidth + 4;
+    const step = first.offsetWidth + 8; // slide + gap-2
     setActive(Math.min(list.length - 1, Math.max(0, Math.round(row.scrollLeft / step))));
   };
 
@@ -33,7 +33,8 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
     const row = rowRef.current;
     const el = row?.children[n] as HTMLElement | undefined;
     if (!row || !el) return;
-    row.scrollTo({ left: el.offsetLeft - row.offsetLeft, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    // centre the chosen photo (slides snap to the centre)
+    row.scrollTo({ left: el.offsetLeft - row.offsetLeft - (row.clientWidth - el.offsetWidth) / 2, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
 
   const open = (n: number, e: React.MouseEvent<HTMLElement>) => {
@@ -48,7 +49,10 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
           ref={rowRef}
           onScroll={onScroll}
           aria-label={`${name} images`}
-          className="no-scrollbar flex snap-x snap-mandatory gap-1 overflow-x-auto overscroll-x-contain lg:grid lg:grid-cols-2 lg:gap-3 lg:overflow-visible"
+          // Phones: every photo is centred (one photo: equal margins; several: a peek of the next on both sides)
+          className={`no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain lg:grid lg:grid-cols-2 lg:gap-3 lg:overflow-visible lg:px-0 ${
+            many ? "gap-2 px-7 sm:px-10" : "px-4 sm:px-6"
+          }`}
         >
           {list.map((src, n) => {
             const im = productImg(src || null, WIDTHS);
@@ -65,11 +69,15 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
                 fetchPriority={n === 0 ? "high" : undefined}
                 data-pdp-hero={n === 0 ? "" : undefined}
                 decoding={n === 0 ? "sync" : "async"}
-                className="size-full object-cover"
+                // contain, not cover: the whole piece always shows; any spare space is the plinth colour
+                className="size-full object-contain"
               />
             );
             return (
-              <li key={`${src}-${n}`} className={`w-[92vw] shrink-0 snap-start lg:w-auto ${wide ? "lg:col-span-2" : ""}`}>
+              <li
+                key={`${src}-${n}`}
+                className={`shrink-0 snap-center lg:w-auto ${many ? "w-[calc(100vw-56px)] sm:w-[calc(100vw-80px)]" : "w-[calc(100vw-32px)] sm:w-[calc(100vw-48px)]"} ${wide ? "lg:col-span-2" : ""}`}
+              >
                 <button
                   type="button"
                   onClick={(e) => open(n, e)}
@@ -91,7 +99,7 @@ export function Gallery({ images, name, productId }: { images: string[]; name: s
         {many && (
           <span
             aria-hidden
-            className="tabular pointer-events-none absolute right-[calc(8vw+12px)] bottom-3 rounded-full bg-canvas/88 px-2.5 py-1 text-[11px] font-semibold text-ink backdrop-blur-sm lg:hidden"
+            className="tabular pointer-events-none absolute right-10 bottom-3 rounded-full bg-canvas/88 px-2.5 py-1 text-[11px] font-semibold text-ink backdrop-blur-sm lg:hidden"
           >
             {active + 1} / {list.length}
           </span>
