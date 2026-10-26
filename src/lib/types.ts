@@ -156,6 +156,23 @@ export type HeroSlide = {
 
 export type FaqItem = { q: string; a: string };
 
+/** Every home-page heading/line the owner can reword (lib/settings.ts HOME_TEXT has the defaults). */
+export type HomeTextKey =
+  | "featuredTitle"
+  | "newTitle"
+  | "makingTitle"
+  | "makingLink"
+  | "aboutStripTitle"
+  | "aboutButton"
+  | "howTitle"
+  | "commissionLabel"
+  | "commissionTitle"
+  | "commissionText"
+  | "commissionButton"
+  | "giftTitle"
+  | "giftText"
+  | "reviewsTitle";
+
 /** A home-page category tile: photo, script title, one line and where it links. */
 export type HomeTile = { title: string; text: string; image: string; link: string };
 /** One step of "From Clay to Your Wall" on the home page. */
@@ -195,6 +212,8 @@ export type StoreSettings = {
   /** Big portrait on the About page; empty = the artist photo, then the brand board */
   aboutPageImage: string;
   homeTiles: HomeTile[];
+  /** Home page headings and short texts the owner can reword (empty = HOME_TEXT default) */
+  homeText: Partial<Record<HomeTextKey, string>>;
   makingSteps: MakingStep[];
   /** "Made for your home, by name" photo; empty = a customisable product's photo */
   commissionImage: string;

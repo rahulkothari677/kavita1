@@ -8,6 +8,8 @@ import { CopyLinkButton, KpiTile, NeedsYou, RevenueChart, Segmented, SetupGuide,
 import { WhatsAppIcon } from "@/components/Motifs";
 import { formatINR, formatINRCompact, imgUrl, timeAgo } from "@/lib/format";
 import type { Order, StoreSettings } from "@/lib/types";
+import { shopOrigin } from "@/lib/shop-url";
+
 
 type Stats = {
   revenue: number;
@@ -81,7 +83,7 @@ export default function Dashboard() {
   useEffect(() => {
     setShared(lsGet(LS_SHARED) === "1");
     setSetupHidden(lsGet(LS_SETUP_HIDDEN) === "1");
-    setOrigin(window.location.origin);
+    setOrigin(shopOrigin(window.location.origin));
     api<{ settings: StoreSettings }>("/api/admin/settings")
       .then((d) => setSettings(d.settings))
       .catch(() => {});
@@ -90,6 +92,10 @@ export default function Dashboard() {
   const markShared = useCallback(() => {
     lsSet(LS_SHARED, "1");
     setShared(true);
+  }, []);
+  const unmarkShared = useCallback(() => {
+    lsSet(LS_SHARED, "0");
+    setShared(false);
   }, []);
 
   const runInsights = async () => {
@@ -214,6 +220,7 @@ export default function Dashboard() {
       title: "Share your shop link",
       text: shopUrl ? `Send ${shopUrl.replace(/^https?:\/\//, "")} to friends, family and your WhatsApp status.` : "Send your shop link to friends, family and your WhatsApp status.",
       done: shared,
+      undo: unmarkShared,
       action: (
         <>
           <CopyLinkButton url={shopUrl} onCopied={markShared} />

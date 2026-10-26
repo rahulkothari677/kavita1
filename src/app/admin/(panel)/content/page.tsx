@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDown, ArrowUp, BookOpen, ImagePlus, LayoutTemplate, Loader2, Megaphone, MessageCircleQuestion, Plus, ScrollText, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, BookOpen, ImagePlus, LayoutTemplate, Loader2, Megaphone, MessageCircleQuestion, Plus, ScrollText, Trash2, Type } from "lucide-react";
 import { adminBtn, Loading, PageHeader, Switch, useToast } from "@/components/admin/ui";
 import { useSettingsForm } from "@/components/admin/useSettings";
 import { SaveBar } from "@/components/admin/SaveBar";
+import { PhotoSlot } from "@/components/admin/PhotoSlot";
 import { Field, LoadError, Section } from "@/components/admin/core/form";
 import { uploadImages } from "@/lib/client-image";
 import { imgUrl } from "@/lib/format";
-import type { HeroSlide } from "@/lib/types";
+import type { HeroSlide, HomeTextKey } from "@/lib/types";
+import { HOME_TEXT } from "@/lib/home-text";
 
 const SW = 1.75;
 const iconBtn = "grid size-11 place-items-center rounded-[6px] text-muted transition-colors hover:bg-admin-sidebar hover:text-ink disabled:opacity-40 md:size-9";
@@ -141,27 +143,34 @@ export default function ContentPage() {
           </button>
         </Section>
 
-        <Section title="Your story" text="Shown on the About page and in ‘Meet the maker’ on the homepage." icon={<BookOpen />}>
-          <div className="grid gap-4 sm:grid-cols-[140px_1fr]">
-            <div>
-              <label className="relative grid aspect-[4/5] w-full max-w-[160px] cursor-pointer place-items-center overflow-hidden rounded-t-full rounded-b-[2px] border border-dashed border-line-strong bg-plinth focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
-                {uploading === "artist" ? (
-                  <Loader2 className="size-5 animate-spin text-muted" aria-label="Uploading" />
-                ) : s.artistImage ? (
-                  <img src={imgUrl(s.artistImage, 400)} alt="Your portrait" className="size-full object-cover" />
-                ) : (
-                  <span className="flex flex-col items-center gap-1 px-3 text-center text-[12px] leading-4 text-muted">
-                    <ImagePlus className="size-5" strokeWidth={SW} aria-hidden /> Your photo
-                  </span>
-                )}
-                <input type="file" accept="image/*" className="sr-only" aria-label="Upload your portrait" onChange={(e) => upload(e.target.files, (url) => set("artistImage", url), "artist")} />
-              </label>
-              {s.artistImage && (
-                <button type="button" onClick={() => set("artistImage", "")} className="mt-1 min-h-11 text-[13px] text-muted underline underline-offset-2 hover:text-ink md:min-h-8">
-                  Remove photo
-                </button>
-              )}
-            </div>
+        <Section title="Home page words" text="Rename any heading or short text on your homepage. Leave a box empty to keep the wording shown in grey." icon={<Type />}>
+          <div className="grid gap-3 md:grid-cols-2">
+            {(Object.keys(HOME_TEXT) as HomeTextKey[]).map((k) => {
+              const d = HOME_TEXT[k];
+              const placeholder = k === "aboutStripTitle" ? `About ${s.artistName || "Kavita"}` : d.value;
+              const value = s.homeText?.[k] ?? "";
+              const onChange = (v: string) => set("homeText", { ...s.homeText, [k]: v });
+              return (
+                <Field key={k} label={d.label} className={d.long ? "md:col-span-2" : undefined}>
+                  {d.long ? (
+                    <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={2} placeholder={placeholder} className="input" />
+                  ) : (
+                    <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="input" />
+                  )}
+                </Field>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-[13px] text-muted">The banner words are above; the category tile names and the four “how it’s made” steps are in Site photos.</p>
+        </Section>
+
+        <Section title="Your story" text="Shown on the About page and in the About strip on the homepage. Each photo is separate; drag and zoom them with Adjust." icon={<BookOpen />}>
+          {/* Two separate photos: the round one on the home page and the tall one on the About page */}
+          <div className="grid grid-cols-2 gap-4 sm:max-w-[460px]">
+            <PhotoSlot compact label="Round photo (home page)" value={s.artistImage} fallback="/home/about-studio.webp" shapes={[{ label: "Round photo", ratio: 1, round: true, px: [800, 800] }]} onChange={(v) => set("artistImage", v)} />
+            <PhotoSlot compact label="Tall photo (About page)" value={s.aboutPageImage} fallback="/brand/brand-board.jpg" shapes={[{ label: "About page", ratio: 4 / 5, px: [1200, 1500] }]} onChange={(v) => set("aboutPageImage", v)} />
+          </div>
+          <div className="mt-5">
             <div className="grid content-start gap-3 md:grid-cols-2">
               <Field label="Title">
                 <input value={s.aboutTitle} onChange={(e) => set("aboutTitle", e.target.value)} className="input" />

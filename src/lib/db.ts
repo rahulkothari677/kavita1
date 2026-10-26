@@ -162,7 +162,7 @@ const SCHEMA = [
 ];
 
 /** Bump when a new one-time migration is added below; the fast path checks this single flag. */
-const DB_VERSION = "4";
+const DB_VERSION = "5";
 
 async function init() {
   const c = getClient();
@@ -218,6 +218,25 @@ async function init() {
       [
         { sql: `INSERT INTO Setting (key, value) VALUES ('announcementActive', 'false') ON CONFLICT(key) DO UPDATE SET value = excluded.value`, args: [] },
         { sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('announcementOffV4', '"1"')`, args: [] },
+      ],
+      "write",
+    );
+  }
+  // v5: the About page stops borrowing the round home photo (artistImage). A shop whose About page
+  // was showing that borrowed photo gets it copied into its own slot once, so nothing changes visibly.
+  const v5 = await c.execute({ sql: "SELECT value FROM Setting WHERE key = 'aboutPhotoV5'", args: [] });
+  if (v5.rows.length === 0) {
+    await c.batch(
+      [
+        {
+          sql: `INSERT INTO Setting (key, value)
+                SELECT 'aboutPageImage', value FROM Setting
+                WHERE key = 'artistImage' AND value NOT IN ('""', 'null')
+                  AND NOT EXISTS (SELECT 1 FROM Setting WHERE key = 'aboutPageImage' AND value NOT IN ('""', 'null'))
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+          args: [],
+        },
+        { sql: `INSERT OR REPLACE INTO Setting (key, value) VALUES ('aboutPhotoV5', '"1"')`, args: [] },
       ],
       "write",
     );

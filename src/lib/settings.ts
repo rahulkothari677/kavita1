@@ -44,6 +44,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   artistName: "Kavita",
   artistImage: "",
   aboutPageImage: "",
+  homeText: {},
   homeTiles: [
     { title: "Lippan Art", text: "Traditional art, modern homes", image: "/home/tile-lippan.webp", link: "/shop?category=lippan-art" },
     { title: "Home Decor", text: "Add charm to your spaces", image: "/home/tile-decor.webp", link: "/shop?category=home-accents" },
@@ -94,7 +95,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     "Handmade art & craft by Kavita's Artistry — Lippan art, wall decor, festive & pooja decor, name plates, gifts and custom creations. Order easily on WhatsApp.",
 };
 
-const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3", "dbVersion", "announcementOffV4"]);
+const PRIVATE_KEYS = new Set(["adminPasswordHash", "authSecret", "seeded", "demoV2", "themeV3", "dbVersion", "announcementOffV4", "aboutPhotoV5"]);
 
 export async function getSettings(): Promise<StoreSettings> {
   const rows = await query<{ key: string; value: string }>("SELECT key, value FROM Setting");

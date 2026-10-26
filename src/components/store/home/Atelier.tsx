@@ -120,7 +120,7 @@ const PROMISES = [
   { icon: Package, label: "Secure packaging" },
 ];
 
-export function AboutStrip({ name, intro, image }: { name: string; intro: string; image: string }) {
+export function AboutStrip({ title, button, intro, image }: { title: string; button: string; intro: string; image: string }) {
   return (
     <section aria-labelledby="about-title" className="container-x pt-10 lg:pt-14">
       <div className="relative overflow-hidden rounded-[calc(var(--radius-img)+8px)] bg-blush px-6 py-7 sm:px-9 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10 lg:px-12 lg:py-8">
@@ -130,11 +130,11 @@ export function AboutStrip({ name, intro, image }: { name: string; intro: string
           </span>
           <div className="min-w-0">
             <h2 id="about-title" className="font-script text-[26px] leading-tight text-ink lg:text-[30px]">
-              About {name}
+              {title}
             </h2>
             <p className="mt-1.5 line-clamp-3 max-w-[52ch] text-[14px] leading-relaxed text-ink-2">{intro}</p>
             <Link href="/about" className="btn btn-sm mt-4 bg-surface text-ink shadow-soft hover:bg-canvas">
-              My journey <ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />
+              {button} <ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />
             </Link>
           </div>
         </div>

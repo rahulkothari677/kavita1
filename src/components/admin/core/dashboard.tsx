@@ -239,7 +239,8 @@ export function NeedsYou({ rows }: { rows: NeedRow[] }) {
 }
 
 // ─── Setup guide ─────────────────────────────────────────────────────────────
-export type SetupStep = { key: string; title: string; text: string; done: boolean; action?: React.ReactNode };
+/** `undo` is offered on steps the owner ticks off herself (e.g. "shared the link"), so a tick can be taken back. */
+export type SetupStep = { key: string; title: string; text: string; done: boolean; action?: React.ReactNode; undo?: () => void };
 
 export function SetupGuide({ steps, onDismiss }: { steps: SetupStep[]; onDismiss: () => void }) {
   const done = steps.filter((s) => s.done).length;
@@ -286,6 +287,11 @@ export function SetupGuide({ steps, onDismiss }: { steps: SetupStep[]; onDismiss
                 <div className="animate-fade-in pr-4 pb-4 pl-12 md:pr-5 md:pl-[52px]">
                   <p className="text-[14px] leading-5 text-muted md:text-[13px]">{s.text}</p>
                   {s.action && <div className="mt-3 flex flex-wrap gap-2">{s.action}</div>}
+                  {s.done && s.undo && (
+                    <button type="button" onClick={s.undo} className="mt-3 inline-flex min-h-9 items-center text-[13px] font-medium text-ink underline underline-offset-2">
+                      Mark as not done
+                    </button>
+                  )}
                 </div>
               )}
             </li>

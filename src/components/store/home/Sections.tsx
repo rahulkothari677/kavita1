@@ -11,7 +11,7 @@ export const SECTION_BOTTOM = "pb-[clamp(2.5rem,1.5rem_+_3vw,4.5rem)]";
 
 /* ─── How ordering works ─────────────────────────────────────────────────── */
 
-export function HowOrdering({ codAvailable, artistName }: { codAvailable: boolean; artistName: string }) {
+export function HowOrdering({ title, codAvailable, artistName }: { title: string; codAvailable: boolean; artistName: string }) {
   const steps = [
     { t: "Choose your piece", s: "Browse the studio, or ask for something made just for you." },
     { t: "Add to bag", s: "Leave a note for names, colours or sizes if you’d like." },
@@ -28,7 +28,7 @@ export function HowOrdering({ codAvailable, artistName }: { codAvailable: boolea
       <div className="container-x">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <h2 id="how-title" className="t-script">
-            How ordering works
+            {title}
           </h2>
           <TextLink href="/faq">Read the FAQ</TextLink>
         </div>
@@ -57,7 +57,9 @@ const GIFT_CHIPS = [
   { label: "Under ₹2,000", q: "Under 2000" },
 ];
 
-export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; srcSet?: string; style?: React.CSSProperties }; imageAlt: string }) {
+type CommissionText = { label: string; title: string; body: string; button: string; giftTitle: string; giftBody: string };
+
+export function CommissionAndGifts({ image, imageAlt, text }: { image: { src: string; srcSet?: string; style?: React.CSSProperties }; imageAlt: string; text: CommissionText }) {
   return (
     <section className={SECTION_TOP}>
       <div className="container-x grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-6">
@@ -75,18 +77,18 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
             />
           </div>
           <div className="sm:col-span-3 sm:pb-2">
-            <Eyebrow>Commissions</Eyebrow>
-            <h2 className="font-script mt-2 text-[30px] leading-tight text-accent">Made for your home, by name</h2>
-            <p className="mt-3 text-[15px] text-ink-2">Name plates, wedding and return gifts, or a piece in your colours. Share the idea and we’ll design it together.</p>
+            <Eyebrow>{text.label}</Eyebrow>
+            <h2 className="font-script mt-2 text-[30px] leading-tight text-accent">{text.title}</h2>
+            <p className="mt-3 text-[15px] text-ink-2">{text.body}</p>
             <Link href="/custom-order" className="btn btn-primary mt-6 max-[400px]:w-full">
-              Start a commission
+              {text.button}
             </Link>
           </div>
         </div>
 
         <div className="rounded-img bg-surface p-6 shadow-soft sm:p-8 lg:col-span-5">
-          <h2 className="font-script text-[28px] leading-tight text-accent">Who are you gifting?</h2>
-          <p className="mt-2 text-[15px] text-muted">Pick an occasion and we’ll suggest handmade pieces that suit it.</p>
+          <h2 className="font-script text-[28px] leading-tight text-accent">{text.giftTitle}</h2>
+          <p className="mt-2 text-[15px] text-muted">{text.giftBody}</p>
           <ul className="mt-6 flex flex-wrap gap-2">
             {GIFT_CHIPS.map((c) => (
               <li key={c.label}>
@@ -107,11 +109,11 @@ export function CommissionAndGifts({ image, imageAlt }: { image: { src: string; 
 
 /* ─── From your homes (real, approved reviews only) ──────────────────────── */
 
-export function FromYourHomes({ reviews, total, average }: { reviews: Review[]; total: number; average: number }) {
+export function FromYourHomes({ title, reviews, total, average }: { title: string; reviews: Review[]; total: number; average: number }) {
   return (
     <section aria-label="Customer reviews" className={SECTION_TOP}>
       <div className="container-x">
-        <SectionHeader className="reveal" title="From your homes" />
+        <SectionHeader className="reveal" title={title} />
         <p className="tabular mt-3 text-[14px] text-muted">
           {total} {total === 1 ? "review" : "reviews"} · {average.toFixed(1)} out of 5
         </p>

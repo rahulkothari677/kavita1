@@ -12,6 +12,8 @@ import { Check, ChevronLeft, Loader2, Search, Sparkles, X } from "lucide-react";
 import { Modal, useToast } from "../ui";
 import { useAdminChrome } from "../core/chrome";
 import { timeAgo } from "@/lib/format";
+import { shopOrigin } from "@/lib/shop-url";
+
 
 export const cx = (...a: (string | false | null | undefined)[]) => a.filter(Boolean).join(" ");
 
@@ -447,9 +449,9 @@ export function SheetRow({ icon, children, onClick, href, external, tone }: { ic
   );
 }
 
-/** Origin of the storefront for share links (client only). */
+/** Origin of the storefront for share links (client only): never the admin's own address. */
 export function useOrigin() {
   const [origin, setOrigin] = useState("");
-  useEffect(() => setOrigin(window.location.origin), []);
+  useEffect(() => setOrigin(shopOrigin(window.location.origin)), []);
   return origin;
 }

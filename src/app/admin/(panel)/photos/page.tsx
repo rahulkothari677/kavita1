@@ -102,7 +102,7 @@ export default function SitePhotosPage() {
           </ol>
         </Section>
 
-        <Section title="Home: About Kavita" text="The round photo in the “About” strip on the homepage. Also used on the About page unless you set a separate one below." icon={<House />}>
+        <Section title="Home: About Kavita" text="The round photo in the “About” strip on the homepage. The About page has its own photo below." icon={<House />}>
           <div className="max-w-[220px]">
             <PhotoSlot label="Your photo" help="A friendly photo of you, or your hands at work." value={s.artistImage} fallback="/home/about-studio.webp" shapes={ROUND} onChange={(v) => set("artistImage", v)} />
           </div>
@@ -143,9 +143,9 @@ export default function SitePhotosPage() {
           <div className="max-w-[260px]">
             <PhotoSlot
               label="About page photo"
-              help={s.aboutPageImage ? undefined : "Using your About Kavita photo (or the brand picture). Add one here to use a different photo on this page."}
+              help={s.aboutPageImage ? undefined : "Showing the brand picture. Add your own tall photo for this page."}
               value={s.aboutPageImage}
-              fallback={s.artistImage || "/brand/brand-board.jpg"}
+              fallback="/brand/brand-board.jpg"
               shapes={PORTRAIT}
               onChange={(v) => set("aboutPageImage", v)}
             />

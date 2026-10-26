@@ -7,6 +7,7 @@ import { categoryTree, listProducts, listReviews } from "@/lib/cached";
 import { getSettings } from "@/lib/cached";
 import type { Category, Product } from "@/lib/types";
 import { frameStyle } from "@/lib/frame";
+import { homeText } from "@/lib/home-text";
 
 const BRAND_BOARD = "/brand/brand-board.jpg";
 const HERO_SCENE = "/home/hero-scene.webp";
@@ -99,7 +100,7 @@ export default async function HomePage() {
 
       {featured.length > 0 && (
         <section aria-labelledby="featured-title" className="container-x pt-10 lg:pt-14">
-          <SectionHeader title={<span id="featured-title">Featured Products</span>} link={{ href: "/shop", label: "View all" }} />
+          <SectionHeader title={<span id="featured-title">{homeText(settings, "featuredTitle")}</span>} link={{ href: "/shop", label: "View all" }} />
           <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-4 lg:mt-6 xl:grid-cols-4 xl:gap-x-5 md:max-xl:[&>*:nth-child(n+7)]:hidden">
             {featured.map((p, i) => (
               <ProductCard key={p.id} p={p} priority={i < 2} />
@@ -108,13 +109,18 @@ export default async function HomePage() {
         </section>
       )}
 
-      <AboutStrip name={artistName} intro={intro} image={settings.artistImage || "/home/about-studio.webp"} />
+      <AboutStrip
+        title={homeText(settings, "aboutStripTitle") || `About ${artistName}`}
+        button={homeText(settings, "aboutButton")}
+        intro={intro}
+        image={settings.artistImage || "/home/about-studio.webp"}
+      />
 
       {/* New arrivals and the making story sit on a tinted band (globals.css .band) */}
       <div className="band">
         {newest.length > 0 && (
           <section aria-labelledby="new-title" className="container-x pt-10 lg:pt-14">
-            <SectionHeader title={<span id="new-title">New Arrivals</span>} link={{ href: "/shop?sort=newest", label: "View all" }} />
+            <SectionHeader title={<span id="new-title">{homeText(settings, "newTitle")}</span>} link={{ href: "/shop?sort=newest", label: "View all" }} />
             <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-6 md:gap-x-4 lg:mt-6 xl:grid-cols-4 xl:gap-x-5">
               {newest.map((p) => (
                 <ProductCard key={p.id} p={p} />
@@ -124,7 +130,7 @@ export default async function HomePage() {
         )}
 
         <section aria-labelledby="making-title" className={`container-x ${SECTION_TOP}`}>
-          <SectionHeader title={<span id="making-title">From Clay to Your Wall</span>} link={{ href: "/about", label: "Our story" }} />
+          <SectionHeader title={<span id="making-title">{homeText(settings, "makingTitle")}</span>} link={{ href: "/about", label: homeText(settings, "makingLink") }} />
           <ol className="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:mt-6 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0">
             {settings.makingSteps.map((m, i) => {
               const img = responsiveImg(m.image, [480, 720]);
@@ -145,11 +151,22 @@ export default async function HomePage() {
         </section>
       </div>
 
-      <HowOrdering codAvailable={settings.codAvailable} artistName={artistName} />
+      <HowOrdering title={homeText(settings, "howTitle")} codAvailable={settings.codAvailable} artistName={artistName} />
 
       <div className="pb-[clamp(2.5rem,1.5rem_+_3vw,4.5rem)]">
-        <CommissionAndGifts image={{ ...responsiveImg(commissionSrc, [640, 960]), style: frameStyle(commissionSrc) }} imageAlt={commissionAlt} />
-        {shownReviews.length > 0 && <FromYourHomes reviews={shownReviews} total={reviewCount} average={reviewAvg} />}
+        <CommissionAndGifts
+          image={{ ...responsiveImg(commissionSrc, [640, 960]), style: frameStyle(commissionSrc) }}
+          imageAlt={commissionAlt}
+          text={{
+            label: homeText(settings, "commissionLabel"),
+            title: homeText(settings, "commissionTitle"),
+            body: homeText(settings, "commissionText"),
+            button: homeText(settings, "commissionButton"),
+            giftTitle: homeText(settings, "giftTitle"),
+            giftBody: homeText(settings, "giftText"),
+          }}
+        />
+        {shownReviews.length > 0 && <FromYourHomes title={homeText(settings, "reviewsTitle")} reviews={shownReviews} total={reviewCount} average={reviewAvg} />}
         {insta && <InstagramLine href={insta.href} handle={insta.handle} />}
       </div>
     </>

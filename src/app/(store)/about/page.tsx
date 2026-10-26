@@ -45,7 +45,8 @@ export default async function AboutPage() {
   const s = await getSettings();
   const artist = s.artistName || "Kavita";
   const { quote, rest } = splitStory(s.aboutStory || "");
-  const portraitSrc = s.aboutPageImage || s.artistImage;
+  // Its own photo only (Site photos → About page); never the round home photo.
+  const portraitSrc = s.aboutPageImage;
   const portrait = portraitSrc ? imgUrl(portraitSrc, 960) : "/brand/brand-board.jpg";
   const portraitAlt = portraitSrc ? `${artist}, the maker behind ${s.storeName}` : `${s.storeName} Lippan mirror medallion`;
 
