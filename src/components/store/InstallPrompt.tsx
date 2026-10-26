@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Heart, Maximize2, Share, SquarePlus, X, Zap } from "lucide-react";
+import { capturedInstall, type InstallPromptEvent, forgetInstall } from "@/components/InstallCapture";
 
-type PromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
 type Mode = "android" | "ios" | "inapp";
 
-const INSTALLED = "ka_app_installed"; // localStorage: never ask again
 const SEEN = "ka_install_seen"; // sessionStorage: asked once this visit
+const IOS_SNOOZE = "ka_install_snooze"; // localStorage: iPhone "Not now" rests for a week
 const HIDE_ON = [/^\/checkout/, /^\/order\//, /^\/admin/];
 
 const ls = {
@@ -33,44 +33,48 @@ const ls = {
  *  - iPhone: Apple offers no install button, so it shows the two steps (Share → Add to Home Screen).
  *  - Instagram / Facebook's in-app browser (can't install anything): explains how to open it in the
  *    phone's browser first.
- * Shows a few seconds after the page (and the opening animation) has settled, once per visit, on
- * every visit until the app is installed; never inside the installed app or during checkout.
+ * Shows a few seconds after the page (and the opening animation) has settled, once per visit.
+ * Android: only when Chrome itself offers the install (it stops once the app is installed and offers
+ * it again after an uninstall), so no "installed" note of our own can go stale. iPhone can't report
+ * whether the app is installed, so "Not now" there rests for a week. Never inside the installed app,
+ * on checkout/order pages or in the admin.
  */
 export function InstallPrompt() {
   const pathname = usePathname();
-  const [evt, setEvt] = useState<PromptEvent | null>(null);
+  const [evt, setEvt] = useState<InstallPromptEvent | null>(null);
   const [mode, setMode] = useState<Mode | null>(null);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    try {
+      localStorage.removeItem("ka_app_installed"); // retired: it went stale after an uninstall
+    } catch {}
     const standalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true;
-    if (standalone) {
-      ls.set(localStorage, INSTALLED, "1"); // opened as the app: this phone has it
-      return;
-    }
-    if (ls.get(localStorage, INSTALLED) === "1" || ls.get(sessionStorage, SEEN) === "1") return;
+    if (standalone || ls.get(sessionStorage, SEEN) === "1") return;
 
     const ua = navigator.userAgent;
     const ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
     const inapp = /Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\//i.test(ua);
 
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setEvt(e as PromptEvent);
+    const takeOffer = () => {
+      const e = capturedInstall();
+      if (!e) return;
+      setEvt(e);
       setMode((m) => m ?? "android");
     };
     const onInstalled = () => {
-      ls.set(localStorage, INSTALLED, "1");
+      setEvt(null);
       setOpen(false);
     };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    window.addEventListener("appinstalled", onInstalled);
+    takeOffer(); // Chrome may have offered it before this code ran (caught by InstallCapture)
+    window.addEventListener("ka-installable", takeOffer);
+    window.addEventListener("ka-installed", onInstalled);
     if (inapp) setMode("inapp");
-    else if (ios) setMode("ios");
+    else if (ios && Number(ls.get(localStorage, IOS_SNOOZE) ?? 0) < Date.now()) setMode("ios");
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.removeEventListener("appinstalled", onInstalled);
+      window.removeEventListener("ka-installable", takeOffer);
+      window.removeEventListener("ka-installed", onInstalled);
     };
   }, []);
 
@@ -106,10 +110,14 @@ export function InstallPrompt() {
 
   const install = async () => {
     if (!evt) return;
+    forgetInstall();
     await evt.prompt();
-    const { outcome } = await evt.userChoice;
+    await evt.userChoice;
     setEvt(null);
-    if (outcome === "accepted") ls.set(localStorage, INSTALLED, "1");
+    setOpen(false);
+  };
+  const dismiss = () => {
+    if (mode === "ios") ls.set(localStorage, IOS_SNOOZE, String(Date.now() + 7 * 24 * 3600 * 1000));
     setOpen(false);
   };
 
@@ -119,7 +127,7 @@ export function InstallPrompt() {
       aria-labelledby="install-title"
       className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+100px)] z-[46] mx-auto max-w-md animate-sheet-up rounded-[22px] border border-line bg-surface p-5 shadow-float lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[380px]"
     >
-      <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="icon-btn absolute top-2 right-2 text-muted hover:text-ink">
+      <button type="button" onClick={dismiss} aria-label="Close" className="icon-btn absolute top-2 right-2 text-muted hover:text-ink">
         <X className="size-5" strokeWidth={1.75} />
       </button>
 
@@ -151,7 +159,7 @@ export function InstallPrompt() {
           <button type="button" onClick={install} className="btn btn-primary h-12 flex-1">
             Install app
           </button>
-          <button type="button" onClick={() => setOpen(false)} className="btn h-12 px-4 text-muted hover:text-ink">
+          <button type="button" onClick={dismiss} className="btn h-12 px-4 text-muted hover:text-ink">
             Not now
           </button>
         </div>

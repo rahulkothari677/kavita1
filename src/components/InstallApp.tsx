@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
-
-type PromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
+import { capturedInstall, type InstallPromptEvent, forgetInstall } from "./InstallCapture";
 
 /**
  * "Install app" button for the shop or Studio Admin. Uses the browser's own install prompt when it is
@@ -12,25 +11,24 @@ type PromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ 
  * Hidden inside the installed app.
  */
 export function InstallApp({ app, className = "", helpClassName = "" }: { app: "shop" | "admin"; className?: string; helpClassName?: string }) {
-  const [evt, setEvt] = useState<PromptEvent | null>(null);
+  const [evt, setEvt] = useState<InstallPromptEvent | null>(null);
   const [standalone, setStandalone] = useState(true);
   const [help, setHelp] = useState<string | null>(null);
 
   useEffect(() => {
     setStandalone(window.matchMedia("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true);
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setEvt(e as PromptEvent);
-    };
+    // Chrome's install offer is caught in <head> (InstallCapture) so it is never missed.
+    const onPrompt = () => setEvt(capturedInstall());
+    onPrompt();
     const onInstalled = () => {
       setEvt(null);
       setHelp("Installed — you’ll find it with your other apps.");
     };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    window.addEventListener("appinstalled", onInstalled);
+    window.addEventListener("ka-installable", onPrompt);
+    window.addEventListener("ka-installed", onInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.removeEventListener("appinstalled", onInstalled);
+      window.removeEventListener("ka-installable", onPrompt);
+      window.removeEventListener("ka-installed", onInstalled);
     };
   }, []);
 
@@ -49,6 +47,7 @@ export function InstallApp({ app, className = "", helpClassName = "" }: { app: "
 
   const click = async () => {
     if (!evt) return explain();
+    forgetInstall();
     await evt.prompt();
     const { outcome } = await evt.userChoice;
     setEvt(null);
