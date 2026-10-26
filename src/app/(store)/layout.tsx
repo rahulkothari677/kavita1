@@ -6,6 +6,7 @@ import { CartDrawer } from "@/components/store/CartDrawer";
 import { FloatingActions } from "@/components/store/FloatingActions";
 import { MobileTabBar } from "@/components/store/MobileTabBar";
 import { QuickView } from "@/components/store/QuickView";
+import { InstallPrompt } from "@/components/store/InstallPrompt";
 import { AnnouncementBar } from "@/components/store/chrome/AnnouncementBar";
 import { getSettings } from "@/lib/cached";
 import { categoryTree } from "@/lib/cached";
@@ -76,6 +77,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <FloatingActions />
       <MobileTabBar />
       <QuickView />
+      <InstallPrompt />
     </StoreProvider>
   );
 }
